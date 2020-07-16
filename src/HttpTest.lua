@@ -7,25 +7,67 @@ module(...,package.seeall)
 
 require"http"
 
-local function cbFunc(result,prompt,head,body)
+-- 普通回调1
+local function cbFunc1(result,prompt,head,body)
     if result then
-        log.info("HttpTest.cbFunc.result","Http请求成功:",result)
+        log.info("HttpTest.cbFunc1.result","Http请求成功:",result)
     else
-        log.info("HttpTest.cbFunc.result","Http请求失败:",result)
+        log.info("HttpTest.cbFunc1.result","Http请求失败:",result)
     end
-    log.info("HttpTest.cbFunc.prompt","Http状态码:",prompt)
+    log.info("HttpTest.cbFunc1.prompt","Http状态码:",prompt)
     if result and head then
-        log.info("HttpTest.cbFunc.Head","遍历响应头")
+        log.info("HttpTest.cbFunc1.Head","遍历响应头")
         for k,v in pairs(head) do
-            log.info("HttpTest.cbFunc.Head",k.." : "..v)
+            log.info("HttpTest.cbFunc1.Head",k.." : "..v)
         end
     end
     if result and body then
-        log.info("HttpTest.cbFunc.Body","body="..body)
-        log.info("HttpTest.cbFunc.Body","bodyLen="..body:len())
+        log.info("HttpTest.cbFunc1.Body","body="..body)
+        log.info("HttpTest.cbFunc1.Body","bodyLen="..body:len())
     end
 end
 
+-- 普通回调2
+local function cbFunc2(result,prompt,head,body)
+    if result then
+        log.info("HttpTest.cbFunc2.result","Http请求成功:",result)
+    else
+        log.info("HttpTest.cbFunc2.result","Http请求失败:",result)
+    end
+    log.info("HttpTest.cbFunc2.prompt","Http状态码:",prompt)
+    if result and head then
+        log.info("HttpTest.cbFunc2.Head","遍历响应头")
+        for k,v in pairs(head) do
+            log.info("HttpTest.cbFunc2.Head",k.." : "..v)
+        end
+    end
+    if result and body then
+        log.info("HttpTest.cbFunc2.Body","body="..body)
+        log.info("HttpTest.cbFunc2.Body","bodyLen="..body:len())
+    end
+end
+
+-- 普通回调3
+local function cbFunc3(result,prompt,head,body)
+    if result then
+        log.info("HttpTest.cbFunc3.result","Http请求成功:",result)
+    else
+        log.info("HttpTest.cbFunc3.result","Http请求失败:",result)
+    end
+    log.info("HttpTest.cbFunc3.prompt","Http状态码:",prompt)
+    if result and head then
+        log.info("HttpTest.cbFunc3.Head","遍历响应头")
+        for k,v in pairs(head) do
+            log.info("HttpTest.cbFunc3.Head",k.." : "..v)
+        end
+    end
+    if result and body then
+        log.info("HttpTest.cbFunc3.Body","body="..body)
+        log.info("HttpTest.cbFunc3.Body","bodyLen="..body:len())
+    end
+end
+
+-- 处理文件回调
 local function cbFuncFile(result,prompt,head,filePath)
     if result then
         log.info("HttpTest.cbFuncFile.result","Http请求成功:",result)
@@ -61,56 +103,39 @@ end
 sys.taskInit(
     function()
         sys.waitUntil("IP_READY_IND")
-        log.info("HttpTest","成功访问网络，测试开始")
+        log.info("HttpTest","成功访问网络,Http测试开始")
         count = 1
         while true do
             -- Http GET 请求测试
             log.info("HttpTest.GetTest","第"..count.."次")
-            http.request("GET","www.lua.org",nil,nil,nil,nil,cbFunc)
-            sys.wait(1000)
+            http.request("GET","www.lua.org",nil,nil,nil,nil,cbFunc1)
+            sys.wait(2000)
             
             -- Https Get 请求测试（服务端证书验证）
             log.info("HttpTest.GetTestWithCA","第"..count.."次")
-            http.request("GET","https://www.baidu.com",{caCert="ca.cer"},nil,nil,nil,cbFunc)
-            sys.wait(1000)
+            http.request("GET","https://www.baidu.com",{caCert="ca.cer"},nil,nil,nil,cbFunc2)
+            sys.wait(2000)
 
             -- Https Get 请求测试（保存结果到文件,文件较大）
             log.info("HttpTest.GetTestAndSaveToBigFile","第"..count.."次")
             http.request("GET","https://www.baidu.com",{caCert="ca.cer"},nil,nil,nil,cbFuncFile,"index.html")
-            sys.wait(1000)
+            sys.wait(2000)
 
             -- Https Get 请求测试（保存结果到文件,文件较小）
             log.info("HttpTest.GetTestAndSaveToSmallFile","第"..count.."次")
             http.request("GET","www.lua.org",nil,nil,nil,nil,cbFuncFile,"index.html")
-            sys.wait(1000)
+            sys.wait(2000)
+
+            -- Https Post 请求测试
+            log.info("HttpTest.PostTest","第"..count.."次")
+            http.request("POST","wiki.airm2m.com:48080/getContentLength",nil,nil,"PostTest!",nil,cbFunc3)
+            sys.wait(2000)
 
             count = count + 1
         end
     end
 )
 
--- Http GET 请求测试
--- sys.timerLoopStart(function() http.request("GET","www.lua.org",nil,nil,nil,nil,cbFunc) end, 10000)
-
--- Https Get 请求测试（服务端证书验证）
--- sys.timerLoopStart(function() http.request("GET","https://www.baidu.com",{caCert="ca.cer"},nil,nil,nil,cbFunc) end, 10000)
-
--- Https Get 请求测试（保存结果到文件,文件较大）
--- sys.timerLoopStart(function() http.request("GET","https://www.baidu.com",{caCert="ca.cer"},nil,nil,nil,cbFuncFile,"index.html") end, 10000)
-
--- Https Get 请求测试（保存结果到文件,文件较小）
--- sys.timerLoopStart(function() http.request("GET","www.lua.org",nil,nil,nil,nil,cbFuncFile,"index.html") end, 10000)
-
--- sys.timerLoopStart(function() http.request("GET","www.lua.org",nil,nil,nil,nil,cbFunc) end, 10000)
--- sys.timerLoopStart(function() http.request("GET","www.lua.org",nil,nil,nil,nil,cbFunc) end, 10000)
--- sys.timerLoopStart(function() http.request("GET","www.lua.org",nil,nil,nil,nil,cbFunc) end, 10000)
--- sys.timerLoopStart(function() http.request("GET","www.lua.org",nil,nil,nil,nil,cbFunc) end, 10000)
--- sys.timerLoopStart(function() http.request("GET","www.lua.org",nil,nil,nil,nil,cbFunc) end, 10000)
--- sys.timerLoopStart(function() http.request("GET","www.lua.org",nil,nil,nil,nil,cbFunc) end, 10000)
--- sys.timerLoopStart(function() http.request("GET","www.lua.org",nil,nil,nil,nil,cbFunc) end, 10000)
-
-
---http.request("POST","www.iciba.com",nil,nil,"Luat",30000,cbFnc)
 --http.request("POST","36.7.87.100:6500",nil,{head1="value1"},{[1]="begin\r\n",[2]={file="/lua/http.lua"},[3]="end\r\n"},30000,cbFnc)
 --http.request("POST","http://lq946.ngrok.xiaomiqiu.cn/",nil,nil,{[1]="begin\r\n",[2]={file_base64="/lua/http.lua"},[3]="end\r\n"},30000,cbFnc)
 
