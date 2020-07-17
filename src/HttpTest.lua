@@ -1,7 +1,7 @@
 -- HttpTest
--- Author LuatTest
+-- Author:LuatTest
 -- CreateDate:20200716
--- UpdateDate:20200716
+-- UpdateDate:20200717
 
 module(...,package.seeall)
 
@@ -63,179 +63,232 @@ local function urlencodeTab(params)
     return table.concat(msg)
 end
 
--- 普通回调1
-local function cbFunc1(result,prompt,head,body)
+-- getTest回调
+local function getTestCb(result,prompt,head,body)
     if result then
-        log.info("HttpTest.cbFunc1.result","Http请求成功:",result)
+        log.info("HttpTest.GetTestCb.result","Http请求成功:",result)
     else
-        log.info("HttpTest.cbFunc1.result","Http请求失败:",result)
+        log.info("HttpTest.GetTestCb.result","Http请求失败:",result)
     end
-    log.info("HttpTest.cbFunc1.prompt","Http状态码:",prompt)
+    log.info("HttpTest.GetTestCb.prompt","Http状态码:",prompt)
     if result and head then
-        log.info("HttpTest.cbFunc1.Head","遍历响应头")
+        log.info("HttpTest.GetTestCb.Head","遍历响应头")
         for k,v in pairs(head) do
-            log.info("HttpTest.cbFunc1.Head",k.." : "..v)
+            log.info("HttpTest.GetTestCb.Head",k.." : "..v)
         end
     end
     if result and body then
-        log.info("HttpTest.cbFunc1.Body","body="..body)
-        log.info("HttpTest.cbFunc1.Body","bodyLen="..body:len())
+        log.info("HttpTest.GetTestCb.Body","body="..body)
+        log.info("HttpTest.GetTestCb.Body","bodyLen="..body:len())
         if body=="LuatHttpTestServerGetTestOK" then
-            log.info("HttpTest.cbFunc1","getTestPass!!!")
+            log.info("HttpTest.GetTestCb","getTestPass!!!")
         end
     end
 end
 
--- 普通回调2
-local function cbFunc2(result,prompt,head,body)
+-- getTestWithCA回调
+local function getTestWithCACb(result,prompt,head,body)
     if result then
-        log.info("HttpTest.cbFunc2.result","Http请求成功:",result)
+        log.info("HttpTest.GetTestWithCACb.result","Http请求成功:",result)
     else
-        log.info("HttpTest.cbFunc2.result","Http请求失败:",result)
+        log.info("HttpTest.GetTestWithCACb.result","Http请求失败:",result)
     end
-    log.info("HttpTest.cbFunc2.prompt","Http状态码:",prompt)
+    log.info("HttpTest.GetTestWithCACb.prompt","Http状态码:",prompt)
     if result and head then
-        log.info("HttpTest.cbFunc2.Head","遍历响应头")
+        log.info("HttpTest.GetTestWithCACb.Head","遍历响应头")
         for k,v in pairs(head) do
-            log.info("HttpTest.cbFunc2.Head",k.." : "..v)
-        end
-    end
-    if result and body then
-        log.info("HttpTest.cbFunc2.Body","body="..body)
-        log.info("HttpTest.cbFunc2.Body","bodyLen="..body:len())
-    end
-end
-
--- 普通回调3
-local function cbFunc3(result,prompt,head,body)
-    if result then
-        log.info("HttpTest.cbFunc3.result","Http请求成功:",result)
-    else
-        log.info("HttpTest.cbFunc3.result","Http请求失败:",result)
-    end
-    log.info("HttpTest.cbFunc3.prompt","Http状态码:",prompt)
-    if result and head then
-        log.info("HttpTest.cbFunc3.Head","遍历响应头")
-        for k,v in pairs(head) do
-            log.info("HttpTest.cbFunc3.Head",k.." : "..v)
+            log.info("HttpTest.GetTestWithCACb.Head",k.." : "..v)
         end
     end
     if result and body then
-        log.info("HttpTest.cbFunc3.Body","body="..body)
-        log.info("HttpTest.cbFunc3.Body","bodyLen="..body:len())
+        log.info("HttpTest.GetTestWithCACb.Body","body="..body)
+        log.info("HttpTest.GetTestWithCACb.Body","bodyLen="..body:len())
     end
 end
 
--- 普通回调4
-local function cbFunc4(result,prompt,head,body)
+-- postTest回调
+local function postTestCb(result,prompt,head,body)
     if result then
-        log.info("HttpTest.cbFunc4.result","Http请求成功:",result)
+        log.info("HttpTest.PostTestCb.result","Http请求成功:",result)
     else
-        log.info("HttpTest.cbFunc4.result","Http请求失败:",result)
+        log.info("HttpTest.PostTestCb.result","Http请求失败:",result)
     end
-    log.info("HttpTest.cbFunc4.prompt","Http状态码:",prompt)
+    log.info("HttpTest.PostTestCb.prompt","Http状态码:",prompt)
     if result and head then
-        log.info("HttpTest.cbFunc4.Head","遍历响应头")
+        log.info("HttpTest.PostTestCb.Head","遍历响应头")
         for k,v in pairs(head) do
-            log.info("HttpTest.cbFunc4.Head",k.." : "..v)
+            log.info("HttpTest.PostTestCb.Head",k.." : "..v)
         end
     end
     if result and body then
-        log.info("HttpTest.cbFunc4.Body","body="..body)
-        log.info("HttpTest.cbFunc4.Body","bodyLen="..body:len())
+        log.info("HttpTest.PostTestCb.Body","body="..body)
+        log.info("HttpTest.PostTestCb.Body","bodyLen="..body:len())
     end
 end
 
--- 普通回调5
-local function cbFunc5(result,prompt,head,body)
+-- userHeadTest回调
+local function userHeadTestCb(result,prompt,head,body)
     if result then
-        log.info("HttpTest.cbFunc5.result","Http请求成功:",result)
+        log.info("HttpTest.UserHeadTestCb.result","Http请求成功:",result)
     else
-        log.info("HttpTest.cbFunc5.result","Http请求失败:",result)
+        log.info("HttpTest.UserHeadTestCb.result","Http请求失败:",result)
     end
-    log.info("HttpTest.cbFunc5.prompt","Http状态码:",prompt)
+    log.info("HttpTest.UserHeadTestCb.prompt","Http状态码:",prompt)
     if result and head then
-        log.info("HttpTest.cbFunc5.Head","遍历响应头")
+        log.info("HttpTest.UserHeadTestCb.Head","遍历响应头")
         for k,v in pairs(head) do
-            log.info("HttpTest.cbFunc5.Head",k.." : "..v)
+            log.info("HttpTest.UserHeadTestCb.Head",k.." : "..v)
         end
     end
     if result and body then
-        log.info("HttpTest.cbFunc5.Body","body="..body)
-        log.info("HttpTest.cbFunc5.Body","bodyLen="..body:len())
+        log.info("HttpTest.UserHeadTestCb.Body","body="..body)
+        log.info("HttpTest.UserHeadTestCb.Body","bodyLen="..body:len())
     end
 end
 
--- 普通回调6
-local function cbFunc6(result,prompt,head,body)
+-- octetStreamTest回调
+local function octetStreamTestCb(result,prompt,head,body)
     if result then
-        log.info("HttpTest.cbFunc6.result","Http请求成功:",result)
+        log.info("HttpTest.OctetStreamTestCb.result","Http请求成功:",result)
     else
-        log.info("HttpTest.cbFunc6.result","Http请求失败:",result)
+        log.info("HttpTest.OctetStreamTestCb.result","Http请求失败:",result)
     end
-    log.info("HttpTest.cbFunc6.prompt","Http状态码:",prompt)
+    log.info("HttpTest.OctetStreamTestCb.prompt","Http状态码:",prompt)
     if result and head then
-        log.info("HttpTest.cbFunc6.Head","遍历响应头")
+        log.info("HttpTest.OctetStreamTestCb.Head","遍历响应头")
         for k,v in pairs(head) do
-            log.info("HttpTest.cbFunc6.Head",k.." : "..v)
+            log.info("HttpTest.OctetStreamTestCb.Head",k.." : "..v)
         end
     end
     if result and body then
-        log.info("HttpTest.cbFunc6.Body","body="..body)
-        log.info("HttpTest.cbFunc6.Body","bodyLen="..body:len())
+        log.info("HttpTest.OctetStreamTestCb.Body","body="..body)
+        log.info("HttpTest.OctetStreamTestCb.Body","bodyLen="..body:len())
     end
 end
 
--- 普通回调7
-local function cbFunc6(result,prompt,head,body)
+-- postMultipartFormData回调
+local function postMultipartFormDataCb(result,prompt,head,body)
     if result then
-        log.info("HttpTest.cbFunc7.result","Http请求成功:",result)
+        log.info("HttpTest.PostMultipartFormDataCb.result","Http请求成功:",result)
     else
-        log.info("HttpTest.cbFunc7.result","Http请求失败:",result)
+        log.info("HttpTest.PostMultipartFormDataCb.result","Http请求失败:",result)
     end
-    log.info("HttpTest.cbFunc7.prompt","Http状态码:",prompt)
+    log.info("HttpTest.PostMultipartFormDataCb.prompt","Http状态码:",prompt)
     if result and head then
-        log.info("HttpTest.cbFunc7.Head","遍历响应头")
+        log.info("HttpTest.PostMultipartFormDataCb.Head","遍历响应头")
         for k,v in pairs(head) do
-            log.info("HttpTest.cbFunc7.Head",k.." : "..v)
+            log.info("HttpTest.PostMultipartFormDataCb.Head",k.." : "..v)
         end
     end
     if result and body then
-        log.info("HttpTest.cbFunc7.Body","body="..body)
-        log.info("HttpTest.cbFunc7.Body","bodyLen="..body:len())
+        log.info("HttpTest.PostMultipartFormDataCb.Body","body="..body)
+        log.info("HttpTest.PostMultipartFormDataCb.Body","bodyLen="..body:len())
     end
 end
 
--- 处理文件回调
-local function cbFuncFile(result,prompt,head,filePath)
+-- postMultipartFormData回调
+local function postMultipartFormDataCb(result,prompt,head,body)
     if result then
-        log.info("HttpTest.cbFuncFile.result","Http请求成功:",result)
+        log.info("HttpTest.PostMultipartFormDataCb.result","Http请求成功:",result)
     else
-        log.info("HttpTest.cbFuncFile.result","Http请求失败:",result)
+        log.info("HttpTest.PostMultipartFormDataCb.result","Http请求失败:",result)
     end
-    log.info("HttpTest.cbFuncFile.prompt","Http状态码:",prompt)
+    log.info("HttpTest.PostMultipartFormDataCb.prompt","Http状态码:",prompt)
     if result and head then
-        log.info("HttpTest.cbFuncFile.Head","遍历响应头")
+        log.info("HttpTest.PostMultipartFormDataCb.Head","遍历响应头")
         for k,v in pairs(head) do
-            log.info("HttpTest.cbFuncFile.Head",k.." : "..v)
+            log.info("HttpTest.PostMultipartFormDataCb.Head",k.." : "..v)
+        end
+    end
+    if result and body then
+        log.info("HttpTest.PostMultipartFormDataCb.Body","body="..body)
+        log.info("HttpTest.PostMultipartFormDataCb.Body","bodyLen="..body:len())
+    end
+end
+
+-- xwwwformurlencodedTestCb回调
+local function xwwwformurlencodedTestCb(result,prompt,head,body)
+    if result then
+        log.info("HttpTest.XwwwformurlencodedTestCb.result","Http请求成功:",result)
+    else
+        log.info("HttpTest.XwwwformurlencodedTestCb.result","Http请求失败:",result)
+    end
+    log.info("HttpTest.XwwwformurlencodedTestCb.prompt","Http状态码:",prompt)
+    if result and head then
+        log.info("HttpTest.XwwwformurlencodedTestCb.Head","遍历响应头")
+        for k,v in pairs(head) do
+            log.info("HttpTest.XwwwformurlencodedTestCb.Head",k.." : "..v)
+        end
+    end
+    if result and body then
+        log.info("HttpTest.XwwwformurlencodedTestCb.Body","body="..body)
+        log.info("HttpTest.XwwwformurlencodedTestCb.Body","bodyLen="..body:len())
+    end
+end
+
+-- 处理大文件回调
+local function getTestAndSaveToBigFileCb(result,prompt,head,filePath)
+    if result then
+        log.info("HttpTest.GetTestAndSaveToBigFileCb.result","Http请求成功:",result)
+    else
+        log.info("HttpTest.GetTestAndSaveToBigFileCb.result","Http请求失败:",result)
+    end
+    log.info("HttpTest.GetTestAndSaveToBigFileCb.prompt","Http状态码:",prompt)
+    if result and head then
+        log.info("HttpTest.GetTestAndSaveToBigFileCb.Head","遍历响应头")
+        for k,v in pairs(head) do
+            log.info("HttpTest.GetTestAndSaveToBigFileCb.Head",k.." : "..v)
         end
     end
     if result and filePath then
-        log.info("HttpTest.cbFuncFile.filePath", filePath)
+        log.info("HttpTest.GetTestAndSaveToBigFileCb.filePath", filePath)
         local size = io.fileSize(filePath)
-        log.info("HttpTest.cbFuncFile.fileSize","fileSize="..size)
+        log.info("HttpTest.GetTestAndSaveToBigFileCb.fileSize","fileSize="..size)
         
         --输出文件内容，如果文件太大，一次性读出文件内容可能会造成内存不足，分次读出可以避免此问题
         if size<=4096 then
-            log.info("HttpTest.cbFuncFile.fileContent",io.readFile(filePath))
+            log.info("HttpTest.GetTestAndSaveToBigFileCb.fileContent",io.readFile(filePath))
         else
-			log.info("HttpTest.cbFuncFile.fileContent", filePath.."文件过大")
+			log.info("HttpTest.GetTestAndSaveToBigFileCb.fileContent", filePath.."文件过大")
         end
     end
     --文件使用完之后，如果以后不再用到，需要自行删除
     if filePath then 
         os.remove(filePath)
-        log.info("HttpTest.cbFuncFile.fileDelete", filePath.." deletion completed")
+        log.info("HttpTest.GetTestAndSaveToBigFileCb.fileDelete", filePath.." deletion completed")
+    end
+end
+
+-- 处理小文件回调
+local function getTestAndSaveToSmallFileCb(result,prompt,head,filePath)
+    if result then
+        log.info("HttpTest.GetTestAndSaveToSmallFileCb.result","Http请求成功:",result)
+    else
+        log.info("HttpTest.GetTestAndSaveToSmallFileCb.result","Http请求失败:",result)
+    end
+    log.info("HttpTest.GetTestAndSaveToSmallFileCb.prompt","Http状态码:",prompt)
+    if result and head then
+        log.info("HttpTest.GetTestAndSaveToSmallFileCb.Head","遍历响应头")
+        for k,v in pairs(head) do
+            log.info("HttpTest.GetTestAndSaveToSmallFileCb.Head",k.." : "..v)
+        end
+    end
+    if result and filePath then
+        log.info("HttpTest.GetTestAndSaveToSmallFileCb.filePath", filePath)
+        local size = io.fileSize(filePath)
+        log.info("HttpTest.GetTestAndSaveToSmallFileCb.fileSize","fileSize="..size)
+        
+        --输出文件内容，如果文件太大，一次性读出文件内容可能会造成内存不足，分次读出可以避免此问题
+        if size<=4096 then
+            log.info("HttpTest.GetTestAndSaveToSmallFileCb.fileContent",io.readFile(filePath))
+        else
+			log.info("HttpTest.GetTestAndSaveToSmallFileCb.fileContent", filePath.."文件过大")
+        end
+    end
+    --文件使用完之后，如果以后不再用到，需要自行删除
+    if filePath then 
+        os.remove(filePath)
+        log.info("HttpTest.GetTestAndSaveToSmallFileCb.fileDelete", filePath.." deletion completed")
     end
 end
 
@@ -248,46 +301,41 @@ sys.taskInit(
         while true do
             -- Http GET 请求测试
             log.info("HttpTest.GetTest","第"..count.."次")
-            http.request("GET",serverAddress,nil,nil,nil,nil,cbFunc1)
+            http.request("GET",serverAddress,nil,nil,nil,nil,getTestCb)
             sys.wait(10000)
             
             -- Https Get 请求测试（服务端证书验证）
             log.info("HttpTest.GetTestWithCA","第"..count.."次")
-            http.request("GET","https://www.baidu.com",{caCert="ca.cer"},nil,nil,nil,cbFunc2)
+            http.request("GET","https://www.baidu.com",{caCert="ca.cer"},nil,nil,nil,getTestWithCACb)
             sys.wait(10000)
 
             -- Https Get 请求测试（保存结果到文件,文件较大）
             log.info("HttpTest.GetTestAndSaveToBigFile","第"..count.."次")
-            http.request("GET","https://www.baidu.com",{caCert="ca.cer"},nil,nil,nil,cbFuncFile,"index.html")
+            http.request("GET","https://www.baidu.com",{caCert="ca.cer"},nil,nil,nil,getTestAndSaveToBigFileCb,"baidu.html")
             sys.wait(10000)
 
             -- Https Get 请求测试（保存结果到文件,文件较小）
             log.info("HttpTest.GetTestAndSaveToSmallFile","第"..count.."次")
-            http.request("GET","www.lua.org",nil,nil,nil,nil,cbFuncFile,"index.html")
+            http.request("GET","www.lua.org",nil,nil,nil,nil,getTestAndSaveToSmallFileCb,"lua.html")
             sys.wait(10000)
 
             -- Https Post 请求测试(/)
             log.info("HttpTest.PostTest","第"..count.."次")
-            http.request("POST",serverAddress.."/",nil,nil,"PostTest!",nil,cbFunc3)
-            sys.wait(10000)
-
-            -- Https Post 请求测试(getContentLength)
-            log.info("HttpTest.PostTest","第"..count.."次")
-            http.request("POST",serverAddress.."/getContentLength",nil,nil,"PostTest!",nil,cbFunc4)
+            http.request("POST",serverAddress.."/",nil,nil,"PostTest!",nil,postTestCb)
             sys.wait(10000)
 
             -- Https Post 请求测试（自定义Head）
-            log.info("HttpTest.UserHead","第"..count.."次")
-            http.request("POST",serverAddress.."/withUserHead",nil,{UserHead="Jeremy"},nil,nil,cbFunc5)
+            log.info("HttpTest.UserHeadTest","第"..count.."次")
+            http.request("POST",serverAddress.."/withUserHead",nil,{UserHead="Jeremy"},nil,nil,userHeadTestCb)
             sys.wait(10000)
 
             -- Https Post 请求测试（octet-stream）
-            log.info("HttpTest.postTest","第"..count.."次")
-            http.request("POST",serverAddress.."/withOctetStream",nil,{['Content-Type']="application/octet-stream",['Connection']="keep-alive"},{[1]={['file']="/lua/http.lua"}},nil,cbFunc6)
+            log.info("HttpTest.OctetStreamTest","第"..count.."次")
+            http.request("POST",serverAddress.."/withOctetStream",nil,{['Content-Type']="application/octet-stream",['Connection']="keep-alive"},{[1]={['file']="/lua/http.lua"}},nil,octetStreamTestCb)
             sys.wait(10000)
 
             -- Https Post 请求测试（postTestWithFormData）
-            log.info("HttpTest.postTest","第"..count.."次")
+            log.info("HttpTest.PostMultipartFormData","第"..count.."次")
             postMultipartFormData(
                 serverAddress.."/uploadFile",
                 nil,
@@ -304,17 +352,17 @@ sys.taskInit(
                     }
                 },
                 nil,
-                cbFunc7
+                postMultipartFormDataCb
             )
             sys.wait(10000)
 
             -- Https Post 请求测试（withxwwwformurlencoded）
-            log.info("HttpTest.postTest","第"..count.."次")
+            log.info("HttpTest.XwwwformurlencodedTest","第"..count.."次")
             http.request("POST",serverAddress.."/withxwwwformurlencoded",nil,
             {
                 ["Content-Type"]="application/x-www-form-urlencoded",
             },
-            urlencodeTab({content="x-www-form-urlencoded Test!", author="Jeremy"}),nil,cbFunc8)
+            urlencodeTab({content="x-www-form-urlencoded Test!", author="Jeremy"}),nil,xwwwformurlencodedTestCb)
             sys.wait(10000)
 
             count = count + 1
