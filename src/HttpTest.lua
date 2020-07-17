@@ -186,26 +186,6 @@ local function postMultipartFormDataCb(result,prompt,head,body)
     end
 end
 
--- postMultipartFormData回调
-local function postMultipartFormDataCb(result,prompt,head,body)
-    if result then
-        log.info("HttpTest.PostMultipartFormDataCb.result","Http请求成功:",result)
-    else
-        log.info("HttpTest.PostMultipartFormDataCb.result","Http请求失败:",result)
-    end
-    log.info("HttpTest.PostMultipartFormDataCb.prompt","Http状态码:",prompt)
-    if result and head then
-        log.info("HttpTest.PostMultipartFormDataCb.Head","遍历响应头")
-        for k,v in pairs(head) do
-            log.info("HttpTest.PostMultipartFormDataCb.Head",k.." : "..v)
-        end
-    end
-    if result and body then
-        log.info("HttpTest.PostMultipartFormDataCb.Body","body="..body)
-        log.info("HttpTest.PostMultipartFormDataCb.Body","bodyLen="..body:len())
-    end
-end
-
 -- xwwwformurlencodedTestCb回调
 local function xwwwformurlencodedTestCb(result,prompt,head,body)
     if result then
