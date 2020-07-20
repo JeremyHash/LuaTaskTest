@@ -1,7 +1,7 @@
 -- LuaTaskTest
 -- Author:LuatTest
 -- CreateDate:20200716
--- UpdateDate:20200716
+-- UpdateDate:20200720
 
 
 --必须在这个位置定义PROJECT和VERSION变量
@@ -59,6 +59,9 @@ netLed.setup(true,pio.P0_1,pio.P0_4)
 
 --加载HTTP功能测试模块
 require "HttpTest"
+
+--加载Audio功能测试模块
+require "AudioTest"
 
 --启动系统框架
 sys.init(0, 0)
