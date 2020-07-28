@@ -5,7 +5,7 @@
 
 module(...,package.seeall)
 
-require"http"
+local waitTime = 5000
 
 --multipart/form-data封装函数
 local function postMultipartFormData(url,cert,params,timeout,cbFnc,rcvFileName)
@@ -282,37 +282,37 @@ sys.taskInit(
             -- Http GET 请求测试
             log.info("HttpTest.GetTest","第"..count.."次")
             http.request("GET",serverAddress,nil,nil,nil,nil,getTestCb)
-            sys.wait(10000)
+            sys.wait(waitTime)
             
             -- Https Get 请求测试（服务端证书验证）
             log.info("HttpTest.GetTestWithCA","第"..count.."次")
             http.request("GET","https://www.baidu.com",{caCert="ca.cer"},nil,nil,nil,getTestWithCACb)
-            sys.wait(10000)
+            sys.wait(waitTime)
 
             -- Https Get 请求测试（保存结果到文件,文件较大）
             log.info("HttpTest.GetTestAndSaveToBigFile","第"..count.."次")
             http.request("GET","https://www.baidu.com",{caCert="ca.cer"},nil,nil,nil,getTestAndSaveToBigFileCb,"baidu.html")
-            sys.wait(10000)
+            sys.wait(waitTime)
 
             -- Https Get 请求测试（保存结果到文件,文件较小）
             log.info("HttpTest.GetTestAndSaveToSmallFile","第"..count.."次")
             http.request("GET","www.lua.org",nil,nil,nil,nil,getTestAndSaveToSmallFileCb,"lua.html")
-            sys.wait(10000)
+            sys.wait(waitTime)
 
             -- Https Post 请求测试(/)
             log.info("HttpTest.PostTest","第"..count.."次")
             http.request("POST",serverAddress.."/",nil,nil,"PostTest!",nil,postTestCb)
-            sys.wait(10000)
+            sys.wait(waitTime)
 
             -- Https Post 请求测试（自定义Head）
             log.info("HttpTest.UserHeadTest","第"..count.."次")
             http.request("POST",serverAddress.."/withUserHead",nil,{UserHead="Jeremy"},nil,nil,userHeadTestCb)
-            sys.wait(10000)
+            sys.wait(waitTime)
 
             -- Https Post 请求测试（octet-stream）
             log.info("HttpTest.OctetStreamTest","第"..count.."次")
             http.request("POST",serverAddress.."/withOctetStream",nil,{['Content-Type']="application/octet-stream",['Connection']="keep-alive"},{[1]={['file']="/lua/http.lua"}},nil,octetStreamTestCb)
-            sys.wait(10000)
+            sys.wait(waitTime)
 
             -- Https Post 请求测试（postTestWithFormData）
             log.info("HttpTest.PostMultipartFormData","第"..count.."次")
@@ -334,7 +334,7 @@ sys.taskInit(
                 nil,
                 postMultipartFormDataCb
             )
-            sys.wait(10000)
+            sys.wait(waitTime)
 
             -- Https Post 请求测试（withxwwwformurlencoded）
             log.info("HttpTest.XwwwformurlencodedTest","第"..count.."次")
@@ -343,7 +343,7 @@ sys.taskInit(
                 ["Content-Type"]="application/x-www-form-urlencoded",
             },
             urlencodeTab({content="x-www-form-urlencoded Test!", author="Jeremy"}),nil,xwwwformurlencodedTestCb)
-            sys.wait(10000)
+            sys.wait(waitTime)
 
             count = count + 1
         end
