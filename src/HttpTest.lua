@@ -106,6 +106,26 @@ local function getTestWithCACb(result,prompt,head,body)
     end
 end
 
+-- getTestWithCA回调
+local function GetTestWithCAAndKeyCb(result,prompt,head,body)
+    if result then
+        log.info("HttpTest.GetTestWithCAAndKeyCb.result","Http请求成功:",result)
+    else
+        log.info("HttpTest.GetTestWithCAAndKeyCb.result","Http请求失败:",result)
+    end
+    log.info("HttpTest.GetTestWithCAAndKeyCb.prompt","Http状态码:",prompt)
+    if result and head then
+        log.info("HttpTest.GetTestWithCAAndKeyCb.Head","遍历响应头")
+        for k,v in pairs(head) do
+            log.info("HttpTest.GetTestWithCAAndKeyCb.Head",k.." : "..v)
+        end
+    end
+    if result and body then
+        log.info("HttpTest.GetTestWithCAAndKeyCb.Body","body="..body)
+        log.info("HttpTest.GetTestWithCAAndKeyCb.Body","bodyLen="..body:len())
+    end
+end
+
 -- postTest回调
 local function postTestCb(result,prompt,head,body)
     if result then
@@ -284,9 +304,14 @@ sys.taskInit(
             http.request("GET",serverAddress,nil,nil,nil,nil,getTestCb)
             sys.wait(waitTime)
             
-            -- Https Get 请求测试（服务端证书验证）
+            -- Https Get 请求测试（服务端证书验证_单向认证）
             log.info("HttpTest.GetTestWithCA","第"..count.."次")
             http.request("GET","https://www.baidu.com",{caCert="ca.cer"},nil,nil,nil,getTestWithCACb)
+            sys.wait(waitTime)
+
+            -- Https Get 请求测试（服务端客户端证书验证_双向认证）
+            log.info("HttpTest.GetTestWithCAAndKey","第"..count.."次")
+            http.request("GET","https://36.7.87.100:4434",{caCert="ca.crt",clientCert="client.crt",clientKey="client.key"},nil,nil,nil,GetTestWithCAAndKeyCb)
             sys.wait(waitTime)
 
             -- Https Get 请求测试（保存结果到文件,文件较大）
@@ -328,7 +353,7 @@ sys.taskInit(
 
                     files =
                     {
-                        ["file"] = "/lua/http.lua"
+                        ["FormDataUploadFile"] = "/lua/http.lua"
                     }
                 },
                 nil,
