@@ -77,7 +77,7 @@ pm.wake("LuaTaskTest")
 require "HttpTest"
 
 --加载Audio功能测试模块
--- require "AudioTest"
+require "AudioTest"
 
 --加载GPIO功能测试模块
 -- require "GpioTest"
