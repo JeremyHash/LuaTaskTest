@@ -1,7 +1,7 @@
 -- LuaTaskTest
 -- Author:LuatTest
 -- CreateDate:20200716
--- UpdateDate:20200720
+-- UpdateDate:20200731
 
 
 --必须在这个位置定义PROJECT和VERSION变量
@@ -33,8 +33,8 @@ require "net"
 --此功能模块不是必须的，根据项目需求决定是否加载
 --使用时注意：控制台使用的uart不要和其他功能使用的uart冲突
 --使用说明参考demo/console下的《console功能使用说明.docx》
-require "console"
-console.setup(2, 115200)
+-- require "console"
+-- console.setup(2, 115200)
 
 --加载网络指示灯和LTE指示灯功能模块
 --根据自己的项目需求和硬件配置决定：1、是否加载此功能模块；2、配置指示灯引脚
@@ -61,12 +61,17 @@ console.setup(2, 115200)
 
 -- lib依赖管理
 require "common"
+require "utils"
+require "misc"
+require "ntp"
 require "http"
+require"socket"
 require "audio"
 require"pins"
 require "record"
-require "audio"
 require "cc"
+require "uiWin"
+require "scanCode"
 require "pm"
 
 -- 保持唤醒
@@ -74,10 +79,13 @@ pm.wake("LuaTaskTest")
 
 
 --加载HTTP功能测试模块
-require "HttpTest"
+-- require "HttpTest"
+
+--加载SOCKET功能测试模块
+require "SocketTest"
 
 --加载Audio功能测试模块
-require "AudioTest"
+-- require "AudioTest"
 
 --加载GPIO功能测试模块
 -- require "GpioTest"
@@ -85,9 +93,21 @@ require "AudioTest"
 --加载CALL功能测试模块
 -- require "CallTest"
 
+--加载DISP功能测试模块
 -- require "DispTest"
 
+sys.taskInit(function()
+    while true do
+        log.info("VERSION", rtos.get_version(), VERSION)
+        sys.wait(60000)
+    end
+end)
 
+-- 自动校准时间
+ntp.timeSync(1,function()log.info("----------------> AutoTimeSync is Done ! <----------------")end)
+
+-- 死机断言
+ril.request("AT*EXASSERT=1")
 --启动系统框架
 sys.init(0, 0)
 sys.run()

@@ -7,6 +7,9 @@ module(...,package.seeall)
 
 local waitTime = 5000
 
+--同步网络时间，因为证书校验时会用到系统时间
+ntp.timeSync()
+
 --multipart/form-data封装函数
 local function postMultipartFormData(url,cert,params,timeout,cbFnc,rcvFileName)
     local boundary,body,k,v,kk,vv = "--------------------------"..os.time()..rtos.tick(),{}
