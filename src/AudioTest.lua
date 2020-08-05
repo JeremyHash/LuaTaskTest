@@ -256,7 +256,7 @@ sys.taskInit(function()
         audio.play(PWRON,"FILE","/lua/pwron.mp3",vol,testPlayPwronCb)
         sys.wait(5000)
 
-        播放冲突4
+        --播放冲突4
         log.info("vol",vol)
         log.info("testPlayConflict","testPlayConflict:第"..count.."次")
         sys.wait(1000)
