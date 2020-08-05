@@ -61,10 +61,10 @@ net.startQueryAll(60000, 60000)
 -- require "HttpTest"
 
 --加载Audio功能测试模块
--- require "AudioTest"
+require "AudioTest"
 
 --加载GPIO功能测试模块
-require "GpioTest"
+-- require "GpioTest"
 
 --启动系统框架
 sys.init(0, 0)

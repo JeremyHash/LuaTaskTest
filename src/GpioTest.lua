@@ -32,6 +32,7 @@ x=14时：LDO输出3.165V
 x=15时：LDO输出3.177V
 ]]
 
+
 local x = 1
 pmd.ldoset(x,pmd.LDO_VSIM1) -- GPIO 29、30、31
 
@@ -58,9 +59,8 @@ pmd.ldoset(x,pmd.LDO_VMMC) -- GPIO 24、25、26、27、28
 --pio.pin.setpull(pio.NOPULL,pio.P0_19)  --不配置上下拉
 
 
-
-function gpio0IntFnc(msg)
-    log.info("testGpioSingle.gpioIntFnc",msg,getGpio13Fnc())
+function gpioIntFnc(msg)
+    log.info("testGpioSingle.gpioIntFnc",msg)
     --上升沿中断
     if msg==cpu.INT_GPIO_POSEDGE then
         log.info("Jeremy_GPIO", "上升")
@@ -70,322 +70,59 @@ function gpio0IntFnc(msg)
     end
 end
 
-function gpio1IntFnc(msg)
-    log.info("testGpioSingle.gpioIntFnc",msg,getGpio13Fnc())
-    --上升沿中断
-    if msg==cpu.INT_GPIO_POSEDGE then
-        log.info("Jeremy_GPIO", "上升")
-    --下降沿中断
-    else
-        log.info("Jeremy_GPIO", "下降")
-    end
-end
-
-function gpio2IntFnc(msg)
-    log.info("testGpioSingle.gpioIntFnc",msg,getGpio13Fnc())
-    --上升沿中断
-    if msg==cpu.INT_GPIO_POSEDGE then
-        log.info("Jeremy_GPIO", "上升")
-    --下降沿中断
-    else
-        log.info("Jeremy_GPIO", "下降")
-    end
-end
-
-function gpio3IntFnc(msg)
-    log.info("testGpioSingle.gpioIntFnc",msg,getGpio13Fnc())
-    --上升沿中断
-    if msg==cpu.INT_GPIO_POSEDGE then
-        log.info("Jeremy_GPIO", "上升")
-    --下降沿中断
-    else
-        log.info("Jeremy_GPIO", "下降")
-    end
-end
-
-function gpio4IntFnc(msg)
-    log.info("testGpioSingle.gpioIntFnc",msg,getGpio13Fnc())
-    --上升沿中断
-    if msg==cpu.INT_GPIO_POSEDGE then
-        log.info("Jeremy_GPIO", "上升")
-    --下降沿中断
-    else
-        log.info("Jeremy_GPIO", "下降")
-    end
-end
-
-function gpio5IntFnc(msg)
-    log.info("testGpioSingle.gpioIntFnc",msg,getGpio13Fnc())
-    --上升沿中断
-    if msg==cpu.INT_GPIO_POSEDGE then
-        log.info("Jeremy_GPIO", "上升")
-    --下降沿中断
-    else
-        log.info("Jeremy_GPIO", "下降")
-    end
-end
-
-function gpio6IntFnc(msg)
-    log.info("testGpioSingle.gpioIntFnc",msg,getGpio13Fnc())
-    --上升沿中断
-    if msg==cpu.INT_GPIO_POSEDGE then
-        log.info("Jeremy_GPIO", "上升")
-    --下降沿中断
-    else
-        log.info("Jeremy_GPIO", "下降")
-    end
-end
-
-function gpio9IntFnc(msg)
-    log.info("testGpioSingle.gpioIntFnc",msg,getGpio13Fnc())
-    --上升沿中断
-    if msg==cpu.INT_GPIO_POSEDGE then
-        log.info("Jeremy_GPIO", "上升")
-    --下降沿中断
-    else
-        log.info("Jeremy_GPIO", "下降")
-    end
-end
-
-function gpio10IntFnc(msg)
-    log.info("testGpioSingle.gpioIntFnc",msg,getGpio13Fnc())
-    --上升沿中断
-    if msg==cpu.INT_GPIO_POSEDGE then
-        log.info("Jeremy_GPIO", "上升")
-    --下降沿中断
-    else
-        log.info("Jeremy_GPIO", "下降")
-    end
-end
-
-function gpio11IntFnc(msg)
-    log.info("testGpioSingle.gpioIntFnc",msg,getGpio13Fnc())
-    --上升沿中断
-    if msg==cpu.INT_GPIO_POSEDGE then
-        log.info("Jeremy_GPIO", "上升")
-    --下降沿中断
-    else
-        log.info("Jeremy_GPIO", "下降")
-    end
-end
-
-function gpio12IntFnc(msg)
-    log.info("testGpioSingle.gpioIntFnc",msg,getGpio13Fnc())
-    --上升沿中断
-    if msg==cpu.INT_GPIO_POSEDGE then
-        log.info("Jeremy_GPIO", "上升")
-    --下降沿中断
-    else
-        log.info("Jeremy_GPIO", "下降")
-    end
-end
-
-function gpio13IntFnc(msg)
-    log.info("testGpioSingle.gpioIntFnc",msg,getGpio13Fnc())
-    --上升沿中断
-    if msg==cpu.INT_GPIO_POSEDGE then
-        log.info("Jeremy_GPIO", "上升")
-    --下降沿中断
-    else
-        log.info("Jeremy_GPIO", "下降")
-    end
-end
-
-function gpio14IntFnc(msg)
-    log.info("testGpioSingle.gpioIntFnc",msg,getGpio13Fnc())
-    --上升沿中断
-    if msg==cpu.INT_GPIO_POSEDGE then
-        log.info("Jeremy_GPIO", "上升")
-    --下降沿中断
-    else
-        log.info("Jeremy_GPIO", "下降")
-    end
-end
-
-function gpio15IntFnc(msg)
-    log.info("testGpioSingle.gpioIntFnc",msg,getGpio13Fnc())
-    --上升沿中断
-    if msg==cpu.INT_GPIO_POSEDGE then
-        log.info("Jeremy_GPIO", "上升")
-    --下降沿中断
-    else
-        log.info("Jeremy_GPIO", "下降")
-    end
-end
-
-function gpio16IntFnc(msg)
-    log.info("testGpioSingle.gpioIntFnc",msg,getGpio13Fnc())
-    --上升沿中断
-    if msg==cpu.INT_GPIO_POSEDGE then
-        log.info("Jeremy_GPIO", "上升")
-    --下降沿中断
-    else
-        log.info("Jeremy_GPIO", "下降")
-    end
-end
-
-function gpio17IntFnc(msg)
-    log.info("testGpioSingle.gpioIntFnc",msg,getGpio13Fnc())
-    --上升沿中断
-    if msg==cpu.INT_GPIO_POSEDGE then
-        log.info("Jeremy_GPIO", "上升")
-    --下降沿中断
-    else
-        log.info("Jeremy_GPIO", "下降")
-    end
-end
-
-function gpio18IntFnc(msg)
-    log.info("testGpioSingle.gpioIntFnc",msg,getGpio13Fnc())
-    --上升沿中断
-    if msg==cpu.INT_GPIO_POSEDGE then
-        log.info("Jeremy_GPIO", "上升")
-    --下降沿中断
-    else
-        log.info("Jeremy_GPIO", "下降")
-    end
-end
-
-function gpio19IntFnc(msg)
-    log.info("testGpioSingle.gpioIntFnc",msg,getGpio13Fnc())
-    --上升沿中断
-    if msg==cpu.INT_GPIO_POSEDGE then
-        log.info("Jeremy_GPIO", "上升")
-    --下降沿中断
-    else
-        log.info("Jeremy_GPIO", "下降")
-    end
-end
-
-function gpio20IntFnc(msg)
-    log.info("testGpioSingle.gpioIntFnc",msg,getGpio13Fnc())
-    --上升沿中断
-    if msg==cpu.INT_GPIO_POSEDGE then
-        log.info("Jeremy_GPIO", "上升")
-    --下降沿中断
-    else
-        log.info("Jeremy_GPIO", "下降")
-    end
-end
-
-function gpio21IntFnc(msg)
-    log.info("testGpioSingle.gpioIntFnc",msg,getGpio13Fnc())
-    --上升沿中断
-    if msg==cpu.INT_GPIO_POSEDGE then
-        log.info("Jeremy_GPIO", "上升")
-    --下降沿中断
-    else
-        log.info("Jeremy_GPIO", "下降")
-    end
-end
-
-function gpio22IntFnc(msg)
-    log.info("testGpioSingle.gpioIntFnc",msg,getGpio13Fnc())
-    --上升沿中断
-    if msg==cpu.INT_GPIO_POSEDGE then
-        log.info("Jeremy_GPIO", "上升")
-    --下降沿中断
-    else
-        log.info("Jeremy_GPIO", "下降")
-    end
-end
-
-function gpio23IntFnc(msg)
-    log.info("testGpioSingle.gpioIntFnc",msg,getGpio13Fnc())
-    --上升沿中断
-    if msg==cpu.INT_GPIO_POSEDGE then
-        log.info("Jeremy_GPIO", "上升")
-    --下降沿中断
-    else
-        log.info("Jeremy_GPIO", "下降")
-    end
-end
-
-function gpio24IntFnc(msg)
-    log.info("testGpioSingle.gpioIntFnc",msg,getGpio13Fnc())
-    --上升沿中断
-    if msg==cpu.INT_GPIO_POSEDGE then
-        log.info("Jeremy_GPIO", "上升")
-    --下降沿中断
-    else
-        log.info("Jeremy_GPIO", "下降")
-    end
-end
-
-function gpio25IntFnc(msg)
-    log.info("testGpioSingle.gpioIntFnc",msg,getGpio13Fnc())
-    --上升沿中断
-    if msg==cpu.INT_GPIO_POSEDGE then
-        log.info("Jeremy_GPIO", "上升")
-    --下降沿中断
-    else
-        log.info("Jeremy_GPIO", "下降")
-    end
-end
-
-function gpio26IntFnc(msg)
-    log.info("testGpioSingle.gpioIntFnc",msg,getGpio13Fnc())
-    --上升沿中断
-    if msg==cpu.INT_GPIO_POSEDGE then
-        log.info("Jeremy_GPIO", "上升")
-    --下降沿中断
-    else
-        log.info("Jeremy_GPIO", "下降")
-    end
-end
-
-function gpio27IntFnc(msg)
-    log.info("testGpioSingle.gpioIntFnc",msg,getGpio13Fnc())
-    --上升沿中断
-    if msg==cpu.INT_GPIO_POSEDGE then
-        log.info("Jeremy_GPIO", "上升")
-    --下降沿中断
-    else
-        log.info("Jeremy_GPIO", "下降")
-    end
-end
-
-function gpio28IntFnc(msg)
-    log.info("testGpioSingle.gpioIntFnc",msg,getGpio13Fnc())
-    --上升沿中断
-    if msg==cpu.INT_GPIO_POSEDGE then
-        log.info("Jeremy_GPIO", "上升")
-    --下降沿中断
-    else
-        log.info("Jeremy_GPIO", "下降")
-    end
-end
 
 --GPIO13配置为中断，可通过getGpio13Fnc()获取输入电平，产生中断时，自动执行gpio13IntFnc函数
-getGpio0Fnc = pins.setup(0,gpio0IntFnc)
-getGpio1Fnc = pins.setup(1,gpio1IntFnc)
-getGpio2Fnc = pins.setup(2,gpio3IntFnc)
-getGpio3Fnc = pins.setup(3,gpio3IntFnc)
-getGpio4Fnc = pins.setup(4,gpio4IntFnc)
-getGpio5Fnc = pins.setup(5,gpio5IntFnc)
-getGpio6Fnc = pins.setup(6,gpio6IntFnc)
-getGpio9Fnc = pins.setup(9,gpio9IntFnc)
-getGpio10Fnc = pins.setup(10,gpio10IntFnc)
-getGpio11Fnc = pins.setup(11,gpio11IntFnc)
-getGpio12Fnc = pins.setup(12,gpio12IntFnc)
-getGpio13Fnc = pins.setup(13,gpio13IntFnc)
-getGpio14Fnc = pins.setup(14,gpio14IntFnc)
-getGpio15Fnc = pins.setup(15,gpio15IntFnc)
-getGpio16Fnc = pins.setup(16,gpio16IntFnc)
-getGpio17Fnc = pins.setup(17,gpio17IntFnc)
-getGpio18Fnc = pins.setup(18,gpio18IntFnc)
-getGpio19Fnc = pins.setup(19,gpio19IntFnc)
-getGpio20Fnc = pins.setup(20,gpio20IntFnc)
-getGpio21Fnc = pins.setup(21,gpio21IntFnc)
-getGpio22Fnc = pins.setup(22,gpio22IntFnc)
-getGpio23Fnc = pins.setup(23,gpio23IntFnc)
-getGpio24Fnc = pins.setup(24,gpio24IntFnc)
-getGpio25Fnc = pins.setup(25,gpio25IntFnc)
-getGpio26Fnc = pins.setup(26,gpio26IntFnc)
-getGpio27Fnc = pins.setup(27,gpio27IntFnc)
-getGpio28Fnc = pins.setup(28,gpio28IntFnc)
-
-
+getGpio0Fnc = pins.setup(0,gpioIntFnc)
+getGpio1Fnc = pins.setup(1,gpioIntFnc)
+getGpio2Fnc = pins.setup(2,gpioIntFnc)
+getGpio3Fnc = pins.setup(3,gpioIntFnc)
+getGpio4Fnc = pins.setup(4,gpioIntFnc)
+getGpio5Fnc = pins.setup(5,gpioIntFnc)
+getGpio6Fnc = pins.setup(6,gpioIntFnc)
+getGpio9Fnc = pins.setup(9,gpioIntFnc)
+getGpio10Fnc = pins.setup(10,gpioIntFnc)
+getGpio11Fnc = pins.setup(11,gpioIntFnc)
+getGpio12Fnc = pins.setup(12,gpioIntFnc)
+getGpio13Fnc = pins.setup(13,gpioIntFnc)
+getGpio14Fnc = pins.setup(14,gpioIntFnc)
+getGpio15Fnc = pins.setup(15,gpioIntFnc)
+getGpio16Fnc = pins.setup(16,gpioIntFnc)
+getGpio17Fnc = pins.setup(17,gpioIntFnc)
+getGpio18Fnc = pins.setup(18,gpioIntFnc)
+getGpio19Fnc = pins.setup(19,gpioIntFnc)
+getGpio20Fnc = pins.setup(20,gpioIntFnc)
+getGpio21Fnc = pins.setup(21,gpioIntFnc)
+getGpio22Fnc = pins.setup(22,gpioIntFnc)
+getGpio23Fnc = pins.setup(23,gpioIntFnc)
+getGpio24Fnc = pins.setup(24,gpioIntFnc)
+getGpio25Fnc = pins.setup(25,gpioIntFnc)
+getGpio26Fnc = pins.setup(26,gpioIntFnc)
+getGpio27Fnc = pins.setup(27,gpioIntFnc)
+getGpio28Fnc = pins.setup(28,gpioIntFnc)
+-- getGpio29Fnc = pins.setup(29,gpioIntFnc)
+-- getGpio30Fnc = pins.setup(30,gpioIntFnc)
+-- getGpio31Fnc = pins.setup(31,gpioIntFnc)
+-- getGpio32Fnc = pins.setup(32,gpioIntFnc)
+-- getGpio33Fnc = pins.setup(33,gpioIntFnc)
+-- getGpio34Fnc = pins.setup(34,gpioIntFnc)
+-- getGpio35Fnc = pins.setup(35,gpioIntFnc)
+-- getGpio36Fnc = pins.setup(36,gpioIntFnc)
+-- getGpio37Fnc = pins.setup(37,gpioIntFnc)
+-- getGpio38Fnc = pins.setup(38,gpioIntFnc)
+-- getGpio39Fnc = pins.setup(39,gpioIntFnc)
+-- getGpio40Fnc = pins.setup(40,gpioIntFnc)
+-- getGpio41Fnc = pins.setup(41,gpioIntFnc)
+-- getGpio42Fnc = pins.setup(42,gpioIntFnc)
+-- getGpio49Fnc = pins.setup(49,gpioIntFnc)
+-- getGpio50Fnc = pins.setup(50,gpioIntFnc)
+-- getGpio51Fnc = pins.setup(51,gpioIntFnc)
+-- getGpio52Fnc = pins.setup(52,gpioIntFnc)
+-- getGpio61Fnc = pins.setup(61,gpioIntFnc)
+-- getGpio62Fnc = pins.setup(62,gpioIntFnc)
+-- getGpio63Fnc = pins.setup(63,gpioIntFnc)
+-- getGpio64Fnc = pins.setup(64,gpioIntFnc)
+-- getGpio65Fnc = pins.setup(65,gpioIntFnc)
+-- getGpio66Fnc = pins.setup(66,gpioIntFnc)
 
 
 --[[

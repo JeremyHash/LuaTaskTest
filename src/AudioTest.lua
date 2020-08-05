@@ -17,6 +17,60 @@ require "common"
 --REC:录音音频
 PWRON,CALL,SMS,TTS,REC = 4,3,2,1,0
 
+local tBuffer = {}
+local tStreamType
+
+local function consumer()
+    sys.taskInit(function()
+        audio.setVolume(1)
+        while true do
+            while #tBuffer==0 do
+                sys.waitUntil("DATA_STREAM_IND")
+            end
+
+            local data = table.remove(tBuffer,1)
+            log.info("testAudioStream.consumer remove",data:len())
+            local procLen = audiocore.streamplay(tStreamType,data)
+            if procLen<data:len() then
+                log.warn("produce fast")
+                table.insert(tBuffer,1,data:sub(procLen+1,-1))
+                sys.wait(5)
+            end
+        end
+    end)
+end
+
+
+local function producer(streamType)
+    sys.taskInit(function()
+        while true do
+            log.info("文件名",streamType)
+            tStreamType = streamType
+            local tAudioFile =
+            {
+                [audiocore.AMR] = "tip.amr",
+                [audiocore.SPX] = "record.spx",
+                [audiocore.PCM] = "alarm_door.pcm",
+            }
+            
+            local fileHandle = io.open("/lua/"..tAudioFile[streamType],"rb")
+            if not fileHandle then
+                log.error("testAudioStream.producer open file error")
+                return
+            end
+            
+            while true do
+                local data = fileHandle:read(streamType==audiocore.SPX and 1200 or 1024)
+                if not data then fileHandle:close() return end
+                table.insert(tBuffer,data)
+                if #tBuffer==1 then sys.publish("DATA_STREAM_IND") end
+                log.info("testAudioStream.producer",data:len())
+                sys.wait(10)
+            end  
+        end
+    end)
+end
+
 -- testPlayFileCb回调
 local function testPlayFileCb(result)
     if result == 0 then
@@ -72,37 +126,69 @@ end
 
 -- testPlayConflict回调
 local function testPlayConflictCb(result)
-    if result then
+    if result == 0 then
         log.info("testPlayConflictCb.result","来电铃声播放成功:",result)
-    else
-        log.info("testPlayConflictCb.result","来电铃声播放失败:",result)
+    elseif result == 1 then
+        log.info("testPlayConflictCb.result","播放出错:",result)
+    elseif result == 2 then
+        log.info("testPlayConflictCb.result","播放优先级不够，没有播放:",result)
+    elseif result == 3 then
+        log.info("testPlayConflictCb.result","传入的参数出错，没有播放:",result)
+    elseif result == 4 then
+        log.info("testPlayConflictCb.result","被新的播放请求中止:",result)
+    elseif result == 5 then
+        log.info("testPlayConflictCb.result","调用audio.stop接口主动停止:",result)
     end
 end
 
 -- testPlayPwron回调
 local function testPlayPwronCb(result)
-    if result then
+    if result == 0 then
         log.info("testPlayPwronCb.result","开机铃声播放成功:",result)
-    else
-        log.info("testPlayPwronCb.result","开机铃声播放失败:",result)
+    elseif result == 1 then
+        log.info("testPlayPwronCb.result","播放出错:",result)
+    elseif result == 2 then
+        log.info("testPlayPwronCb.result","播放优先级不够，没有播放:",result)
+    elseif result == 3 then
+        log.info("testPlayPwronCb.result","传入的参数出错，没有播放:",result)
+    elseif result == 4 then
+        log.info("testPlayPwronCb.result","被新的播放请求中止:",result)
+    elseif result == 5 then
+        log.info("testPlayPwronCb.result","调用audio.stop接口主动停止:",result)
     end
 end
 
 -- testPlaySms回调
 local function testPlaySmsCb(result)
-    if result then
+    if result == 0 then
         log.info("testPlaySmsCb.result","短信铃声播放成功:",result)
-    else
-        log.info("testPlaySmsCb.result","短信铃声播放失败:",result)
+    elseif result == 1 then
+        log.info("testPlaySmsCb.result","播放出错:",result)
+    elseif result == 2 then
+        log.info("testPlaySmsCb.result","播放优先级不够，没有播放:",result)
+    elseif result == 3 then
+        log.info("testPlaySmsCb.result","传入的参数出错，没有播放:",result)
+    elseif result == 4 then
+        log.info("testPlaySmsCb.result","被新的播放请求中止:",result)
+    elseif result == 5 then
+        log.info("testPlaySmsCb.result","调用audio.stop接口主动停止:",result)
     end
 end
 
 -- testPlayRec回调
 local function testPlayRecCb(result)
-    if result then
+    if result == 0 then
         log.info("testPlayRecCb.result","录音播放成功:",result)
-    else
-        log.info("testPlayRecCb.result","录音播放失败:",result)
+    elseif result == 1 then
+        log.info("testPlayRecCb.result","播放出错:",result)
+    elseif result == 2 then
+        log.info("testPlayRecCb.result","播放优先级不够，没有播放:",result)
+    elseif result == 3 then
+        log.info("testPlayRecCb.result","传入的参数出错，没有播放:",result)
+    elseif result == 4 then
+        log.info("testPlayRecCb.result","被新的播放请求中止:",result)
+    elseif result == 5 then
+        log.info("testPlayRecCb.result","调用audio.stop接口主动停止:",result)
     end
 end
 
@@ -118,6 +204,7 @@ end
 local ttsStr = "上海合宙通信科技有限公司欢迎您"
 
 sys.taskInit(function()
+    datas = {"audiocore.AMR"}  
     local vol = 1
     local count = 1
     while true do
@@ -146,8 +233,8 @@ sys.taskInit(function()
         -- 播放冲突1
         log.info("vol",vol)
         log.info("testPlayConflict","testPlayConflict:第"..count.."次")
-        -- 播放来电铃声
-        audio.play(CALL,"FILE","/lua/call.mp3",vol,testPlayConflictCb)
+        -- 循环播放来电铃声
+        audio.play(CALL,"FILE","/lua/call.mp3",vol,testPlayConflictCb,true)
         sys.wait(5000)
         --5秒钟后，播放开机铃声
         audio.play(PWRON,"FILE","/lua/pwron.mp3",vol,testPlayPwronCb)
@@ -156,36 +243,68 @@ sys.taskInit(function()
         -- 播放冲突2
         log.info("vol",vol)
         log.info("testPlayConflict","testPlayConflict:第"..count.."次")
-        -- 播放来电铃声
-        audio.play(CALL,"FILE","/lua/call.mp3",vol,testPlayConflictCb)
+        -- 循环播放来电铃声
+        audio.play(CALL,"FILE","/lua/call.mp3",vol,testPlayConflictCb,true)
         sys.wait(5000)  
-        --5秒钟后，播放新短信铃声
+        --5秒钟后，尝试循环播放新短信铃声，但是优先级不够，不会播放
         audio.play(SMS,"FILE","/lua/sms.mp3",vol,testPlaySmsCb)
         sys.wait(5000)  
 
         -- 播放冲突3
         log.info("vol",vol)
         log.info("testPlayConflict","testPlayConflict:第"..count.."次")
-        -- 播放TTS
-        audio.play(TTS,"TTS",ttsStr,vol,testPlayTtsCb)
-        --10秒钟后，播放开机铃声
-        sys.wait(10000)
+        -- 循环播放TTS
+        audio.play(TTS,"TTS",ttsStr,vol,testPlayTtsCb,true)
+        --5秒钟后，播放开机铃声
+        sys.wait(5000)
         audio.play(PWRON,"FILE","/lua/pwron.mp3",vol,testPlayPwronCb)
         sys.wait(5000)
 
-        -- 播放冲突4
-        -- log.info("vol",vol)
-        -- log.info("testPlayConflict","testPlayConflict:第"..count.."次")
-        -- sys.wait(1000)
-        -- 1秒后，录音5秒，之后进行播放冲突测试接口
-        -- record.start(5,testRecCb)
-        -- sys.wait(10000)
-        -- -- 播放录音
-        -- audio.play(REC,"RECORD",1,vol,testPlayRecCb)
+        播放冲突4
+        log.info("vol",vol)
+        log.info("testPlayConflict","testPlayConflict:第"..count.."次")
+        sys.wait(1000)
+        -- 1秒后，录音10秒，之后进行播放冲突测试接口
+        record.start(10,testRecCb)
+        sys.wait(5000)
+
+        -- result = record.exists()
+        -- log.info("是否存在录音",result)
+        -- filePath = record.getFilePath()
+        -- log.info("文件存放路径",filePath)
+        -- fileSize, duration = record.getSize()
+        -- log.info("录音文件总长度，录音时长",fileSize,duration)
+        -- data = record.getData(0, 1024)
+        -- log.info("读取录音数据",data)
+        -- -- 循环播放录音
+        -- audio.play(REC,"RECORD",1,vol,nil,true)
+        -- -- audio.play(CALL,"FILE",filePath,vol,nil,true)
         -- sys.wait(5000)
-        -- 5秒钟后，播放开机铃声
+        -- -- record.delete()
+        -- -- 5秒钟后，播放开机铃声
         -- audio.play(PWRON,"FILE","/lua/pwron.mp3",vol,testPlayPwronCb)
         -- sys.wait(5000)
+
+        -- -- 播放三种类型文件
+        -- sys.wait(3000)
+        -- for i=1,3 do
+        --     if i==1 then
+        --         log.info(i,"AMR第"..count.."次") 
+        --         producer(audiocore.AMR)
+        --         consumer()
+        --         sys.wait(24000)
+        --     elseif i==2 then
+        --         log.info(i,"SPX第"..count.."次") 
+        --         producer(audiocore.SPX)
+        --         consumer()
+        --         sys.wait(9000)
+        --     else
+        --         log.info(i,"PCM第"..count.."次") 
+        --         producer(audiocore.PCM)
+        --         consumer()
+        --         sys.wait(11000)
+        --     end
+        -- end
 
         count = count + 1
         vol = (vol==7) and 1 or (vol+1)
