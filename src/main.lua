@@ -89,8 +89,6 @@ require "AudioTest"
 
 --加载GPIO功能测试模块
 -- require "GpioTest"
-<<<<<<< HEAD
-=======
 
 --加载CALL功能测试模块
 -- require "CallTest"
@@ -107,7 +105,6 @@ end)
 
 -- 自动校准时间
 ntp.timeSync(1,function()log.info("----------------> AutoTimeSync is Done ! <----------------")end)
->>>>>>> efe73a04df9f4c63dbd4b91943577deb0e6c2ddd
 
 -- 死机断言
 ril.request("AT*EXASSERT=1")
