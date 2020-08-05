@@ -5,10 +5,6 @@
 
 module(...,package.seeall)
 
-require "record"
-require "audio"
-require "common"
-
 --音频播放优先级，对应audio.play接口中的priority参数；数值越大，优先级越高，用户根据自己的需求设置优先级
 --PWRON：开机铃声
 --CALL：来电铃声
