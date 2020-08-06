@@ -5,6 +5,8 @@
 
 module(...,package.seeall)
 
+require"pins"
+
 --[[
 有些GPIO需要打开对应的ldo电压域才能正常工作，电压域和对应的GPIO关系如下
 pmd.ldoset(x,pmd.LDO_VSIM1) -- GPIO 29、30、31
@@ -29,6 +31,7 @@ x=13时：LDO输出3.054V
 x=14时：LDO输出3.165V
 x=15时：LDO输出3.177V
 ]]
+
 
 local x = 1
 pmd.ldoset(x,pmd.LDO_VSIM1) -- GPIO 29、30、31
@@ -56,7 +59,6 @@ pmd.ldoset(x,pmd.LDO_VMMC) -- GPIO 24、25、26、27、28
 --pio.pin.setpull(pio.NOPULL,pio.P0_19)  --不配置上下拉
 
 
-
 function gpioIntFnc(msg)
     log.info("testGpioSingle.gpioIntFnc",msg)
     --上升沿中断
@@ -68,6 +70,7 @@ function gpioIntFnc(msg)
     end
 end
 
+
 --GPIO13配置为中断，可通过getGpio13Fnc()获取输入电平，产生中断时，自动执行gpio13IntFnc函数
 getGpio0Fnc = pins.setup(0,gpioIntFnc)
 getGpio1Fnc = pins.setup(1,gpioIntFnc)
@@ -75,7 +78,7 @@ getGpio2Fnc = pins.setup(2,gpioIntFnc)
 getGpio3Fnc = pins.setup(3,gpioIntFnc)
 getGpio4Fnc = pins.setup(4,gpioIntFnc)
 getGpio5Fnc = pins.setup(5,gpioIntFnc)
--- getGpio6Fnc = pins.setup(6,gpioIntFnc)
+getGpio6Fnc = pins.setup(6,gpioIntFnc)
 getGpio9Fnc = pins.setup(9,gpioIntFnc)
 getGpio10Fnc = pins.setup(10,gpioIntFnc)
 getGpio11Fnc = pins.setup(11,gpioIntFnc)
@@ -96,8 +99,30 @@ getGpio25Fnc = pins.setup(25,gpioIntFnc)
 getGpio26Fnc = pins.setup(26,gpioIntFnc)
 getGpio27Fnc = pins.setup(27,gpioIntFnc)
 getGpio28Fnc = pins.setup(28,gpioIntFnc)
-
-
+-- getGpio29Fnc = pins.setup(29,gpioIntFnc)
+-- getGpio30Fnc = pins.setup(30,gpioIntFnc)
+-- getGpio31Fnc = pins.setup(31,gpioIntFnc)
+-- getGpio32Fnc = pins.setup(32,gpioIntFnc)
+-- getGpio33Fnc = pins.setup(33,gpioIntFnc)
+-- getGpio34Fnc = pins.setup(34,gpioIntFnc)
+-- getGpio35Fnc = pins.setup(35,gpioIntFnc)
+-- getGpio36Fnc = pins.setup(36,gpioIntFnc)
+-- getGpio37Fnc = pins.setup(37,gpioIntFnc)
+-- getGpio38Fnc = pins.setup(38,gpioIntFnc)
+-- getGpio39Fnc = pins.setup(39,gpioIntFnc)
+-- getGpio40Fnc = pins.setup(40,gpioIntFnc)
+-- getGpio41Fnc = pins.setup(41,gpioIntFnc)
+-- getGpio42Fnc = pins.setup(42,gpioIntFnc)
+-- getGpio49Fnc = pins.setup(49,gpioIntFnc)
+-- getGpio50Fnc = pins.setup(50,gpioIntFnc)
+-- getGpio51Fnc = pins.setup(51,gpioIntFnc)
+-- getGpio52Fnc = pins.setup(52,gpioIntFnc)
+-- getGpio61Fnc = pins.setup(61,gpioIntFnc)
+-- getGpio62Fnc = pins.setup(62,gpioIntFnc)
+-- getGpio63Fnc = pins.setup(63,gpioIntFnc)
+-- getGpio64Fnc = pins.setup(64,gpioIntFnc)
+-- getGpio65Fnc = pins.setup(65,gpioIntFnc)
+-- getGpio66Fnc = pins.setup(66,gpioIntFnc)
 
 
 --[[
