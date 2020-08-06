@@ -105,17 +105,15 @@ sys.taskInit(
     end
 )
 
--- 异步客户端创建
+-- 异步TCP客户端创建
 sys.taskInit(function()
     sys.waitUntil("IP_READY_IND")
-    log.info("SocketTest","成功访问网络,异步Socket测试开始")
+    log.info("SocketTest","成功访问网络,异步TcpSocket测试开始")
     tcpClient4 = socket.tcp()
-    udpClient2 = socket.udp()
     connectResult,socketId = tcpClient4:connect(ip2,"40432")
-    connectResult,socketId = udpClient2:connect(ip3,"12414")
     log.info("SocketTest.tcpClient4.connectResult,socketId",connectResult,socketId)
     if connectResult then
-        sys.publish("AsyncSocketInitComplete")
+        sys.publish("AsyncTcpSocketInitComplete")
     else
         log.info("SocketTest.tcpClient4.connect","连接失败！！！")
     end
@@ -123,22 +121,58 @@ sys.taskInit(function()
     tcpClient4:close()
 end)
 
--- 异步发送协程
+-- 异步UDP客户端创建
 sys.taskInit(function()
-    sys.waitUntil("AsyncSocketInitComplete")
+    sys.waitUntil("IP_READY_IND")
+    log.info("SocketTest","成功访问网络,异步UdpSocket测试开始")
+    udpClient2 = socket.udp()
+    connectResult,socketId = udpClient2:connect(ip3,"12414")
+    log.info("SocketTest.udpClient2.connectResult,socketId",connectResult,socketId)
+    if connectResult then
+        sys.publish("AsyncUdpSocketInitComplete")
+    else
+        log.info("SocketTest.udpClient2.connect","连接失败！！！")
+    end
+    while udpClient2:asyncSelect() do end
+    udpClient2:close()
+end)
+
+-- 异步TCP发送协程
+sys.taskInit(function()
+    sys.waitUntil("AsyncTcpSocketInitComplete")
     while true do
         tcpClient4:asyncSend(testSendData)
         sys.wait(waitTime)
     end
 end)
 
--- 异步接收协程
+-- 异步TCP接收协程
 sys.taskInit(function()
-    sys.waitUntil("AsyncSocketInitComplete")
+    sys.waitUntil("AsyncTcpSocketInitComplete")
     sys.wait(1000)
     while true do
         local asyncReceiveData = tcpClient4:asyncRecv()
         log.info("SocketTest.tcpClient4.recv",asyncReceiveData)
+        sys.wait(waitTime)
+    end
+end)
+
+-- 异步UDP发送协程
+sys.taskInit(function()
+    sys.waitUntil("AsyncUdpSocketInitComplete")
+    while true do
+        udpClient2:asyncSend(testSendData)
+        sys.wait(waitTime)
+    end
+end)
+
+-- 异步UDP接收协程
+sys.taskInit(function()
+    sys.waitUntil("AsyncUdpSocketInitComplete")
+    sys.wait(1000)
+    while true do
+        local asyncReceiveData = udpClient2:asyncRecv()
+        log.info("SocketTest.udpClient2.recv",asyncReceiveData)
         sys.wait(waitTime)
     end
 end)
