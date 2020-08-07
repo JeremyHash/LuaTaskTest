@@ -8,7 +8,7 @@
 --PROJECT：ascii string类型，可以随便定义，只要不使用,就行
 --VERSION：ascii string类型，如果使用Luat物联云平台固件升级的功能，必须按照"X.X.X"定义，X表示1位数字；否则可随便定义
 PROJECT = "LuaTaskTest"
-VERSION = "0.0.1"
+VERSION = "1.0.9"
 
 --加载日志功能模块，并且设置日志输出等级
 --如果关闭调用log模块接口输出的日志，等级设置为log.LOG_SILENT即可
@@ -53,9 +53,10 @@ require "net"
 
 --加载远程升级功能模块【强烈建议打开此功能，如果使用了阿里云的OTA功能，可以不打开此功能】
 --如下3行代码，只是简单的演示如何使用update功能，详情参考update的api以及demo/update
--- PRODUCT_KEY = "LMe0gb26NhPbBZ7t3mSk3dxA8f4ZZmM1"
+PRODUCT_KEY = "LMe0gb26NhPbBZ7t3mSk3dxA8f4ZZmM1"
 -- require "update"
 -- update.request(nil,"http://117.51.140.119:8000/jeremy.bin")
+-- update.request()
 
 -- require "color_lcd_spi_ILI9341"
 
@@ -65,9 +66,10 @@ require "utils"
 require "misc"
 require "ntp"
 require "http"
-require"socket"
+require "socket"
+require "mqtt"
 -- require "audio"
-require"pins"
+require "pins"
 -- require "record"
 require "cc"
 -- require "uiWin"
@@ -78,14 +80,17 @@ require "pm"
 pm.wake("LuaTaskTest")
 
 
---加载HTTP功能测试模块
+--加载Http功能测试模块
 -- require "HttpTest"
 
---加载SOCKET功能测试模块
-require "SocketTest"
+--加载Socket功能测试模块
+-- require "SocketTest"
+
+--加载Mqtt功能测试模块
+require "MqttTest"
 
 --加载Audio功能测试模块
-require "AudioTest"
+-- require "AudioTest"
 
 --加载GPIO功能测试模块
 -- require "GpioTest"
@@ -99,7 +104,7 @@ require "AudioTest"
 sys.taskInit(function()
     while true do
         log.info("VERSION", rtos.get_version(), VERSION)
-        sys.wait(60000)
+        sys.wait(10000)
     end
 end)
 

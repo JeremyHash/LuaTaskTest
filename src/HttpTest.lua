@@ -299,7 +299,7 @@ sys.taskInit(
     function()
         sys.waitUntil("IP_READY_IND")
         log.info("HttpTest","成功访问网络,Http测试开始")
-        local serverAddress = "wiki.airm2m.com:58080"
+        local serverAddress = "wiki.airm2m.com:48080"
         local count = 1
         while true do
             -- Http GET 请求测试
