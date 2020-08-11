@@ -69,12 +69,12 @@ require "ntp"
 require "http"
 require "socket"
 require "mqtt"
--- require "audio"
+require "audio"
 require "pins"
--- require "record"
+require "record"
 require "cc"
--- require "uiWin"
--- require "scanCode"
+require "uiWin"
+require "scanCode"
 require "pm"
 
 -- 保持唤醒
@@ -100,7 +100,7 @@ pm.wake("LuaTaskTest")
 -- require "CallTest"
 
 --加载DISP功能测试模块
--- require "DispTest"
+require "DispTest"
 
 sys.taskInit(function()
     while true do
