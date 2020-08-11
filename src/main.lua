@@ -100,7 +100,7 @@ pm.wake("LuaTaskTest")
 -- require "CallTest"
 
 --加载DISP功能测试模块
-require "DispTest"
+require "DispTestAll"
 require"lcd"
 
 sys.taskInit(function()
