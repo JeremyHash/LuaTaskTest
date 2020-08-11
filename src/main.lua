@@ -59,6 +59,7 @@ PRODUCT_KEY = "LMe0gb26NhPbBZ7t3mSk3dxA8f4ZZmM1"
 -- update.request()
 
 -- require "color_lcd_spi_ILI9341"
+require "color_lcd_spi_gc9106l"
 
 -- lib依赖管理
 require "common"
@@ -90,7 +91,7 @@ pm.wake("LuaTaskTest")
 -- require "MqttTest"
 
 --加载Audio功能测试模块
-require "AudioTest"
+-- require "AudioTest"
 
 --加载GPIO功能测试模块
 -- require "GpioTest"
@@ -99,7 +100,8 @@ require "AudioTest"
 -- require "CallTest"
 
 --加载DISP功能测试模块
--- require "DispTest"
+require "DispTest"
+require"lcd"
 
 sys.taskInit(function()
     while true do

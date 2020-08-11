@@ -260,17 +260,17 @@ sys.taskInit(function()
         -- sys.wait(3000)
         -- for i=1,3 do
         --     if i==1 then
-        --         log.info(i,"AMR第"..count.."次") 
+        --         log.info(i,"播放AMR第"..count.."次") 
         --         producer(audiocore.AMR)
         --         consumer()
         --         sys.wait(24000)
         --     elseif i==2 then
-        --         log.info(i,"SPX第"..count.."次") 
+        --         log.info(i,"播放SPX第"..count.."次") 
         --         producer(audiocore.SPX)
         --         consumer()
         --         sys.wait(9000)
         --     else
-        --         log.info(i,"PCM第"..count.."次") 
+        --         log.info(i,"播放PCM第"..count.."次") 
         --         producer(audiocore.PCM)
         --         consumer()
         --         sys.wait(11000)
