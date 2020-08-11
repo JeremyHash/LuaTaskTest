@@ -256,31 +256,6 @@ sys.taskInit(function()
         audio.play(PWRON,"FILE","/lua/pwron.mp3",vol,testPlayPwronCb)
         sys.wait(5000)
 
-        --播放冲突4
-        log.info("vol",vol)
-        log.info("testPlayConflict","testPlayConflict:第"..count.."次")
-        sys.wait(1000)
-        -- 1秒后，录音10秒，之后进行播放冲突测试接口
-        record.start(10,testRecCb)
-        sys.wait(5000)
-
-        -- result = record.exists()
-        -- log.info("是否存在录音",result)
-        -- filePath = record.getFilePath()
-        -- log.info("文件存放路径",filePath)
-        -- fileSize, duration = record.getSize()
-        -- log.info("录音文件总长度，录音时长",fileSize,duration)
-        -- data = record.getData(0, 1024)
-        -- log.info("读取录音数据",data)
-        -- -- 循环播放录音
-        -- audio.play(REC,"RECORD",1,vol,nil,true)
-        -- -- audio.play(CALL,"FILE",filePath,vol,nil,true)
-        -- sys.wait(5000)
-        -- -- record.delete()
-        -- -- 5秒钟后，播放开机铃声
-        -- audio.play(PWRON,"FILE","/lua/pwron.mp3",vol,testPlayPwronCb)
-        -- sys.wait(5000)
-
         -- -- 播放三种类型文件
         -- sys.wait(3000)
         -- for i=1,3 do
