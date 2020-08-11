@@ -5,14 +5,6 @@
 
 module(...,package.seeall)
 
-require"uiWin"
-require"pm"
-require"scanCode"
-require"utils"
-require"common"
-require"misc"
-require"ntp"
-
 local WIDTH,HEIGHT = disp.getlcdinfo()
 local DEFAULT_WIDTH,DEFAULT_HEIGHT = 320,240
 local width, data = qrencode.encode('http://www.openluat.com')
