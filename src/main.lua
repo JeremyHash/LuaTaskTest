@@ -8,7 +8,7 @@
 --PROJECT：ascii string类型，可以随便定义，只要不使用,就行
 --VERSION：ascii string类型，如果使用Luat物联云平台固件升级的功能，必须按照"X.X.X"定义，X表示1位数字；否则可随便定义
 PROJECT = "LuaTaskTest"
-VERSION = "1.0.9"
+VERSION = "1.0.0"
 
 --加载日志功能模块，并且设置日志输出等级
 --如果关闭调用log模块接口输出的日志，等级设置为log.LOG_SILENT即可
@@ -39,9 +39,9 @@ require "net"
 --加载网络指示灯和LTE指示灯功能模块
 --根据自己的项目需求和硬件配置决定：1、是否加载此功能模块；2、配置指示灯引脚
 --合宙官方出售的Air720U开发板上的网络指示灯引脚为pio.P0_1，LTE指示灯引脚为pio.P0_4
--- require "netLed"
--- pmd.ldoset(2,pmd.LDO_VLCD)
--- netLed.setup(true,pio.P0_1,pio.P0_4)
+require "netLed"
+pmd.ldoset(2,pmd.LDO_VLCD)
+netLed.setup(true,pio.P0_1,pio.P0_4)
 --网络指示灯功能模块中，默认配置了各种工作状态下指示灯的闪烁规律，参考netLed.lua中ledBlinkTime配置的默认值
 --如果默认值满足不了需求，此处调用netLed.updateBlinkTime去配置闪烁时长
 --LTE指示灯功能模块中，配置的是注册上4G网络，灯就常亮，其余任何状态灯都会熄灭
@@ -59,7 +59,7 @@ PRODUCT_KEY = "LMe0gb26NhPbBZ7t3mSk3dxA8f4ZZmM1"
 -- update.request()
 
 -- require "color_lcd_spi_ILI9341"
-require "color_lcd_spi_gc9106l"
+-- require "color_lcd_spi_gc9106l"
 
 -- lib依赖管理
 require "common"
@@ -82,24 +82,24 @@ pm.wake("LuaTaskTest")
 
 
 --加载Http功能测试模块
--- require "HttpTest"
+require "HttpTest"
 
 --加载Socket功能测试模块
--- require "SocketTest"
+require "SocketTest"
 
 --加载Mqtt功能测试模块
--- require "MqttTest"
+require "MqttTest"
 
 --加载Audio功能测试模块
 -- require "AudioTest"
 
---加载GPIO功能测试模块
+--加载Gpio功能测试模块
 -- require "GpioTest"
 
---加载CALL功能测试模块
+--加载Call功能测试模块
 -- require "CallTest"
 
---加载DISP功能测试模块
+--加载Disp功能测试模块
 -- require "DispTest"
 
 sys.taskInit(function()
