@@ -5,12 +5,21 @@
 
 module(...,package.seeall)
 
-local WIDTH,HEIGHT = disp.getlcdinfo()
+local WIDTH, HEIGHT, BPP = disp.getlcdinfo()
+local CHAR_WIDTH = 8
 local DEFAULT_WIDTH,DEFAULT_HEIGHT = 320,240
 local width, data = qrencode.encode('http://www.openluat.com')
 local WIDTH1, HEIGHT1 = 132,162
 local appid,str1,str2,str3,callback,callbackpara
 local uartID = 1
+
+function getxpos(str)
+    return (WIDTH - string.len(str) * CHAR_WIDTH) / 2
+end
+
+function setcolor(color)
+    if BPP~=1 then return disp.setcolor(color) end
+end
 
 function sendFile()
 sys.taskInit(
@@ -54,13 +63,13 @@ local pos =
 local function refresh()
     disp.clear()
     if str3 then
-        disp.puttext(str3,lcd.getxpos(str3),pos[3][3])
+        disp.puttext(str3,getxpos(str3),pos[3][3])
     end
     if str2 then
-        disp.puttext(str2,lcd.getxpos(str2),pos[str3 and 3 or 2][2])
+        disp.puttext(str2,getxpos(str2),pos[str3 and 3 or 2][2])
     end
     if str1 then
-        disp.puttext(str1,lcd.getxpos(str1),pos[str3 and 3 or (str2 and 2 or 1)][1])
+        disp.puttext(str1,getxpos(str1),pos[str3 and 3 or (str2 and 2 or 1)][1])
     end
     disp.update()
 end
@@ -114,21 +123,21 @@ local appid
 local function refresh()
     --清空LCD显示缓冲区
     disp.clear()
-    local oldColor = lcd.setcolor(0xF100)
-    disp.puttext(common.utf8ToGb2312("待机界面"),lcd.getxpos(common.utf8ToGb2312("待机界面")),0)
+    local oldColor = setcolor(0xF100)
+    disp.puttext(common.utf8ToGb2312("待机界面"),getxpos(common.utf8ToGb2312("待机界面")),0)
     local tm = misc.getClock()
     local datestr = string.format("%04d",tm.year).."-"..string.format("%02d",tm.month).."-"..string.format("%02d",tm.day)
     local timestr = string.format("%02d",tm.hour)..":"..string.format("%02d",tm.min)
     --显示日期
-    lcd.setcolor(0x07E0)
-    disp.puttext(datestr,lcd.getxpos(datestr),24)
+    setcolor(0x07E0)
+    disp.puttext(datestr,getxpos(datestr),24)
     --显示时间
-    lcd.setcolor(0x001F)
-    disp.puttext(timestr,lcd.getxpos(timestr),44)
+    setcolor(0x001F)
+    disp.puttext(timestr,getxpos(timestr),44)
     
     --刷新LCD显示缓冲区到LCD屏幕上
     disp.update()
-    lcd.setcolor(oldColor)
+    setcolor(oldColor)
 end
 
 --窗口类型的消息处理函数表
@@ -192,18 +201,18 @@ sys.taskInit(function()
         -- 显示logo
         -- 清空LCD显示缓冲区
         disp.clear()
-        if lcd.WIDTH==128 and lcd.HEIGHT==128 then
+        if WIDTH==128 and HEIGHT==128 then
             -- 显示logo图片
-            disp.putimage("/lua/logo_"..(lcd.BPP==1 and "mono.bmp" or "color.png"),lcd.BPP==1 and 41 or 0,lcd.BPP==1 and 18 or 0)
-        elseif lcd.WIDTH==240 and lcd.HEIGHT==320 then
-            disp.puttext(common.utf8ToGb2312("欢迎使用Luat"),lcd.getxpos(common.utf8ToGb2312("欢迎使用Luat")),10)
+            disp.putimage("/lua/logo_"..(BPP==1 and "mono.bmp" or "color.png"),BPP==1 and 41 or 0,BPP==1 and 18 or 0)
+        elseif WIDTH==240 and HEIGHT==320 then
+            disp.puttext(common.utf8ToGb2312("欢迎使用Luat"),getxpos(common.utf8ToGb2312("欢迎使用Luat")),10)
             --显示logo图片
             disp.putimage("/lua/logo_color_240X320.png",0,80)
         else
             --从坐标16,0位置开始显示"欢迎使用Luat"
-            disp.puttext(common.utf8ToGb2312("欢迎使用Luat"),lcd.getxpos(common.utf8ToGb2312("欢迎使用Luat")),0)
+            disp.puttext(common.utf8ToGb2312("欢迎使用Luat"),getxpos(common.utf8ToGb2312("欢迎使用Luat")),0)
             --显示logo图片
-            disp.putimage("/lua/logo_"..(lcd.BPP==1 and "mono.bmp" or "color.png"),lcd.BPP==1 and 41 or 1,lcd.BPP==1 and 18 or 33)
+            disp.putimage("/lua/logo_"..(BPP==1 and "mono.bmp" or "color.png"),BPP==1 and 41 or 1,BPP==1 and 18 or 33)
         end
         -- 刷新LCD显示缓冲区到LCD屏幕上
         disp.update()
@@ -278,7 +287,7 @@ sys.taskInit(function()
         --显示二维码
         disp.clear()
         local displayWidth = 100
-        disp.puttext(common.utf8ToGb2312("Luat官网"),lcd.getxpos(common.utf8ToGb2312("Luat官网")),10)
+        disp.puttext(common.utf8ToGb2312("Luat官网"),getxpos(common.utf8ToGb2312("Luat官网")),10)
         disp.putqrcode(data, width, displayWidth, (WIDTH1-displayWidth)/2, (HEIGHT1-displayWidth)/2)
         disp.update()
         sys.wait(3000)
