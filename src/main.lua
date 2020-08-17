@@ -75,6 +75,7 @@ require "record"
 require "cc"
 require "uiWin"
 require "scanCode"
+require"lbsLoc"
 require "pm"
 
 -- 保持唤醒
@@ -82,13 +83,13 @@ pm.wake("LuaTaskTest")
 
 
 --加载Http功能测试模块
-require "HttpTest"
+-- require "HttpTest"
 
 --加载Socket功能测试模块
-require "SocketTest"
+-- require "SocketTest"
 
 --加载Mqtt功能测试模块
-require "MqttTest"
+-- require "MqttTest"
 
 --加载Audio功能测试模块
 -- require "AudioTest"
@@ -101,6 +102,9 @@ require "MqttTest"
 
 --加载Disp功能测试模块
 -- require "DispTest"
+
+--加载LbsLoc功能测试模块
+-- require "LbsLocTest"
 
 sys.taskInit(function()
     while true do

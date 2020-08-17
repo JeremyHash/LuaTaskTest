@@ -16,7 +16,9 @@ local port2 = 48883
 
 local mqttClient1 = mqtt.client("client".."1",600,"user","password")
 local mqttClient2 = mqtt.client("client".."2",600,"user","password")
-local mqttClient3 = mqtt.client("client".."3",600,"user","password")
+local mqttClient3 = mqtt.client("单向认证客户端".."3",600,"user","password")
+local mqttClient4 = mqtt.client("双向认证客户端".."4",600,"user","password")
+
 
 local function publishTest(id,client,topic,pubData,qos,retain)
     if client:publish(topic,pubData,qos,retain) then
@@ -78,22 +80,6 @@ sys.taskInit(
     end
 )
 
--- sys.taskInit(
---     function()
---         sys.waitUntil("IP_READY_IND")
---         log.info("MqttTest","成功访问网络,MqttSslPublish测试开始")
---         mqttPubTask(3,mqttClient3,ip1,port2,"tcp_ssl",{["caCert"] = "cacert.pem",["clientCert"] = "client-cert.pem",["clientKey"] = "client-key.pem"},5)
---     end
--- )
-
--- sys.taskInit(
---     function()
---         sys.waitUntil("IP_READY_IND")
---         log.info("MqttTest","成功访问网络,MqttSslPublish测试开始")
---         mqttPubTask(3,mqttClient3,ip1,port2,"tcp_ssl",{["caCert"] = "cacert.pem"},5)
---     end
--- )
-
 sys.taskInit(
     function()
         sys.waitUntil("IP_READY_IND")
@@ -101,3 +87,19 @@ sys.taskInit(
         mqttRecTask(2,mqttClient2,ip1,port1,"tcp")
     end
 )
+
+sys.taskInit(
+    function()
+        sys.waitUntil("IP_READY_IND")
+        log.info("MqttTest","成功访问网络,MqttSsl1Publish测试开始")
+        mqttPubTask(3,mqttClient3,ip1,port2,"tcp_ssl",{["caCert"] = "cacert.pem"},5)
+    end
+)
+
+-- sys.taskInit(
+--     function()
+--         sys.waitUntil("IP_READY_IND")
+--         log.info("MqttTest","成功访问网络,MqttSsl双向认证Publish测试开始")
+--         mqttPubTask(4,mqttClient4,ip1,port2,"tcp_ssl",{["caCert"] = "cacert.pem",["clientCert"] = "client-cert.pem",["clientKey"] = "client-key.pem"},5)
+--     end
+-- )
