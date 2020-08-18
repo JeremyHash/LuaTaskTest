@@ -85,7 +85,7 @@ pm.wake("LuaTaskTest")
 -- require "HttpTest"
 
 --加载Socket功能测试模块
--- require "SocketTest"
+require "SocketTest"
 
 --加载Mqtt功能测试模块
 -- require "MqttTest"
@@ -100,7 +100,7 @@ pm.wake("LuaTaskTest")
 -- require "CallTest"
 
 --加载DISP功能测试模块
-require "DispTest"
+-- require "DispTest"
 
 sys.taskInit(function()
     while true do
