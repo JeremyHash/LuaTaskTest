@@ -104,7 +104,7 @@ pm.wake("LuaTaskTest")
 -- require "DispTest"
 
 --加载LbsLoc功能测试模块
--- require "LbsLocTest"
+require "LbsLocTest"
 
 sys.taskInit(function()
     while true do
