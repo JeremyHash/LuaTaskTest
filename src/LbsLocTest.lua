@@ -1,6 +1,6 @@
 module(...,package.seeall)
 
-local serverAddress = "http://wiki.airm2m.com:49090/postLbsLocInfo"
+local serverAddress = "http://wiki.airm2m.com:58080/postLbsLocInfo"
 
 local lattmp, lngtmp = 0, 0
 
