@@ -35,7 +35,7 @@ x=15时：LDO输出3.177V
 
 local x = 1
 
-pmd.ldoset(x,pmd.VLDO6)
+-- pmd.ldoset(x,pmd.VLDO6)
 
 pmd.ldoset(x,pmd.LDO_VSIM1) -- GPIO 29、30、31
 

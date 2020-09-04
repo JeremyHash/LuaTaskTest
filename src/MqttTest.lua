@@ -14,10 +14,10 @@ local ip1 = "wiki.airm2m.com"
 local port1 = 41883
 local port2 = 48883
 
-local mqttClient1 = mqtt.client("client".."1",600,"user","password")
-local mqttClient2 = mqtt.client("client".."2",600,"user","password")
-local mqttClient3 = mqtt.client("单向认证客户端".."3",600,"user","password")
-local mqttClient4 = mqtt.client("双向认证客户端".."4",600,"user","password")
+local mqttClient1 = mqtt.client("client".."1",60,"user","password")
+local mqttClient2 = mqtt.client("client".."2",60,"user","password")
+local mqttClient3 = mqtt.client("单向认证客户端".."3",60,"user","password")
+local mqttClient4 = mqtt.client("双向认证客户端".."4",60,"user","password")
 
 
 local function publishTest(id,client,topic,pubData,qos,retain)
@@ -63,6 +63,7 @@ local function mqttRecTask(id,client,ip,port,transport,cert,timeout3)
                 else
                     log.info("MqttTest.MqttClient"..id..".receive","接收失败")
                     log.info("data", data)
+                    sys.wait(1000)
                 end
             end
         else
@@ -88,18 +89,29 @@ sys.taskInit(
     end
 )
 
-sys.taskInit(
-    function()
-        sys.waitUntil("IP_READY_IND")
-        log.info("MqttTest","成功访问网络,MqttSsl1Publish测试开始")
-        mqttPubTask(3,mqttClient3,ip1,port2,"tcp_ssl",{["caCert"] = "cacert.pem"},5)
-    end
-)
-
 -- sys.taskInit(
 --     function()
 --         sys.waitUntil("IP_READY_IND")
---         log.info("MqttTest","成功访问网络,MqttSsl双向认证Publish测试开始")
---         mqttPubTask(4,mqttClient4,ip1,port2,"tcp_ssl",{["caCert"] = "cacert.pem",["clientCert"] = "client-cert.pem",["clientKey"] = "client-key.pem"},5)
+--         log.info("MqttTest","成功访问网络,MqttSsl1Publish测试开始")
+--         mqttPubTask(3,mqttClient3,ip1,port2,"tcp_ssl",{["caCert"] = "cacert.pem"},5)
 --     end
 -- )
+
+sys.taskInit(
+    function()
+        sys.waitUntil("IP_READY_IND")
+        log.info("MqttTest","成功访问网络,MqttSsl双向认证Publish测试开始")
+        mqttPubTask(4,mqttClient4,ip1,port2,"tcp_ssl",{["caCert"] = "cacert.pem",["clientCert"] = "client-cert.pem",["clientKey"] = "client-key.pem"},5)
+    end
+)
+
+sys.taskInit(
+    function()
+        while true do
+            log.info("1connected", mqttClient1.connected)
+            log.info("2connected", mqttClient2.connected)
+            log.info("4connected", mqttClient4.connected)
+            sys.wait(2000)
+        end
+    end
+)
