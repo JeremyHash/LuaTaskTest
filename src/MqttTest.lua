@@ -30,18 +30,18 @@ local function publishTest(id,client,topic,pubData,qos,retain)
 end
 
 local function mqttPubTask(id,client,ip,port,transport,cert,timeout)
-    if client:connect(ip,port,transport,cert,timeout) then
-        log.info("MqttTest.MqttClient"..id..".connect","连接成功")
-        while true do
-            publishTest(id,client,topic1,topic1.."PubTest"..count,0,0)
-            publishTest(id,client,topic2,topic2.."PubTest"..count,1,1)
-            publishTest(id,client,topic3,topic3.."PubTest"..count,2,0)
-            count = count + 1
-        end
-    else
-        log.info("MqttTest.MqttClient"..id..".connect","连接失败")
+    log.info("MqttTest.MqttClient"..id..".connect","开始连接")
+    while not client:connect(ip,port,transport,cert,timeout) do sys.wait(2000) end
+    log.info("MqttTest.MqttClient"..id..".connect","连接成功")
+    while true do
+        publishTest(id,client,topic1,topic1.."PubTest"..count,0,0)
+        publishTest(id,client,topic2,topic2.."PubTest"..count,1,1)
+        publishTest(id,client,topic3,topic3.."PubTest"..count,2,0)
+        count = count + 1
     end
+    log.info("MqttTest.MqttClient"..id..".connect","开始断开连接")
     client:disconnect()
+    log.info("MqttTest.MqttClient"..id..".connect","断开连接成功")
 end
 
 local function mqttRecTask(id,client,ip,port,transport,cert,timeout3)
@@ -103,6 +103,7 @@ sys.taskInit(
         log.info("MqttTest","成功访问网络,MqttSsl双向认证Publish测试开始")
         mqttPubTask(4,mqttClient4,ip1,port2,"tcp_ssl",{["caCert"] = "cacert.pem",["clientCert"] = "client-cert.pem",["clientKey"] = "client-key.pem"},5)
     end
+<<<<<<< HEAD
 )
 
 sys.taskInit(
@@ -115,3 +116,6 @@ sys.taskInit(
         end
     end
 )
+=======
+)
+>>>>>>> 43be5fcfd512c8bd1d5b79466bb6d4fd10bee7bb
