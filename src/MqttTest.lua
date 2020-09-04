@@ -103,8 +103,6 @@ sys.taskInit(
         log.info("MqttTest","成功访问网络,MqttSsl双向认证Publish测试开始")
         mqttPubTask(4,mqttClient4,ip1,port2,"tcp_ssl",{["caCert"] = "cacert.pem",["clientCert"] = "client-cert.pem",["clientKey"] = "client-key.pem"},5)
     end
-<<<<<<< HEAD
-)
 
 sys.taskInit(
     function()
@@ -116,6 +114,3 @@ sys.taskInit(
         end
     end
 )
-=======
-)
->>>>>>> 43be5fcfd512c8bd1d5b79466bb6d4fd10bee7bb
