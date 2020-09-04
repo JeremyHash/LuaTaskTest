@@ -55,8 +55,8 @@ netLed.setup(true,pio.P0_1,pio.P0_4)
 --如下3行代码，只是简单的演示如何使用update功能，详情参考update的api以及demo/update
 PRODUCT_KEY = "LMe0gb26NhPbBZ7t3mSk3dxA8f4ZZmM1"
 -- require "update"
--- update.request(nil,"http://117.51.140.119:8000/jeremy.bin")
 -- update.request()
+-- update.request(nil,"http://118.25.149.191:8000/ota.bin")
 
 -- require "color_lcd_spi_ILI9341"
 -- require "color_lcd_spi_gc9106l"
@@ -75,7 +75,7 @@ require "record"
 require "cc"
 require "uiWin"
 require "scanCode"
-require"lbsLoc"
+require "lbsLoc"
 require "pm"
 
 -- 保持唤醒
@@ -83,13 +83,13 @@ pm.wake("LuaTaskTest")
 
 
 --加载Http功能测试模块
--- require "HttpTest"
+require "HttpTest"
 
 --加载Socket功能测试模块
--- require "SocketTest"
+require "SocketTest"
 
 --加载Mqtt功能测试模块
--- require "MqttTest"
+require "MqttTest"
 
 --加载Audio功能测试模块
 -- require "AudioTest"
@@ -103,12 +103,15 @@ pm.wake("LuaTaskTest")
 --加载Disp功能测试模块
 -- require "DispTest"
 
+--加载KeyPad功能测试模块
+-- require "KeyPadTest"
+
 --加载LbsLoc功能测试模块
-require "LbsLocTest"
+-- require "LbsLocTest"
 
 sys.taskInit(function()
     while true do
-        log.info("VERSION", rtos.get_version(), VERSION)
+        log.info("VERSION", rtos.get_version(), _G.VERSION)
         sys.wait(10000)
     end
 end)
