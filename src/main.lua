@@ -60,7 +60,7 @@ PRODUCT_KEY = "LMe0gb26NhPbBZ7t3mSk3dxA8f4ZZmM1"
 
 -- require "color_lcd_spi_ILI9341"
 -- require "color_lcd_spi_gc9106l"
-
+-- require "color_lcd_spi_st7735"
 -- lib依赖管理
 require "common"
 require "utils"
@@ -95,7 +95,7 @@ pm.wake("LuaTaskTest")
 -- require "AudioTest"
 
 --加载Gpio功能测试模块
--- require "GpioTest"
+require "GpioTest"
 
 --加载Call功能测试模块
 -- require "CallTest"
