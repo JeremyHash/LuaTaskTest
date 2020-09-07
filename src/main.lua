@@ -33,8 +33,8 @@ require "net"
 --此功能模块不是必须的，根据项目需求决定是否加载
 --使用时注意：控制台使用的uart不要和其他功能使用的uart冲突
 --使用说明参考demo/console下的《console功能使用说明.docx》
--- require "console"
--- console.setup(2, 115200)
+require "console"
+console.setup(2, 115200)
 
 --加载网络指示灯和LTE指示灯功能模块
 --根据自己的项目需求和硬件配置决定：1、是否加载此功能模块；2、配置指示灯引脚
@@ -83,13 +83,13 @@ pm.wake("LuaTaskTest")
 
 
 --加载Http功能测试模块
-require "HttpTest"
+-- require "HttpTest"
 
 --加载Socket功能测试模块
-require "SocketTest"
+-- require "SocketTest"
 
 --加载Mqtt功能测试模块
-require "MqttTest"
+-- require "MqttTest"
 
 --加载Audio功能测试模块
 -- require "AudioTest"
