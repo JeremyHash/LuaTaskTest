@@ -6,16 +6,16 @@
 module(...,package.seeall)
 
 local httpTestConfig = {
-    getTest = true,
-    getTestWithCA = true,
-    getTestWithCAAndKey = true,
-    getTestAndSaveToBigFile = true,
+    getTest = false,
+    getTestWithCA = false,
+    getTestWithCAAndKey = false,
+    getTestAndSaveToBigFile = false,
     getTestAndSaveToSmallFile = true,
-    postTest = true,
-    postTestWithUserHead = true,
-    postTestWithOctetStream = true,
-    postTestWithMultipartFormData = true,
-    postTestWithXwwwformurlencoded = true
+    postTest = false,
+    postTestWithUserHead = false,
+    postTestWithOctetStream = false,
+    postTestWithMultipartFormData = false,
+    postTestWithXwwwformurlencoded = false
 }
 
 local waitTime = 20000
@@ -168,16 +168,19 @@ local function getTestAndSaveToBigFileCb(result,prompt,head,filePath)
 			log.info("HttpTest.GetTestAndSaveToBigFileCb.fileContent", filePath.."文件过大")
         end
     end
-    print("保存到文件后可用空间"..rtos.get_fs_free_size().." Bytes")
+    log.info("保存文件后可用空间 "..rtos.get_fs_free_size().." Bytes")
     --文件使用完之后，如果以后不再用到，需要自行删除
     if filePath then 
-        -- os.remove("/Jeremy")
+        -- os.remove(filePath)
         local remove_dir_res = rtos.remove_dir("/Jeremy")
-        if remove_dir_res then
-            log.info("HttpTest.GetTestAndSaveToBigFileCb.fileDelete", filePath.." deletion completed")
+        if remove_dir_res == true then
+            log.info("HttpTest.GetTestAndSaveToBigFileCb.fileDelete", filePath.." deletion success")
+            log.info("删除文件后可用空间 "..rtos.get_fs_free_size().." Bytes")
+        else
+            log.error("HttpTest.GetTestAndSaveToBigFileCb.fileDelete", filePath.." deletion fail")
+            log.info("删除文件后可用空间 "..rtos.get_fs_free_size().." Bytes")
         end
     end
-    print("删除文件后可用空间"..rtos.get_fs_free_size().." Bytes")
 end
 
 -- 处理小文件回调
@@ -206,16 +209,19 @@ local function getTestAndSaveToSmallFileCb(result,prompt,head,filePath)
 			log.info("HttpTest.GetTestAndSaveToSmallFileCb.fileContent", filePath.."文件过大")
         end
     end
-    print("保存到文件后可用空间"..rtos.get_fs_free_size().." Bytes")
+    log.info("保存文件后可用空间 "..rtos.get_fs_free_size().." Bytes")
     --文件使用完之后，如果以后不再用到，需要自行删除
     if filePath then 
         -- os.remove(filePath)
         local remove_dir_res = rtos.remove_dir("/Jeremy")
-        if remove_dir_res then
-            log.info("HttpTest.GetTestAndSaveToSmallFileCb.fileDelete", filePath.." deletion completed")
+        if remove_dir_res == true then
+            log.info("HttpTest.GetTestAndSaveToSmallFileCb.fileDelete", filePath.." deletion success")
+            log.info("删除文件后可用空间 "..rtos.get_fs_free_size().." Bytes")
+        else
+            log.error("HttpTest.GetTestAndSaveToSmallFileCb.fileDelete", filePath.." deletion fail")
+            log.info("删除文件后可用空间 "..rtos.get_fs_free_size().." Bytes")
         end
     end
-    print("删除文件后可用空间"..rtos.get_fs_free_size().." Bytes")
 end
 
 -- postTest回调
@@ -350,7 +356,7 @@ sys.taskInit(
             if httpTestConfig.getTestAndSaveToBigFile == true then
                 local mkdir_res = rtos.make_dir("/Jeremy/")
                 log.info("mkdirres", mkdir_res)
-                print("创建文件前可用空间"..rtos.get_fs_free_size().." Bytes")
+                log.info("创建文件前可用空间 "..rtos.get_fs_free_size().." Bytes")
                 log.info("HttpTest.GetTestAndSaveToBigFile","第"..count.."次")
                 http.request("GET","https://www.baidu.com",{caCert="ca.cer"},nil,nil,nil,getTestAndSaveToBigFileCb,"/Jeremy/baidu.html")
                 sys.wait(waitTime)
@@ -360,7 +366,7 @@ sys.taskInit(
             if httpTestConfig.getTestAndSaveToSmallFile == true then
                 local mkdir_res = rtos.make_dir("/Jeremy/")
                 log.info("mkdirres", mkdir_res)
-                print("创建文件前可用空间"..rtos.get_fs_free_size().." Bytes")
+                log.info("创建文件前可用空间 "..rtos.get_fs_free_size().." Bytes")
                 log.info("HttpTest.GetTestAndSaveToSmallFile","第"..count.."次")
                 http.request("GET","http://118.25.149.191:8000/2K",nil,nil,nil,nil,getTestAndSaveToSmallFileCb,"/Jeremy/2K")
                 sys.wait(waitTime)
