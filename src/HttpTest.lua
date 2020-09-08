@@ -5,13 +5,26 @@
 
 module(...,package.seeall)
 
-local waitTime = 5000
+local httpTestConfig = {
+    getTest = true,
+    getTestWithCA = true,
+    getTestWithCAAndKey = true,
+    getTestAndSaveToBigFile = true,
+    getTestAndSaveToSmallFile = true,
+    postTest = true,
+    postTestWithUserHead = true,
+    postTestWithOctetStream = true,
+    postTestWithMultipartFormData = true,
+    postTestWithXwwwformurlencoded = true
+}
+
+local waitTime = 20000
 
 --同步网络时间，因为证书校验时会用到系统时间
 ntp.timeSync()
 
 --multipart/form-data封装函数
-local function postMultipartFormData(url,cert,params,timeout,cbFnc,rcvFileName)
+local function postTestWithMultipartFormData(url,cert,params,timeout,cbFnc,rcvFileName)
     local boundary,body,k,v,kk,vv = "--------------------------"..os.time()..rtos.tick(),{}
     
     for k,v in pairs(params) do
@@ -109,7 +122,7 @@ local function getTestWithCACb(result,prompt,head,body)
     end
 end
 
--- getTestWithCA回调
+-- getTestWithCAAndKey回调
 local function GetTestWithCAAndKeyCb(result,prompt,head,body)
     if result then
         log.info("HttpTest.GetTestWithCAAndKeyCb.result","Http请求成功:",result)
@@ -126,106 +139,6 @@ local function GetTestWithCAAndKeyCb(result,prompt,head,body)
     if result and body then
         log.info("HttpTest.GetTestWithCAAndKeyCb.Body","body="..body)
         log.info("HttpTest.GetTestWithCAAndKeyCb.Body","bodyLen="..body:len())
-    end
-end
-
--- postTest回调
-local function postTestCb(result,prompt,head,body)
-    if result then
-        log.info("HttpTest.PostTestCb.result","Http请求成功:",result)
-    else
-        log.info("HttpTest.PostTestCb.result","Http请求失败:",result)
-    end
-    log.info("HttpTest.PostTestCb.prompt","Http状态码:",prompt)
-    if result and head then
-        log.info("HttpTest.PostTestCb.Head","遍历响应头")
-        for k,v in pairs(head) do
-            log.info("HttpTest.PostTestCb.Head",k.." : "..v)
-        end
-    end
-    if result and body then
-        log.info("HttpTest.PostTestCb.Body","body="..body)
-        log.info("HttpTest.PostTestCb.Body","bodyLen="..body:len())
-    end
-end
-
--- userHeadTest回调
-local function userHeadTestCb(result,prompt,head,body)
-    if result then
-        log.info("HttpTest.UserHeadTestCb.result","Http请求成功:",result)
-    else
-        log.info("HttpTest.UserHeadTestCb.result","Http请求失败:",result)
-    end
-    log.info("HttpTest.UserHeadTestCb.prompt","Http状态码:",prompt)
-    if result and head then
-        log.info("HttpTest.UserHeadTestCb.Head","遍历响应头")
-        for k,v in pairs(head) do
-            log.info("HttpTest.UserHeadTestCb.Head",k.." : "..v)
-        end
-    end
-    if result and body then
-        log.info("HttpTest.UserHeadTestCb.Body","body="..body)
-        log.info("HttpTest.UserHeadTestCb.Body","bodyLen="..body:len())
-    end
-end
-
--- octetStreamTest回调
-local function octetStreamTestCb(result,prompt,head,body)
-    if result then
-        log.info("HttpTest.OctetStreamTestCb.result","Http请求成功:",result)
-    else
-        log.info("HttpTest.OctetStreamTestCb.result","Http请求失败:",result)
-    end
-    log.info("HttpTest.OctetStreamTestCb.prompt","Http状态码:",prompt)
-    if result and head then
-        log.info("HttpTest.OctetStreamTestCb.Head","遍历响应头")
-        for k,v in pairs(head) do
-            log.info("HttpTest.OctetStreamTestCb.Head",k.." : "..v)
-        end
-    end
-    if result and body then
-        log.info("HttpTest.OctetStreamTestCb.Body","body="..body)
-        log.info("HttpTest.OctetStreamTestCb.Body","bodyLen="..body:len())
-    end
-end
-
--- postMultipartFormData回调
-local function postMultipartFormDataCb(result,prompt,head,body)
-    if result then
-        log.info("HttpTest.PostMultipartFormDataCb.result","Http请求成功:",result)
-    else
-        log.info("HttpTest.PostMultipartFormDataCb.result","Http请求失败:",result)
-    end
-    log.info("HttpTest.PostMultipartFormDataCb.prompt","Http状态码:",prompt)
-    if result and head then
-        log.info("HttpTest.PostMultipartFormDataCb.Head","遍历响应头")
-        for k,v in pairs(head) do
-            log.info("HttpTest.PostMultipartFormDataCb.Head",k.." : "..v)
-        end
-    end
-    if result and body then
-        log.info("HttpTest.PostMultipartFormDataCb.Body","body="..body)
-        log.info("HttpTest.PostMultipartFormDataCb.Body","bodyLen="..body:len())
-    end
-end
-
--- xwwwformurlencodedTestCb回调
-local function xwwwformurlencodedTestCb(result,prompt,head,body)
-    if result then
-        log.info("HttpTest.XwwwformurlencodedTestCb.result","Http请求成功:",result)
-    else
-        log.info("HttpTest.XwwwformurlencodedTestCb.result","Http请求失败:",result)
-    end
-    log.info("HttpTest.XwwwformurlencodedTestCb.prompt","Http状态码:",prompt)
-    if result and head then
-        log.info("HttpTest.XwwwformurlencodedTestCb.Head","遍历响应头")
-        for k,v in pairs(head) do
-            log.info("HttpTest.XwwwformurlencodedTestCb.Head",k.." : "..v)
-        end
-    end
-    if result and body then
-        log.info("HttpTest.XwwwformurlencodedTestCb.Body","body="..body)
-        log.info("HttpTest.XwwwformurlencodedTestCb.Body","bodyLen="..body:len())
     end
 end
 
@@ -255,11 +168,16 @@ local function getTestAndSaveToBigFileCb(result,prompt,head,filePath)
 			log.info("HttpTest.GetTestAndSaveToBigFileCb.fileContent", filePath.."文件过大")
         end
     end
+    print("保存到文件后可用空间"..rtos.get_fs_free_size().." Bytes")
     --文件使用完之后，如果以后不再用到，需要自行删除
     if filePath then 
-        os.remove(filePath)
-        log.info("HttpTest.GetTestAndSaveToBigFileCb.fileDelete", filePath.." deletion completed")
+        -- os.remove("/Jeremy")
+        local remove_dir_res = rtos.remove_dir("/Jeremy")
+        if remove_dir_res then
+            log.info("HttpTest.GetTestAndSaveToBigFileCb.fileDelete", filePath.." deletion completed")
+        end
     end
+    print("删除文件后可用空间"..rtos.get_fs_free_size().." Bytes")
 end
 
 -- 处理小文件回调
@@ -288,10 +206,115 @@ local function getTestAndSaveToSmallFileCb(result,prompt,head,filePath)
 			log.info("HttpTest.GetTestAndSaveToSmallFileCb.fileContent", filePath.."文件过大")
         end
     end
+    print("保存到文件后可用空间"..rtos.get_fs_free_size().." Bytes")
     --文件使用完之后，如果以后不再用到，需要自行删除
     if filePath then 
-        os.remove(filePath)
-        log.info("HttpTest.GetTestAndSaveToSmallFileCb.fileDelete", filePath.." deletion completed")
+        -- os.remove(filePath)
+        local remove_dir_res = rtos.remove_dir("/Jeremy")
+        if remove_dir_res then
+            log.info("HttpTest.GetTestAndSaveToSmallFileCb.fileDelete", filePath.." deletion completed")
+        end
+    end
+    print("删除文件后可用空间"..rtos.get_fs_free_size().." Bytes")
+end
+
+-- postTest回调
+local function postTestCb(result,prompt,head,body)
+    if result then
+        log.info("HttpTest.PostTestCb.result","Http请求成功:",result)
+    else
+        log.info("HttpTest.PostTestCb.result","Http请求失败:",result)
+    end
+    log.info("HttpTest.PostTestCb.prompt","Http状态码:",prompt)
+    if result and head then
+        log.info("HttpTest.PostTestCb.Head","遍历响应头")
+        for k,v in pairs(head) do
+            log.info("HttpTest.PostTestCb.Head",k.." : "..v)
+        end
+    end
+    if result and body then
+        log.info("HttpTest.PostTestCb.Body","body="..body)
+        log.info("HttpTest.PostTestCb.Body","bodyLen="..body:len())
+    end
+end
+
+-- postTestWithUserHeadCb回调
+local function postTestWithUserHeadCb(result,prompt,head,body)
+    if result then
+        log.info("HttpTest.PostTestWithUserHeadCb.result","Http请求成功:",result)
+    else
+        log.info("HttpTest.PostTestWithUserHeadCb.result","Http请求失败:",result)
+    end
+    log.info("HttpTest.PostTestWithUserHeadCb.prompt","Http状态码:",prompt)
+    if result and head then
+        log.info("HttpTest.PostTestWithUserHeadCb.Head","遍历响应头")
+        for k,v in pairs(head) do
+            log.info("HttpTest.PostTestWithUserHeadCb.Head",k.." : "..v)
+        end
+    end
+    if result and body then
+        log.info("HttpTest.PostTestWithUserHeadCb.Body","body="..body)
+        log.info("HttpTest.PostTestWithUserHeadCb.Body","bodyLen="..body:len())
+    end
+end
+
+-- postTestWithOctetStreamCb回调
+local function postTestWithOctetStreamCb(result,prompt,head,body)
+    if result then
+        log.info("HttpTest.PostTestWithOctetStreamCb.result","Http请求成功:",result)
+    else
+        log.info("HttpTest.PostTestWithOctetStreamCb.result","Http请求失败:",result)
+    end
+    log.info("HttpTest.PostTestWithOctetStreamCb.prompt","Http状态码:",prompt)
+    if result and head then
+        log.info("HttpTest.PostTestWithOctetStreamCb.Head","遍历响应头")
+        for k,v in pairs(head) do
+            log.info("HttpTest.PostTestWithOctetStreamCb.Head",k.." : "..v)
+        end
+    end
+    if result and body then
+        log.info("HttpTest.PostTestWithOctetStreamCb.Body","body="..body)
+        log.info("HttpTest.PostTestWithOctetStreamCb.Body","bodyLen="..body:len())
+    end
+end
+
+-- postTestWithMultipartFormDataCb回调
+local function postTestWithMultipartFormDataCb(result,prompt,head,body)
+    if result then
+        log.info("HttpTest.PostTestWithMultipartFormDataCb.result","Http请求成功:",result)
+    else
+        log.info("HttpTest.PostTestWithMultipartFormDataCb.result","Http请求失败:",result)
+    end
+    log.info("HttpTest.PostTestWithMultipartFormDataCb.prompt","Http状态码:",prompt)
+    if result and head then
+        log.info("HttpTest.PostTestWithMultipartFormDataCb.Head","遍历响应头")
+        for k,v in pairs(head) do
+            log.info("HttpTest.PostTestWithMultipartFormDataCb.Head",k.." : "..v)
+        end
+    end
+    if result and body then
+        log.info("HttpTest.PostTestWithMultipartFormDataCb.Body","body="..body)
+        log.info("HttpTest.PostTestWithMultipartFormDataCb.Body","bodyLen="..body:len())
+    end
+end
+
+-- postTestWithXwwwformurlencodedCb回调
+local function postTestWithXwwwformurlencodedCb(result,prompt,head,body)
+    if result then
+        log.info("HttpTest.PostTestWithXwwwformurlencodedCb.result","Http请求成功:",result)
+    else
+        log.info("HttpTest.PostTestWithXwwwformurlencodedCb.result","Http请求失败:",result)
+    end
+    log.info("HttpTest.PostTestWithXwwwformurlencodedCb.prompt","Http状态码:",prompt)
+    if result and head then
+        log.info("HttpTest.PostTestWithXwwwformurlencodedCb.Head","遍历响应头")
+        for k,v in pairs(head) do
+            log.info("HttpTest.PostTestWithXwwwformurlencodedCb.Head",k.." : "..v)
+        end
+    end
+    if result and body then
+        log.info("HttpTest.PostTestWithXwwwformurlencodedCb.Body","body="..body)
+        log.info("HttpTest.PostTestWithXwwwformurlencodedCb.Body","bodyLen="..body:len())
     end
 end
 
@@ -303,75 +326,101 @@ sys.taskInit(
         local count = 1
         while true do
             -- Http GET 请求测试
-            log.info("HttpTest.GetTest","第"..count.."次")
-            http.request("GET",serverAddress,nil,nil,nil,nil,getTestCb)
-            sys.wait(waitTime)
+            if httpTestConfig.getTest == true then
+                log.info("HttpTest.GetTest","第"..count.."次")
+                http.request("GET",serverAddress,nil,nil,nil,nil,getTestCb)
+                sys.wait(waitTime)
+            end
             
             -- Https Get 请求测试（服务端证书验证_单向认证）
-            log.info("HttpTest.GetTestWithCA","第"..count.."次")
-            http.request("GET","https://www.baidu.com",{caCert="ca.cer"},nil,nil,nil,getTestWithCACb)
-            sys.wait(waitTime)
+            if httpTestConfig.getTestWithCA == true then
+                log.info("HttpTest.GetTestWithCA","第"..count.."次")
+                http.request("GET","https://www.baidu.com",{caCert="ca.cer"},nil,nil,nil,getTestWithCACb)
+                sys.wait(waitTime)
+            end
 
             -- Https Get 请求测试（服务端客户端证书验证_双向认证）
-            log.info("HttpTest.GetTestWithCAAndKey","第"..count.."次")
-            http.request("GET","https://36.7.87.100:4434",{caCert="ca.crt",clientCert="client.crt",clientKey="client.key"},nil,nil,nil,GetTestWithCAAndKeyCb)
-            sys.wait(waitTime)
+            if httpTestConfig.getTestWithCAAndKey == true then
+                log.info("HttpTest.GetTestWithCAAndKey","第"..count.."次")
+                http.request("GET","https://36.7.87.100:4434",{caCert="ca.crt",clientCert="client.crt",clientKey="client.key"},nil,nil,nil,GetTestWithCAAndKeyCb)
+                sys.wait(waitTime)
+            end
 
             -- Https Get 请求测试（保存结果到文件,文件较大）
-            log.info("HttpTest.GetTestAndSaveToBigFile","第"..count.."次")
-            http.request("GET","https://www.baidu.com",{caCert="ca.cer"},nil,nil,nil,getTestAndSaveToBigFileCb,"baidu.html")
-            sys.wait(waitTime)
+            if httpTestConfig.getTestAndSaveToBigFile == true then
+                local mkdir_res = rtos.make_dir("/Jeremy/")
+                log.info("mkdirres", mkdir_res)
+                print("创建文件前可用空间"..rtos.get_fs_free_size().." Bytes")
+                log.info("HttpTest.GetTestAndSaveToBigFile","第"..count.."次")
+                http.request("GET","https://www.baidu.com",{caCert="ca.cer"},nil,nil,nil,getTestAndSaveToBigFileCb,"/Jeremy/baidu.html")
+                sys.wait(waitTime)
+            end
 
             -- Https Get 请求测试（保存结果到文件,文件较小）
-            log.info("HttpTest.GetTestAndSaveToSmallFile","第"..count.."次")
-            http.request("GET","www.lua.org",nil,nil,nil,nil,getTestAndSaveToSmallFileCb,"lua.html")
-            sys.wait(waitTime)
+            if httpTestConfig.getTestAndSaveToSmallFile == true then
+                local mkdir_res = rtos.make_dir("/Jeremy/")
+                log.info("mkdirres", mkdir_res)
+                print("创建文件前可用空间"..rtos.get_fs_free_size().." Bytes")
+                log.info("HttpTest.GetTestAndSaveToSmallFile","第"..count.."次")
+                http.request("GET","http://118.25.149.191:8000/2K",nil,nil,nil,nil,getTestAndSaveToSmallFileCb,"/Jeremy/2K")
+                sys.wait(waitTime)
+            end
 
             -- Https Post 请求测试(/)
-            log.info("HttpTest.PostTest","第"..count.."次")
-            http.request("POST",serverAddress.."/",nil,nil,"PostTest!",nil,postTestCb)
-            sys.wait(waitTime)
+            if httpTestConfig.postTest == true then
+                log.info("HttpTest.PostTest","第"..count.."次")
+                http.request("POST",serverAddress.."/",nil,nil,"PostTest!",nil,postTestCb)
+                sys.wait(waitTime)
+            end
 
             -- Https Post 请求测试（自定义Head）
-            log.info("HttpTest.UserHeadTest","第"..count.."次")
-            http.request("POST",serverAddress.."/withUserHead",nil,{UserHead="Jeremy"},nil,nil,userHeadTestCb)
-            sys.wait(waitTime)
+            if httpTestConfig.postTestWithUserHead == true then
+                log.info("HttpTest.PostTestWithUserHead","第"..count.."次")
+                http.request("POST",serverAddress.."/withUserHead",nil,{UserHead="Jeremy"},nil,nil,postTestWithUserHeadCb)
+                sys.wait(waitTime)
+            end
 
             -- Https Post 请求测试（octet-stream）
-            log.info("HttpTest.OctetStreamTest","第"..count.."次")
-            http.request("POST",serverAddress.."/withOctetStream",nil,{['Content-Type']="application/octet-stream",['Connection']="keep-alive"},{[1]={['file']="/lua/http.lua"}},nil,octetStreamTestCb)
-            sys.wait(waitTime)
+            if httpTestConfig.postTestWithOctetStream == true then
+                log.info("HttpTest.PostTestWithOctetStream","第"..count.."次")
+                http.request("POST",serverAddress.."/withOctetStream",nil,{['Content-Type']="application/octet-stream",['Connection']="keep-alive"},{[1]={['file']="/lua/http.lua"}},nil,postTestWithOctetStreamCb)
+                sys.wait(waitTime)
+            end
 
             -- Https Post 请求测试（postTestWithFormData）
-            log.info("HttpTest.PostMultipartFormData","第"..count.."次")
-            postMultipartFormData(
-                serverAddress.."/uploadFile",
-                nil,
-                {
-                    texts = 
+            if httpTestConfig.postTestWithMultipartFormData == true then
+                log.info("HttpTest.PostTestWithMultipartFormData","第"..count.."次")
+                postTestWithMultipartFormData(
+                    serverAddress.."/uploadFile",
+                    nil,
                     {
-                        ["imei"] = "862991234567890",
-                        ["time"] = "20180802180345"
-                    },
+                        texts = 
+                        {
+                            ["imei"] = "862991234567890",
+                            ["time"] = "20180802180345"
+                        },
 
-                    files =
-                    {
-                        ["FormDataUploadFile"] = "/lua/http.lua"
-                    }
-                },
-                nil,
-                postMultipartFormDataCb
-            )
-            sys.wait(waitTime)
+                        files =
+                        {
+                            ["FormDataUploadFile"] = "/lua/http.lua"
+                        }
+                    },
+                    nil,
+                    postTestWithMultipartFormDataCb
+                )
+                sys.wait(waitTime)
+            end
 
             -- Https Post 请求测试（withxwwwformurlencoded）
-            log.info("HttpTest.XwwwformurlencodedTest","第"..count.."次")
-            http.request("POST",serverAddress.."/withxwwwformurlencoded",nil,
-            {
-                ["Content-Type"]="application/x-www-form-urlencoded",
-            },
-            urlencodeTab({content="x-www-form-urlencoded Test!", author="Jeremy"}),nil,xwwwformurlencodedTestCb)
-            sys.wait(waitTime)
+            if httpTestConfig.postTestWithXwwwformurlencoded == true then
+                log.info("HttpTest.PostTestWithXwwwformurlencoded","第"..count.."次")
+                http.request("POST",serverAddress.."/withxwwwformurlencoded",nil,
+                {
+                    ["Content-Type"]="application/x-www-form-urlencoded",
+                },
+                urlencodeTab({content="x-www-form-urlencoded Test!", author="Jeremy"}),nil,postTestWithXwwwformurlencodedCb)
+                sys.wait(waitTime)
+            end
 
             count = count + 1
         end
