@@ -1,7 +1,7 @@
 -- LuaTaskTest
 -- Author:LuatTest
 -- CreateDate:20200716
--- UpdateDate:20200811
+-- UpdateDate:20200908
 
 
 --必须在这个位置定义PROJECT和VERSION变量
@@ -9,6 +9,8 @@
 --VERSION：ascii string类型，如果使用Luat物联云平台固件升级的功能，必须按照"X.X.X"定义，X表示1位数字；否则可随便定义
 PROJECT = "LuaTaskTest"
 VERSION = "1.0.0"
+
+PRODUCT_KEY = "LMe0gb26NhPbBZ7t3mSk3dxA8f4ZZmM1"
 
 --加载日志功能模块，并且设置日志输出等级
 --如果关闭调用log模块接口输出的日志，等级设置为log.LOG_SILENT即可
@@ -53,7 +55,6 @@ netLed.setup(true,pio.P0_1,pio.P0_4)
 
 --加载远程升级功能模块【强烈建议打开此功能，如果使用了阿里云的OTA功能，可以不打开此功能】
 --如下3行代码，只是简单的演示如何使用update功能，详情参考update的api以及demo/update
-PRODUCT_KEY = "LMe0gb26NhPbBZ7t3mSk3dxA8f4ZZmM1"
 -- require "update"
 -- update.request()
 -- update.request(nil,"http://118.25.149.191:8000/ota.bin")
@@ -111,6 +112,9 @@ require "HttpTest"
 
 --加载LbsLoc功能测试模块
 -- require "LbsLocTest"
+
+--加载Ril功能测试模块
+-- require "RilTest"
 
 sys.taskInit(function()
     while true do
