@@ -256,7 +256,7 @@ sys.taskInit(function()
         end 
         sys.wait(3000)
         
-        -- 拍照并显示
+        -- 拍照并通过uart1发送出去
         --唤醒系统
         pm.wake("testTakePhoto")
         --打开摄像头
