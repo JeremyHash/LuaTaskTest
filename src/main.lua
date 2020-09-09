@@ -95,7 +95,7 @@ pm.wake("LuaTaskTest")
 -- require "AudioTest"
 
 --加载Gpio功能测试模块
--- require "GpioTest"
+require "GpioTest"
 
 --加载文件功能测试模块
 -- require "FsTest"
@@ -108,6 +108,9 @@ pm.wake("LuaTaskTest")
 
 --加载LbsLoc功能测试模块
 -- require "LbsLocTest"
+
+--加载KeyPad功能测试模块
+-- require "KeyPadTest"
 
 sys.taskInit(function()
     while true do
