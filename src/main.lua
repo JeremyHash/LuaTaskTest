@@ -65,7 +65,7 @@ pm.wake("LuaTaskTest")
 -- require "AudioTest"
 
 --加载Gpio功能测试模块
-require "GpioTest"
+-- require "GpioTest"
 
 --加载文件功能测试模块
 -- require "FsTest"
