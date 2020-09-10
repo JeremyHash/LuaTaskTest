@@ -56,7 +56,7 @@ pm.wake("LuaTaskTest")
 -- require "HttpTest"
 
 --加载Socket功能测试模块
--- require "SocketTest"
+require "SocketTest"
 
 --加载Mqtt功能测试模块
 -- require "MqttTest"

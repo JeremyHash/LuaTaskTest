@@ -83,11 +83,11 @@ end
 -- getTest回调
 local function getTestCb(result,prompt,head,body)
     if result then
-        log.info("HttpTest.GetTestCb.result","Http请求成功:",result)
+        log.info("HttpTest.GetTestCb.result", "SUCCESS")
     else
-        log.info("HttpTest.GetTestCb.result","Http请求失败:",result)
+        log.info("HttpTest.GetTestCb.result", "FAIL")
     end
-    log.info("HttpTest.GetTestCb.prompt","Http状态码:",prompt)
+    log.info("HttpTest.GetTestCb.prompt", "Http状态码:", prompt)
     if result and head then
         log.info("HttpTest.GetTestCb.Head","遍历响应头")
         for k,v in pairs(head) do
@@ -98,7 +98,7 @@ local function getTestCb(result,prompt,head,body)
         log.info("HttpTest.GetTestCb.Body","body="..body)
         log.info("HttpTest.GetTestCb.Body","bodyLen="..body:len())
         if body=="LuatHttpTestServerGetTestOK" then
-            log.info("HttpTest.GetTestCb","getTestPass!!!")
+            log.info("HttpTest.GetTestCb","getTestPass")
         end
     end
 end
@@ -106,11 +106,11 @@ end
 -- getTestWithCA回调
 local function getTestWithCACb(result,prompt,head,body)
     if result then
-        log.info("HttpTest.GetTestWithCACb.result","Http请求成功:",result)
+        log.info("HttpTest.GetTestWithCACb.result", "SUCCESS")
     else
-        log.info("HttpTest.GetTestWithCACb.result","Http请求失败:",result)
+        log.info("HttpTest.GetTestWithCACb.result", "FAIL")
     end
-    log.info("HttpTest.GetTestWithCACb.prompt","Http状态码:",prompt)
+    log.info("HttpTest.GetTestWithCACb.prompt", "Http状态码:", prompt)
     if result and head then
         log.info("HttpTest.GetTestWithCACb.Head","遍历响应头")
         for k,v in pairs(head) do
@@ -126,11 +126,11 @@ end
 -- getTestWithCAAndKey回调
 local function GetTestWithCAAndKeyCb(result,prompt,head,body)
     if result then
-        log.info("HttpTest.GetTestWithCAAndKeyCb.result","Http请求成功:",result)
+        log.info("HttpTest.GetTestWithCAAndKeyCb.result", "SUCCESS")
     else
-        log.info("HttpTest.GetTestWithCAAndKeyCb.result","Http请求失败:",result)
+        log.info("HttpTest.GetTestWithCAAndKeyCb.result", "FAIL")
     end
-    log.info("HttpTest.GetTestWithCAAndKeyCb.prompt","Http状态码:",prompt)
+    log.info("HttpTest.GetTestWithCAAndKeyCb.prompt", "Http状态码:", prompt)
     if result and head then
         log.info("HttpTest.GetTestWithCAAndKeyCb.Head","遍历响应头")
         for k,v in pairs(head) do
@@ -146,11 +146,11 @@ end
 -- 处理大文件回调
 local function getTestAndSaveToBigFileCb(result,prompt,head,filePath)
     if result then
-        log.info("HttpTest.GetTestAndSaveToBigFileCb.result","Http请求成功:",result)
+        log.info("HttpTest.GetTestAndSaveToBigFileCb.result", "SUCCESS")
     else
-        log.info("HttpTest.GetTestAndSaveToBigFileCb.result","Http请求失败:",result)
+        log.info("HttpTest.GetTestAndSaveToBigFileCb.result", "FAIL")
     end
-    log.info("HttpTest.GetTestAndSaveToBigFileCb.prompt","Http状态码:",prompt)
+    log.info("HttpTest.GetTestAndSaveToBigFileCb.prompt", "Http状态码:", prompt)
     if result and head then
         log.info("HttpTest.GetTestAndSaveToBigFileCb.Head","遍历响应头")
         for k,v in pairs(head) do
@@ -187,11 +187,11 @@ end
 -- 处理小文件回调
 local function getTestAndSaveToSmallFileCb(result,prompt,head,filePath)
     if result then
-        log.info("HttpTest.GetTestAndSaveToSmallFileCb.result","Http请求成功:",result)
+        log.info("HttpTest.GetTestAndSaveToSmallFileCb.result", "SUCCESS")
     else
-        log.info("HttpTest.GetTestAndSaveToSmallFileCb.result","Http请求失败:",result)
+        log.info("HttpTest.GetTestAndSaveToSmallFileCb.result", "FAIL")
     end
-    log.info("HttpTest.GetTestAndSaveToSmallFileCb.prompt","Http状态码:",prompt)
+    log.info("HttpTest.GetTestAndSaveToSmallFileCb.prompt", "Http状态码:", prompt)
     if result and head then
         log.info("HttpTest.GetTestAndSaveToSmallFileCb.Head","遍历响应头")
         for k,v in pairs(head) do
@@ -228,11 +228,11 @@ end
 -- postTest回调
 local function postTestCb(result,prompt,head,body)
     if result then
-        log.info("HttpTest.PostTestCb.result","Http请求成功:",result)
+        log.info("HttpTest.PostTestCb.result", "SUCCESS")
     else
-        log.info("HttpTest.PostTestCb.result","Http请求失败:",result)
+        log.info("HttpTest.PostTestCb.result", "FAIL")
     end
-    log.info("HttpTest.PostTestCb.prompt","Http状态码:",prompt)
+    log.info("HttpTest.PostTestCb.prompt", "Http状态码:", prompt)
     if result and head then
         log.info("HttpTest.PostTestCb.Head","遍历响应头")
         for k,v in pairs(head) do
@@ -248,11 +248,11 @@ end
 -- postTestWithUserHeadCb回调
 local function postTestWithUserHeadCb(result,prompt,head,body)
     if result then
-        log.info("HttpTest.PostTestWithUserHeadCb.result","Http请求成功:",result)
+        log.info("HttpTest.PostTestWithUserHeadCb.result", "SUCCESS")
     else
-        log.info("HttpTest.PostTestWithUserHeadCb.result","Http请求失败:",result)
+        log.info("HttpTest.PostTestWithUserHeadCb.result", "FAIL")
     end
-    log.info("HttpTest.PostTestWithUserHeadCb.prompt","Http状态码:",prompt)
+    log.info("HttpTest.PostTestWithUserHeadCb.prompt", "Http状态码:", prompt)
     if result and head then
         log.info("HttpTest.PostTestWithUserHeadCb.Head","遍历响应头")
         for k,v in pairs(head) do
@@ -268,11 +268,11 @@ end
 -- postTestWithOctetStreamCb回调
 local function postTestWithOctetStreamCb(result,prompt,head,body)
     if result then
-        log.info("HttpTest.PostTestWithOctetStreamCb.result","Http请求成功:",result)
+        log.info("HttpTest.PostTestWithOctetStreamCb.result", "SUCCESS")
     else
-        log.info("HttpTest.PostTestWithOctetStreamCb.result","Http请求失败:",result)
+        log.info("HttpTest.PostTestWithOctetStreamCb.result", "FAIL")
     end
-    log.info("HttpTest.PostTestWithOctetStreamCb.prompt","Http状态码:",prompt)
+    log.info("HttpTest.PostTestWithOctetStreamCb.prompt", "Http状态码:", prompt)
     if result and head then
         log.info("HttpTest.PostTestWithOctetStreamCb.Head","遍历响应头")
         for k,v in pairs(head) do
@@ -288,11 +288,11 @@ end
 -- postTestWithMultipartFormDataCb回调
 local function postTestWithMultipartFormDataCb(result,prompt,head,body)
     if result then
-        log.info("HttpTest.PostTestWithMultipartFormDataCb.result","Http请求成功:",result)
+        log.info("HttpTest.PostTestWithMultipartFormDataCb.result", "SUCCESS")
     else
-        log.info("HttpTest.PostTestWithMultipartFormDataCb.result","Http请求失败:",result)
+        log.info("HttpTest.PostTestWithMultipartFormDataCb.result", "FAIL")
     end
-    log.info("HttpTest.PostTestWithMultipartFormDataCb.prompt","Http状态码:",prompt)
+    log.info("HttpTest.PostTestWithMultipartFormDataCb.prompt", "Http状态码:", prompt)
     if result and head then
         log.info("HttpTest.PostTestWithMultipartFormDataCb.Head","遍历响应头")
         for k,v in pairs(head) do
@@ -308,11 +308,11 @@ end
 -- postTestWithXwwwformurlencodedCb回调
 local function postTestWithXwwwformurlencodedCb(result,prompt,head,body)
     if result then
-        log.info("HttpTest.PostTestWithXwwwformurlencodedCb.result","Http请求成功:",result)
+        log.info("HttpTest.PostTestWithXwwwformurlencodedCb.result", "SUCCESS")
     else
-        log.info("HttpTest.PostTestWithXwwwformurlencodedCb.result","Http请求失败:",result)
+        log.info("HttpTest.PostTestWithXwwwformurlencodedCb.result", "FAIL")
     end
-    log.info("HttpTest.PostTestWithXwwwformurlencodedCb.prompt","Http状态码:",prompt)
+    log.info("HttpTest.PostTestWithXwwwformurlencodedCb.prompt", "Http状态码:", prompt)
     if result and head then
         log.info("HttpTest.PostTestWithXwwwformurlencodedCb.Head","遍历响应头")
         for k,v in pairs(head) do
