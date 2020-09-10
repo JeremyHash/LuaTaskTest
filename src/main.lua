@@ -1,7 +1,7 @@
 -- LuaTaskTest
 -- Author:LuatTest
 -- CreateDate:20200716
--- UpdateDate:20200908
+-- UpdateDate:20200910
 
 PROJECT = "LuaTaskTest"
 VERSION = "1.0.0"
@@ -17,8 +17,8 @@ require "netLed"
 pmd.ldoset(2,pmd.LDO_VLCD)
 netLed.setup(true,pio.P0_1,pio.P0_4)
 
-require "errDump"
-errDump.request("udp://ota.airm2m.com:9072")
+-- require "errDump"
+-- errDump.request("udp://ota.airm2m.com:9072")
 
 -- require "update"
 -- update.request()
@@ -83,7 +83,7 @@ pm.wake("LuaTaskTest")
 -- require "LbsLocTest"
 
 --加载Ril功能测试模块
-require "RilTest"
+-- require "RilTest"
 
 sys.taskInit(function()
     while true do
@@ -93,7 +93,10 @@ sys.taskInit(function()
 end)
 
 -- 自动校准时间
-ntp.timeSync(1,function()log.info("----------------> AutoTimeSync is Done ! <----------------")end)
+ntp.timeSync(1, function()
+                    log.info("----------------> AutoTimeSync is Done ! <----------------")
+                end
+)
 
 -- 死机断言
 ril.request("AT*EXASSERT=1")
