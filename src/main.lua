@@ -21,8 +21,8 @@ netLed.setup(true,pio.P0_1,pio.P0_4)
 -- errDump.request("udp://ota.airm2m.com:9072")
 
 -- require "update"
+-- update.request(nil,"http://117.51.140.119:8000/jeremy.bin")
 -- update.request()
--- update.request(nil,"http://118.25.149.191:8000/ota.bin")
 
 -- 屏幕驱动文件管理
 -- require "color_lcd_spi_ILI9341"
@@ -45,7 +45,7 @@ require "record"
 require "cc"
 require "uiWin"
 require "scanCode"
-require "lbsLoc"
+require"lbsLoc"
 require "pm"
 
 -- 保持唤醒
@@ -65,7 +65,7 @@ pm.wake("LuaTaskTest")
 -- require "AudioTest"
 
 --加载Gpio功能测试模块
--- require "GpioTest"
+require "GpioTest"
 
 --加载文件功能测试模块
 -- require "FsTest"
@@ -76,18 +76,20 @@ pm.wake("LuaTaskTest")
 --加载Disp功能测试模块
 -- require "DispTest"
 
---加载KeyPad功能测试模块
--- require "KeyPadTest"
-
 --加载LbsLoc功能测试模块
 -- require "LbsLocTest"
+
+
+--加载KeyPad功能测试模块
+-- require "KeyPadTest"
 
 --加载Ril功能测试模块
 -- require "RilTest"
 
+
 sys.taskInit(function()
     while true do
-        log.info("VERSION", rtos.get_version(), _G.VERSION)
+        log.info("VERSION", rtos.get_version(), VERSION)
         sys.wait(10000)
     end
 end)
