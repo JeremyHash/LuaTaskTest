@@ -212,7 +212,7 @@ sys.taskInit(
     end
 )
 
-异步UDP发送协程
+-- 异步UDP发送协程
 sys.taskInit(
     function()
         sys.waitUntil("AsyncUdpSocketInitComplete")
