@@ -175,10 +175,10 @@ local function getTestAndSaveToBigFileCb(result,prompt,head,filePath)
         -- os.remove(filePath)
         local remove_dir_res = rtos.remove_dir("/Jeremy")
         if remove_dir_res == true then
-            log.info("HttpTest.GetTestAndSaveToBigFileCb.fileDelete", filePath.." deletion success")
+            log.info("HttpTest.GetTestAndSaveToBigFileCb.fileDelete", filePath.." deletion SUCCESS")
             log.info("删除文件后可用空间 "..rtos.get_fs_free_size().." Bytes")
         else
-            log.error("HttpTest.GetTestAndSaveToBigFileCb.fileDelete", filePath.." deletion fail")
+            log.error("HttpTest.GetTestAndSaveToBigFileCb.fileDelete", filePath.." deletion FAIL")
             log.info("删除文件后可用空间 "..rtos.get_fs_free_size().." Bytes")
         end
     end
@@ -211,15 +211,14 @@ local function getTestAndSaveToSmallFileCb(result,prompt,head,filePath)
         end
     end
     log.info("保存文件后可用空间 "..rtos.get_fs_free_size().." Bytes")
-    --文件使用完之后，如果以后不再用到，需要自行删除
     if filePath then 
-        os.remove(filePath)
-        -- local remove_dir_res = rtos.remove_dir("/Jeremy")
+        -- os.remove(filePath)
+        local remove_dir_res = rtos.remove_dir("/Jeremy")
         if remove_dir_res == true then
-            log.info("HttpTest.GetTestAndSaveToSmallFileCb.fileDelete", filePath.." deletion success")
+            log.info("HttpTest.GetTestAndSaveToSmallFileCb.fileDelete", filePath.." deletion SUCCESS")
             log.info("删除文件后可用空间 "..rtos.get_fs_free_size().." Bytes")
         else
-            log.error("HttpTest.GetTestAndSaveToSmallFileCb.fileDelete", filePath.." deletion fail")
+            log.error("HttpTest.GetTestAndSaveToSmallFileCb.fileDelete", filePath.." deletion FAIL")
             log.info("删除文件后可用空间 "..rtos.get_fs_free_size().." Bytes")
         end
     end
@@ -357,9 +356,9 @@ sys.taskInit(
             if httpTestConfig.getTestAndSaveToBigFile == true then
                 log.info("创建文件前可用空间 "..rtos.get_fs_free_size().." Bytes")
                 if rtos.make_dir("/Jeremy/") == true then
-                    log.info("HttpTest.makeDir", "success")
+                    log.info("HttpTest.makeDir", "SUCCESS")
                 else
-                    log.error("HttpTest.makeDir", "fail")
+                    log.error("HttpTest.makeDir", "FAIL")
                 end
                 log.info("HttpTest.GetTestAndSaveToBigFile","第"..count.."次")
                 http.request("GET","https://www.baidu.com",{caCert="ca.cer"},nil,nil,nil,getTestAndSaveToBigFileCb,"/Jeremy/baidu.html")
@@ -370,9 +369,9 @@ sys.taskInit(
             if httpTestConfig.getTestAndSaveToSmallFile == true then
                 log.info("创建文件前可用空间 "..rtos.get_fs_free_size().." Bytes")
                 if rtos.make_dir("/Jeremy/") == true then
-                    log.info("HttpTest.makeDir", "success")
+                    log.info("HttpTest.makeDir", "SUCCESS")
                 else
-                    log.error("HttpTest.makeDir", "fail")
+                    log.error("HttpTest.makeDir", "FAIL")
                 end
                 log.info("HttpTest.GetTestAndSaveToSmallFile","第"..count.."次")
                 http.request("GET","https://www.lua.org/",nil,nil,nil,nil,getTestAndSaveToSmallFileCb,"/Jeremy/lua.html")
