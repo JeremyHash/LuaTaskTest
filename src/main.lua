@@ -7,6 +7,21 @@ PROJECT = "LuaTaskTest"
 VERSION = "1.0.0"
 PRODUCT_KEY = "LMe0gb26NhPbBZ7t3mSk3dxA8f4ZZmM1"
 
+-- 测试配置 设置为true代表开启此项测试
+local LuatTasktestConfig = {
+    httpTest   = true,
+    socketTest = true,
+    mqttTest   = false,
+    audioTest  = false,
+    gpioTest   = false,
+    fsTest     = false,
+    callTest   = false,
+    dispTest   = false,
+    lbsLocTest = false,
+    keyPadTest = false,
+    rilTest    = false,
+}
+
 require "log"
 LOG_LEVEL = log.LOGLEVEL_TRACE
 
@@ -51,53 +66,66 @@ require "pm"
 -- 保持唤醒
 pm.wake("LuaTaskTest")
 
+if LuatTasktestConfig.httpTest then
+    require "HttpTest"
+end
 
---加载Http功能测试模块
--- require "HttpTest"
+if LuatTasktestConfig.socketTest then
+    require "SocketTest"
+end
 
---加载Socket功能测试模块
-require "SocketTest"
+if LuatTasktestConfig.mqttTest then
+    require "MqttTest"
+end
 
---加载Mqtt功能测试模块
--- require "MqttTest"
+if LuatTasktestConfig.audioTest then
+    require "AudioTest"
+end
 
---加载Audio功能测试模块
--- require "AudioTest"
+if LuatTasktestConfig.gpioTest then
+    require "GpioTest"
+end
 
---加载Gpio功能测试模块
--- require "GpioTest"
+if LuatTasktestConfig.fsTest then
+    require "FsTest"
+end
 
---加载文件功能测试模块
--- require "FsTest"
+if LuatTasktestConfig.callTest then
+    require "CallTest"
+end
 
---加载Call功能测试模块
--- require "CallTest"
+if LuatTasktestConfig.dispTest then
+    require "DispTest"
+end
 
---加载Disp功能测试模块
--- require "DispTest"
+if LuatTasktestConfig.lbsLocTest then
+    require "LbsLocTest"
+end
 
---加载LbsLoc功能测试模块
--- require "LbsLocTest"
+if LuatTasktestConfig.keyPadTest then
+    require "KeyPadTest"
+end
+
+if LuatTasktestConfig.rilTest then
+    require "RilTest"
+end
 
 
---加载KeyPad功能测试模块
--- require "KeyPadTest"
-
---加载Ril功能测试模块
--- require "RilTest"
-
-
-sys.taskInit(function()
-    while true do
-        log.info("VERSION", rtos.get_version(), VERSION)
-        sys.wait(10000)
-    end
-end)
+sys.taskInit(
+            function()
+                while true do
+                    log.info("VERSION", rtos.get_version(), VERSION)
+                    sys.wait(10000)
+                end
+            end
+)
 
 -- 自动校准时间
-ntp.timeSync(1, function()
-                    log.info("----------------> AutoTimeSync is Done ! <----------------")
-                end
+ntp.timeSync(
+            1, 
+            function()
+                log.info("----------------> AutoTimeSync is Done ! <----------------")
+            end
 )
 
 -- 死机断言
