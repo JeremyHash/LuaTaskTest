@@ -1,7 +1,7 @@
 -- LuaTaskTest
 -- Author:LuatTest
 -- CreateDate:20200716
--- UpdateDate:20200910
+-- UpdateDate:20200915
 
 PROJECT = "LuaTaskTest"
 VERSION = "1.0.0"
@@ -9,9 +9,9 @@ PRODUCT_KEY = "LMe0gb26NhPbBZ7t3mSk3dxA8f4ZZmM1"
 
 -- 测试配置 设置为true代表开启此项测试
 local LuatTasktestConfig = {
-    httpTest            = false,
-    socketTest          = false,
-    mqttTest            = false,
+    httpTest            = true,
+    socketTest          = true,
+    mqttTest            = true,
     audioTest           = false,
     gpioTest            = false,
     fsTest              = false,
@@ -30,8 +30,8 @@ LOG_LEVEL = log.LOGLEVEL_TRACE
 -- console.setup(2, 115200)
 
 require "netLed"
-pmd.ldoset(2,pmd.LDO_VLCD)
-netLed.setup(true,pio.P0_1,pio.P0_4)
+pmd.ldoset(2, pmd.LDO_VLCD)
+netLed.setup(true, pio.P0_1, pio.P0_4)
 
 -- require "errDump"
 -- errDump.request("udp://ota.airm2m.com:9072")
@@ -120,8 +120,8 @@ sys.taskInit(
             function()
                 while true do
                     log.info("VERSION", rtos.get_version(), VERSION)
-                    log.info("RAM_USEAGE", collectgarbage("count").." KB")
-                    sys.wait(30000)
+                    log.info("RAM_USEAGE", collectgarbage("count") .. " KB")
+                    sys.wait(10000)
                 end
             end
 )

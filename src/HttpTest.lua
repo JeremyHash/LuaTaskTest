@@ -1,21 +1,21 @@
 -- HttpTest
 -- Author:LuatTest
 -- CreateDate:20200716
--- UpdateDate:20200717
+-- UpdateDate:20200915
 
-module(...,package.seeall)
+module(..., package.seeall)
 
 -- 测试配置 设置为true代表开启此项测试
 local httpTestConfig = {
-    getTest = true,
-    getTestWithCA = true,
-    getTestWithCAAndKey = true,
-    getTestAndSaveToBigFile = true,
-    getTestAndSaveToSmallFile = true,
-    postTest = true,
-    postTestWithUserHead = true,
-    postTestWithOctetStream = true,
-    postTestWithMultipartFormData = true,
+    getTest                        = true,
+    getTestWithCA                  = true,
+    getTestWithCAAndKey            = true,
+    getTestAndSaveToBigFile        = true,
+    getTestAndSaveToSmallFile      = true,
+    postTest                       = true,
+    postTestWithUserHead           = true,
+    postTestWithOctetStream        = true,
+    postTestWithMultipartFormData  = true,
     postTestWithXwwwformurlencoded = true
 }
 
@@ -163,23 +163,23 @@ local function getTestAndSaveToBigFileCb(result,prompt,head,filePath)
         log.info("HttpTest.GetTestAndSaveToBigFileCb.fileSize","fileSize="..size)
         
         --输出文件内容，如果文件太大，一次性读出文件内容可能会造成内存不足，分次读出可以避免此问题
-        if size<=4096 then
+        if size <= 4096 then
             log.info("HttpTest.GetTestAndSaveToBigFileCb.fileContent", io.readFile(filePath))
         else
 			log.info("HttpTest.GetTestAndSaveToBigFileCb.fileContent", filePath.."文件过大")
         end
     end
-    log.info("保存文件后可用空间 "..rtos.get_fs_free_size().." Bytes")
+    log.info("保存大文件后可用空间 "..rtos.get_fs_free_size().." Bytes")
     --文件使用完之后，如果以后不再用到，需要自行删除
     if filePath then 
         -- os.remove(filePath)
         local remove_dir_res = rtos.remove_dir("/Jeremy")
         if remove_dir_res == true then
             log.info("HttpTest.GetTestAndSaveToBigFileCb.fileDelete", filePath.." deletion SUCCESS")
-            log.info("删除文件后可用空间 "..rtos.get_fs_free_size().." Bytes")
+            log.info("删除文件SUCCESS后可用空间 "..rtos.get_fs_free_size().." Bytes")
         else
             log.error("HttpTest.GetTestAndSaveToBigFileCb.fileDelete", filePath.." deletion FAIL")
-            log.info("删除文件后可用空间 "..rtos.get_fs_free_size().." Bytes")
+            log.info("删除文件FAIL后可用空间 "..rtos.get_fs_free_size().." Bytes")
         end
     end
 end
@@ -204,22 +204,22 @@ local function getTestAndSaveToSmallFileCb(result,prompt,head,filePath)
         log.info("HttpTest.GetTestAndSaveToSmallFileCb.fileSize","fileSize="..size)
         
         --输出文件内容，如果文件太大，一次性读出文件内容可能会造成内存不足，分次读出可以避免此问题
-        if size<=4096 then
+        if size <= 4096 then
             log.info("HttpTest.GetTestAndSaveToSmallFileCb.fileContent", io.readFile(filePath))
         else
 			log.info("HttpTest.GetTestAndSaveToSmallFileCb.fileContent", filePath.."文件过大")
         end
     end
-    log.info("保存文件后可用空间 "..rtos.get_fs_free_size().." Bytes")
+    log.info("保存小文件后可用空间 "..rtos.get_fs_free_size().." Bytes")
     if filePath then 
         -- os.remove(filePath)
         local remove_dir_res = rtos.remove_dir("/Jeremy")
         if remove_dir_res == true then
             log.info("HttpTest.GetTestAndSaveToSmallFileCb.fileDelete", filePath.." deletion SUCCESS")
-            log.info("删除文件后可用空间 "..rtos.get_fs_free_size().." Bytes")
+            log.info("删除文件SUCCESS后可用空间 "..rtos.get_fs_free_size().." Bytes")
         else
             log.error("HttpTest.GetTestAndSaveToSmallFileCb.fileDelete", filePath.." deletion FAIL")
-            log.info("删除文件后可用空间 "..rtos.get_fs_free_size().." Bytes")
+            log.info("删除文件FAIL后可用空间 "..rtos.get_fs_free_size().." Bytes")
         end
     end
 end
@@ -327,7 +327,7 @@ end
 sys.taskInit(
     function()
         sys.waitUntil("IP_READY_IND")
-        log.info("HttpTest","成功访问网络,Http测试开始")
+        log.info("HttpTest","成功访问网络, Http测试开始")
         local serverAddress = "wiki.airm2m.com:48080"
         local count = 1
         while true do
