@@ -9,18 +9,18 @@ PRODUCT_KEY = "LMe0gb26NhPbBZ7t3mSk3dxA8f4ZZmM1"
 
 -- 测试配置 设置为true代表开启此项测试
 local LuatTasktestConfig = {
-    httpTest     = false,
-    socketTest   = false,
-    mqttTest     = false,
-    audioTest    = false,
-    gpioTest     = false,
-    fsTest       = false,
-    callTest     = false,
-    dispTest     = false,
-    lbsLocTest   = false,
-    keyPadTest   = false,
-    rilTest      = false,
-    uartTransferTest = false,
+    httpTest            = false,
+    socketTest          = false,
+    mqttTest            = false,
+    audioTest           = false,
+    gpioTest            = false,
+    fsTest              = false,
+    callTest            = false,
+    dispTest            = false,
+    lbsLocTest          = false,
+    keyPadTest          = false,
+    rilTest             = false,
+    uartTransferTest    = false,
 }
 
 require "log"
