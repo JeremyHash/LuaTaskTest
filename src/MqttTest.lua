@@ -6,16 +6,16 @@ local timeout2 = 5000
 local result,data,count
 count = 1
 
-local topic1 = "Jeremy2"
-local topic2 = "Jeremy3"
-local topic3 = "合宙测试1"
+local topic1 = "Jeremy3"
+local topic2 = "Jeremy4"
+local topic3 = "合宙测试2"
 
 local ip1 = "wiki.airm2m.com"
 local port1 = 41883
 local port2 = 48883
 
-local mqttClient1 = mqtt.client("client" .. "1", 60, "user", "password")
-local mqttClient2 = mqtt.client("client" .. "2", 60, "user", "password")
+local mqttClient1 = mqtt.client("client" .. "3", 60, "user", "password")
+local mqttClient2 = mqtt.client("client" .. "4", 60, "user", "password")
 local mqttClient3 = mqtt.client("单向认证客户端" .. "3", 60, "user", "password")
 local mqttClient4 = mqtt.client("双向认证客户端" .. "4", 60, "user", "password")
 

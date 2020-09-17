@@ -14,32 +14,26 @@ local connectResult,socketId,result,data
 local r, s, p
 local tcpClient1,tcpClient2,tcpClient3,tcpClient4,udpClient1,udpClient2
 
-local socketTestCount = 0
-
 -- 启动socket客户端任务
 sys.taskInit(
     function()
         sys.waitUntil("IP_READY_IND")
         log.info("SocketTest", "成功访问网络, 同步Socket测试开始")
-        local count = 0
+        local count = 1
+
+        --tcp ssl client
+        tcpClient1 = socket.tcp(true, {caCert="ca.crt"})
+        tcpClient2 = socket.tcp(true, {caCert="ca.crt", clientCert="client.crt", clientKey="client.key"})
+        
+        -- tcp client
+        tcpClient3 = socket.tcp()
+
+        -- udp client
+        udpClient1 = socket.udp()
 
         while true do
 
             log.info("SocketTest", "Socket测试第" .. count .. "次开始")
-
-            --tcp ssl client
-            tcpClient1 = socket.tcp(true, {caCert="ca.crt"})
-            tcpClient2 = socket.tcp(true, {caCert="ca.crt", clientCert="client.crt", clientKey="client.key"})
-            
-            -- tcp client
-            tcpClient3 = socket.tcp()
-
-            -- udp client
-            udpClient1 = socket.udp()
-
-            socketTestCount = socketTestCount + 1
-
-            log.info("SocketTest.socketTestCount", "第" .. socketTestCount .. "次开始")
 
             -- 单向认证Client1
             for i=1,10 do
