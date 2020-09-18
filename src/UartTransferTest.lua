@@ -2,7 +2,7 @@ module(..., package.seeall)
 
 -- 串口配置
 local uartId = 1
-local baud = 460800
+local baud = 115200
 local databits = 8
 uart.setup(uartId, baud, databits, uart.PAR_NONE, uart.STOP_1)
 
@@ -10,6 +10,8 @@ uart.setup(uartId, baud, databits, uart.PAR_NONE, uart.STOP_1)
 local tcpClient
 local ip = "wiki.airm2m.com"
 local port = 49001
+local lenofrdata = 0
+local lenofsdata = 0
 
 -- sys.taskInit(
 --     function()
@@ -61,9 +63,13 @@ sys.taskInit(
 
 sys.taskInit(
     function()
+        
         while true do
             uart_data = uart.read(uartId, "*l")
+            
             if string.len(uart_data) > 0 then
+                lenofsdata = lenofsdata + uart_data:len()
+                log.info("gw:length of sent data =",lenofsdata)
                 log.info("UartTransferTest.receive.uart_data", uart_data)
                 tcpClient:asyncSend(uart_data)
                 log.info("UartTransferTest.tcpClient.send", uart_data)
@@ -75,10 +81,13 @@ sys.taskInit(
 
 sys.taskInit(
     function()
+        
         sys.waitUntil("AsyncTcpSocketInitComplete")
         while true do
             local asyncReceiveData = tcpClient:asyncRecv()
             if string.len(asyncReceiveData) > 0 then
+                lenofrdata = lenofrdata + uart_data:len()
+                log.info("gw:length of recv data =",lenofrdata)
                 log.info("UartTransferTest.tcpClient.recv", asyncReceiveData)
                 uart.write(uartId, asyncReceiveData)
             end
