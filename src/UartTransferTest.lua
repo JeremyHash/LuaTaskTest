@@ -70,9 +70,9 @@ sys.taskInit(
             if string.len(uart_data) > 0 then
                 lenofsdata = lenofsdata + uart_data:len()
                 log.info("gw:length of sent data =",lenofsdata)
-                log.info("UartTransferTest.receive.uart_data", uart_data)
+                -- log.info("UartTransferTest.receive.uart_data", uart_data)
                 tcpClient:asyncSend(uart_data)
-                log.info("UartTransferTest.tcpClient.send", uart_data)
+                -- log.info("UartTransferTest.tcpClient.send", uart_data)
             end
             sys.wait(1)
         end
@@ -88,7 +88,7 @@ sys.taskInit(
             if string.len(asyncReceiveData) > 0 then
                 lenofrdata = lenofrdata + uart_data:len()
                 log.info("gw:length of recv data =",lenofrdata)
-                log.info("UartTransferTest.tcpClient.recv", asyncReceiveData)
+                -- log.info("UartTransferTest.tcpClient.recv", asyncReceiveData)
                 uart.write(uartId, asyncReceiveData)
             end
             sys.wait(10)
