@@ -130,7 +130,7 @@ sys.taskInit(
 				readFile(testPath .. "/FsWriteTest1.txt")
 				writeFileW(testPath .. "/FsWriteTest2.txt", "This is a FsWriteWTest\n")
 				readFile(testPath .. "/FsWriteTest2.txt")
-				sys.wait(20000)
+				sys.wait(120000)
 			end
 		end
 
@@ -143,7 +143,7 @@ sys.taskInit(
 -- 模块内部FLASH读写测试
 sys.taskInit(
 	function ()
-        sys.wait(5000)
+        sys.wait(4000)
 		local testPath = "/FsTestPath"
 		local mkdirRes = rtos.make_dir(testPath)
 		log.info("FsTest.FlashTest.MkdirRes", mkdirRes)
@@ -155,8 +155,28 @@ sys.taskInit(
 				readFile(testPath .. "/FsWriteTest1.txt")
 				writeFileW(testPath .. "/FsWriteTest2.txt", "This is a FsWriteWTest\n")
 				readFile(testPath .. "/FsWriteTest2.txt")
-				sys.wait(20000)
+				sys.wait(120000)
 			end
+		end
+	end
+)
+
+-- fileSeek测试
+sys.taskInit(
+	function ()
+		while true do
+			sys.wait(2000)
+			local file = io.open("/FileSeekTest.txt", "w")
+			file:write("FileSeekTest")
+			log.info("FsTest.FileSeek", file:seek("end"))
+			log.info("FsTest.FileSeek", file:seek("set"))
+			log.info("FsTest.FileSeek", file:seek())
+			log.info("FsTest.FileSeek", file:seek("cur", 10))
+			log.info("FsTest.FileSeek", file:seek("cur"))
+			log.info("FsTest.FileSeek", file:read(1))
+			log.info("FsTest.FileSeek", file:seek("cur"))
+			file:close()
+			sys.wait(18000)
 		end
 	end
 )
