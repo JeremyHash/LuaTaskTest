@@ -14,13 +14,13 @@ local LuatTasktestConfig = {
     mqttTest            = false,
     audioTest           = false,
     gpioTest            = false,
-    fsTest              = false,
+    fsTest              = true,
     callTest            = false,
     dispTest            = false,
     lbsLocTest          = false,
     keyPadTest          = false,
     rilTest             = false,
-    uartTransferTest    = true,
+    uartTransferTest    = false,
 }
 
 require "log"

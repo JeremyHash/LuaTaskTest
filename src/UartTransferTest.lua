@@ -1,3 +1,8 @@
+-- UartTransferTest
+-- Author:LuatTest
+-- CreateDate:20200920
+-- UpdateDate:20200925
+
 module(..., package.seeall)
 
 -- 串口配置
@@ -63,16 +68,12 @@ sys.taskInit(
 
 sys.taskInit(
     function()
-        
         while true do
             uart_data = uart.read(uartId, "*l")
-            
             if string.len(uart_data) > 0 then
                 lenofsdata = lenofsdata + uart_data:len()
                 log.info("gw:length of sent data =",lenofsdata)
-                -- log.info("UartTransferTest.receive.uart_data", uart_data)
                 tcpClient:asyncSend(uart_data)
-                -- log.info("UartTransferTest.tcpClient.send", uart_data)
             end
             sys.wait(1)
         end
