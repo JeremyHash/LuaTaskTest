@@ -120,8 +120,9 @@ sys.taskInit(
             function()
                 while true do
                     log.info("VERSION", rtos.get_version(), VERSION)
-                    log.info("RAM_USEAGE", collectgarbage("count") .. " KB")
-                    sys.wait(10000)
+				    log.info("FSFREESIZE", rtos.get_fs_free_size() .. " Bytes")
+                    log.info("RAMUSEAGE", collectgarbage("count") .. " KB")
+                    sys.wait(30000)
                 end
             end
 )
@@ -130,7 +131,7 @@ sys.taskInit(
 ntp.timeSync(
             1, 
             function()
-                log.info("----------------> AutoTimeSync is Done ! <----------------")
+                log.info("ntp.timeSync", "AutoTimeSync is Done !")
             end
 )
 

@@ -10,23 +10,23 @@ local function readFile(filename)
 	if filehandle then
 		local fileval = filehandle:read("*all")
 		if fileval then
-		   print(fileval)
+		   log.info("FsTest.readFile." .. filename, fileval)
 		   filehandle:close()
 	  	else
-		   log.info("FsTest.ReadFile", "文件内容为空")
+		   log.info("FsTest.ReadFile." .. filename, "文件内容为空")
 	  	end
 	else
-		log.error("FsTest.readFile", "文件不存在或文件输入格式不正确")
+		log.error("FsTest.readFile." .. filename, "文件不存在或文件输入格式不正确")
 	end
 end
 
 local function writeFileA(filename, value)
 	local filehandle = io.open(filename, "a+")
 	if filehandle then
-		filehandle:write(value)
+		local res, info = filehandle:write(value)
 		filehandle:close()
 	else
-		log.error("FsTest.WriteFileA", "文件不存在或文件输入格式不正确")
+		log.error("FsTest.WriteFileA." .. filename, "文件不存在或文件输入格式不正确")
 	end
 end
 
@@ -36,7 +36,7 @@ local function writeFileW(filename, value)
 		filehandle:write(value)
 		filehandle:close()
 	else
-		log.error("FsTest.WriteFileW", "文件不存在或文件输入格式不正确")
+		log.error("FsTest.WriteFileW." .. filename, "文件不存在或文件输入格式不正确")
 	end
 end
 
@@ -46,25 +46,40 @@ end
 
 local getDirContent
 
-getDirContent = function (dirPath)
-    if io.opendir(dirPath) then
-    	local dirTable = {}
-    	log.info("FsTest.Directory", dirPath)
-    	while true do
-    	    local fType, fName, fSize = io.readdir()
-    	    if fType == 32 then
-    	        log.info("FsTest.File", dirPath .. "/" .. fName, fSize)               
-    	    elseif fType == 16 then
-    	        table.insert(dirTable, dirPath .. "/" .. fName)
-    	    elseif fType == nil then
-    	        io.closedir(dirPath)
-    	        while #dirTable > 0 do
-    	            getDirContent(table.remove(dirTable, 1))
-    	        end
-    	        break
-    	    end
-		end
-	end
+getDirContent = function(dirPath, level)
+    local ftb = {}
+    local dtb = {}
+    level = level or "    "
+    local tag = " "
+    if not io.opendir(dirPath) then return end
+    while true do
+        local fType, fName, fSize = io.readdir()
+        if fType == 32 then
+            table.insert(ftb, {name = fName, size = fSize})
+        elseif fType == 16 then
+            table.insert(dtb, {name = fName, path = dirPath .. "/" .. fName})
+        else
+            break
+        end
+    end
+    io.closedir(dirPath)
+    for i = 1, #ftb do 
+        if i==#ftb then
+            log.info(tag, level .. "└─", ftb[i].name, "[" .. ftb[i].size .. " Bytes]")
+        else
+            log.info(tag, level .. "├─", ftb[i].name, "[" .. ftb[i].size .. " Bytes]")
+        end
+    end
+    for i = 1, #dtb do 
+        if i==#dtb then
+            log.info(tag, level.."└─", dtb[i].name)
+            getDirContent(dtb[i].path, level .. "  ")
+        else
+            log.info(tag, level.."├─", dtb[i].name)
+            getDirContent(dtb[i].path, level .. "│ ")
+        end
+        
+    end
 end
 
 -- local getDirContent
@@ -86,9 +101,10 @@ end
 --     end
 -- end
 
+-- SD卡读写测试
 sys.taskInit(
-    function()
-
+	function()
+		local sdcardPath = "/sdcard0"
         sys.wait(5000)
         --挂载SD卡
         io.mount(io.SDCARD)
@@ -101,14 +117,22 @@ sys.taskInit(
         local sdCardFreeSize = rtos.get_fs_free_size(1, 1)
         log.info("FsTest.SdCard0.FreeSize", sdCardFreeSize .. " KB")
         
-        getDirContent("/sdcard0")
+        getDirContent(sdcardPath)
 
-        --向sd卡根目录下写入一个pwron.mp3
-		io.writeFile("/sdcard0/pwron.mp3", io.readFile("/lua/pwron.mp3"))
-		
-        --播放sd卡根目录下的pwron.mp3
-        audio.play(0, "FILE","/sdcard0/pwron.mp3", 1, function() sys.publish("AUDIO_PLAY_END") end)
-        sys.waitUntil("AUDIO_PLAY_END")
+		local testPath = sdcardPath .. "/FsTestPath"
+		local mkdirRes = rtos.make_dir(testPath)
+		log.info("FsTest.SdCardTest.MkdirRes", mkdirRes)
+
+		deleteFile(testPath .. "/FsWriteTest1.txt")
+		if mkdirRes == true then
+			while true do
+				writeFileA(testPath .. "/FsWriteTest1.txt", "This is a FsWriteATest\n")
+				readFile(testPath .. "/FsWriteTest1.txt")
+				writeFileW(testPath .. "/FsWriteTest2.txt", "This is a FsWriteWTest\n")
+				readFile(testPath .. "/FsWriteTest2.txt")
+				sys.wait(20000)
+			end
+		end
 
 
         --卸载SD卡
@@ -116,15 +140,23 @@ sys.taskInit(
     end
 )
 
+-- 模块内部FLASH读写测试
 sys.taskInit(
 	function ()
+        sys.wait(5000)
 		local testPath = "/FsTestPath"
-		while true do
-			print("get_fs_free_size: "..rtos.get_fs_free_size().." Bytes")
-			if rtos.make_dir(testPath) then
-				
+		local mkdirRes = rtos.make_dir(testPath)
+		log.info("FsTest.FlashTest.MkdirRes", mkdirRes)
+
+		deleteFile(testPath .. "/FsWriteTest1.txt")
+		if mkdirRes == true then
+			while true do
+				writeFileA(testPath .. "/FsWriteTest1.txt", "This is a FsWriteATest\n")
+				readFile(testPath .. "/FsWriteTest1.txt")
+				writeFileW(testPath .. "/FsWriteTest2.txt", "This is a FsWriteWTest\n")
+				readFile(testPath .. "/FsWriteTest2.txt")
+				sys.wait(20000)
 			end
-			sys.wait(1000)
 		end
 	end
 )
