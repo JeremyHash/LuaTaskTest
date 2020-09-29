@@ -1,18 +1,18 @@
 module(...,package.seeall)
 
-local waitTime = 8000
+local waitTime = 600000
 
 -- ip1用来测试单双向认证
 -- ip2用来测试tcp
 -- ip3用来测试udp
-local ip1, ip2, ip3 = "36.7.87.100", "115.29.164.59", "erp.openluat.com"
-local port1, port2, port3, port4 = 4433, 4434, 40432, 12414
+local ip1, ip2, ip3, ip4 = "36.7.87.100", "115.29.164.59", "erp.openluat.com", "wiki.airm2m.com"
+local port1, port2, port3, port4, port5 = 4433, 4434, 40432, 12414, 49090
 
 local testSendData = string.rep("SocketTest", 50)
 
-local connectResult,socketId,result,data
+local connectResult, socketId, result, data
 local r, s, p
-local tcpClient1,tcpClient2,tcpClient3,tcpClient4,udpClient1,udpClient2
+local tcpClient1, tcpClient2, tcpClient3, tcpClient4, udpClient1, udpClient2
 
 -- 启动socket客户端任务
 sys.taskInit(
@@ -157,7 +157,7 @@ sys.taskInit(
         sys.waitUntil("IP_READY_IND")
         log.info("SocketTest","成功访问网络, 异步TcpSocket测试开始")
         tcpClient4 = socket.tcp()
-        connectResult,socketId = tcpClient4:connect(ip2, port3)
+        connectResult,socketId = tcpClient4:connect(ip4, port5)
         log.info("SocketTest.tcpClient4.connectResult,socketId", connectResult, socketId)
         if connectResult then
             sys.publish("AsyncTcpSocketInitComplete")
