@@ -36,8 +36,8 @@ sys.taskInit(
             log.info("SocketTest", "Socket测试第" .. count .. "次开始")
 
             -- 单向认证Client1
-            for i=1,10 do
-                connectResult,socketId = tcpClient1:connect(ip1, port1)
+            for i=1, 10 do
+                connectResult, socketId = tcpClient1:connect(ip1, port1)
                 log.info("SocketTest.tcpClient1.connectResult, socketId",connectResult,socketId)
                 if connectResult == true then
                     if tcpClient1:send("GET / HTTP/1.1\r\nHost: 36.7.87.100\r\nConnection: keep-alive\r\n\r\n") then

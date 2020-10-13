@@ -3,7 +3,7 @@ module(..., package.seeall)
 local timeout1 = 3000
 local timeout2 = 5000
 
-local result,data,count
+local result, data, count
 count = 1
 
 local topic1 = "Jeremy3"

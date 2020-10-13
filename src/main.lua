@@ -9,12 +9,13 @@ PRODUCT_KEY = "LMe0gb26NhPbBZ7t3mSk3dxA8f4ZZmM1"
 
 -- 测试配置 设置为true代表开启此项测试
 local LuatTasktestConfig = {
+    baseTest            = true
     httpTest            = false,
     socketTest          = false,
     mqttTest            = false,
     audioTest           = false,
     gpioTest            = false,
-    fsTest              = true,
+    fsTest              = false,
     callTest            = false,
     dispTest            = false,
     lbsLocTest          = false,
@@ -66,6 +67,10 @@ require "pm"
 
 -- 保持唤醒
 pm.wake("LuaTaskTest")
+
+if LuatTasktestConfig.baseTest then
+    require "BaseTest"
+end
 
 if LuatTasktestConfig.httpTest then
     require "HttpTest"
@@ -133,6 +138,16 @@ ntp.timeSync(
             function()
                 log.info("ntp.timeSync", "AutoTimeSync is Done !")
             end
+)
+
+sys.taskInit(
+    function()
+        math.randomseed(os.time())
+        while true do
+            print(math.random(1, 100))
+            sys.wait(5000)
+        end
+    end
 )
 
 -- 死机断言

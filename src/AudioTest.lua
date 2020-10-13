@@ -3,7 +3,7 @@
 -- CreateDate:20200717
 -- UpdateDate:20200717
 
-module(...,package.seeall)
+module(..., package.seeall)
 
 --音频播放优先级，对应audio.play接口中的priority参数；数值越大，优先级越高，用户根据自己的需求设置优先级
 --PWRON：开机铃声
