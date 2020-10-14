@@ -12,7 +12,8 @@ local baseTestConfig = {
     packTest   = false,
     stringTest = false,
     commonTest = false,
-    miscTest   = true
+    miscTest   = false,
+    netTest    = false
 }
 
 local loopTime = 10000
@@ -238,8 +239,34 @@ local function miscTest()
     log.info("MiscTest.GetImei", misc.getImei())
     log.info("MiscTest.GetVbatt", misc.getVbatt())
     log.info("MiscTest.GetMuid", misc.getMuid())
+    -- 通道0，频率为50000Hz，占空比为0.2：
+    misc.openPwm(0,500,100)
+    log.info("MiscTest.OpenPwm.0.Open", "SUCCESS")
+    -- 通道1，时钟周期为500ms，高电平时间为125毫秒：
+    misc.openPwm(1,2,8)
+    log.info("MiscTest.OpenPwm.1.Open", "SUCCESS")
+
+    sys.wait(loopTime)
+
+    misc.closePwm(0)
+    log.info("MiscTest.OpenPwm.0.Close", "SUCCESS")
+    misc.closePwm(1)
+    log.info("MiscTest.OpenPwm.1.Close", "SUCCESS")
 end
 
 if baseTestConfig.miscTest == true then
     sys.timerLoopStart(miscTest, loopTime)
+end
+
+local function netTest()
+    net.switchFly(true)
+    log.info("NetTest.SwitchFly", "飞行模式打开")
+    sys.wait(5000)
+    net.switchFly(false)
+    log.info("NetTest.SwitchFly", "飞行模式关闭")
+
+end
+
+if baseTestConfig.netTest == true then
+    sys.timerLoopStart(netTest, loopTime)
 end

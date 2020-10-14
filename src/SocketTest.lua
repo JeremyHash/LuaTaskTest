@@ -1,6 +1,6 @@
 module(...,package.seeall)
 
-local waitTime = 600000
+local waitTime = 10000
 
 -- ip1用来测试单双向认证
 -- ip2用来测试tcp
@@ -50,9 +50,6 @@ sys.taskInit(
                     else
                         log.error("SocketTest.tcpClient1.sendResult", "FAIL")
                     end
-                    log.debug("tcpclient1.i", i)
-                    sys.wait(waitTime)
-                    log.debug("tcpclient1.i", i)
                 else
                     log.error("SocketTest.tcpClient1.connect","FAIL")
                 end
