@@ -5,9 +5,11 @@
 
 module(..., package.seeall)
 
-math.randomseed(os.time())
+-- math.randomseed(os.time())
 
-local randomNum1 = math.random(1, 10000)
+-- local randomNum1 = math.random(1, 10000)
+
+local testImei = misc.getImei()
 
 local timeout1 = 3000
 local timeout2 = 5000
@@ -15,18 +17,18 @@ local timeout2 = 5000
 local result, data, count
 count = 1
 
-local topic1 = "topic1-" .. randomNum1
-local topic2 = "topic2-" .. randomNum1
-local topic3 = "合宙测试-" .. randomNum1
+local topic1 = "topic1-" .. testImei
+local topic2 = "topic2-" .. testImei
+local topic3 = "合宙测试-" .. testImei
 
 local ip1 = "wiki.airm2m.com"
 local port1 = 41883
 local port2 = 48883
 
-local mqttClient1 = mqtt.client("client1-" .. randomNum1, 60, "user", "password")
-local mqttClient2 = mqtt.client("client2-" .. randomNum1, 60, "user", "password")
-local mqttClient3 = mqtt.client("单向认证客户端-" .. randomNum1, 60, "user", "password")
-local mqttClient4 = mqtt.client("双向认证客户端-" .. randomNum1, 60, "user", "password")
+local mqttClient1 = mqtt.client("client1-" .. testImei, 60, "user", "password")
+local mqttClient2 = mqtt.client("client2-" .. testImei, 60, "user", "password")
+local mqttClient3 = mqtt.client("单向认证客户端-" .. testImei, 60, "user", "password")
+local mqttClient4 = mqtt.client("双向认证客户端-" .. testImei, 60, "user", "password")
 
 
 local function publishTest(id, client, topic, pubData, qos, retain)

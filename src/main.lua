@@ -10,8 +10,8 @@ PRODUCT_KEY = "LMe0gb26NhPbBZ7t3mSk3dxA8f4ZZmM1"
 -- 测试配置 设置为true代表开启此项测试
 local LuatTasktestConfig = {
     baseTest            = false,
-    httpTest            = false,
-    socketTest          = false,
+    httpTest            = true,
+    socketTest          = true,
     mqttTest            = true,
     audioTest           = false,
     gpioTest            = false,
