@@ -7,9 +7,14 @@ module(..., package.seeall)
 
 -- 测试配置 设置为true代表开启此项测试
 local baseTestConfig = {
-    adcTest = true,
-    bitTest = true
+    adcTest    = false,
+    bitTest    = false,
+    packTest   = false,
+    stringTest = false,
+    commonTest = true
 }
+
+local loopTime = 10000
 
 -- ADC测量精度(10bit，电压测量范围为0到1.85V，分辨率为1850/1024=1.8MV，测量精度误差为20MV)
 local function getAdcVal()
@@ -36,12 +41,12 @@ adc.open(3)
 
 if baseTestConfig.adcTest == true then
     -- 定时每秒读取adc值
-    sys.timerLoopStart(getAdcVal, 5000)
+    sys.timerLoopStart(getAdcVal, loopTime)
 end
 
 -- BitTest
-local function jeremyBitTest()
-    --参数是位数，作用是1向左移动两位，打印出4 
+local function bitTest()
+    --参数是位数，作用是1向左移动两位
     -- 0001 -> 0100 
     log.info("BitTest.bit", bit.bit(2))
     
@@ -87,194 +92,134 @@ local function jeremyBitTest()
     -- 0001 -> 0100
     log.info("BitTest.lshift", bit.lshift(1, 2))
     
-    --逻辑右移，“001”，输出为1 
+    --逻辑右移，“001”
     -- 0100 -> 0001
     log.info("BitTest.rshift", bit.rshift(4, 2))
     
-    --算数右移，左边添加的数与符号有关，输出为0
+    --算数右移，左边添加的数与符号有关
     -- 0010 -> 0000
     log.info("BitTest.arshift", bit.arshift(2, 2))
 end
 
 if baseTestConfig.bitTest == true then
-    sys.timerLoopStart(jeremyBitTest, 5000)
+    sys.timerLoopStart(bitTest, loopTime)
 end
     
-local function packedtest()
+local function packTest()
     --[[将一些变量按照格式包装在字符串.'z'有限零字符串，'p'长字节优先，'P'长字符优先，
     'a'长词组优先，'A'字符串型，'f'浮点型,'d'双精度型,'n'Lua 数字,'c'字符型,'b'无符号字符型,'h'短型,'H'无符号短型
     'i'整形,'I'无符号整形,'l'长符号型,'L'无符号长型，">"表示大端，"<"表示小端。]]
-    print("pcak.pack test：")
-    print(string.toHex(pack.pack(">H",0x3234)))
-    print(string.toHex(pack.pack("<H",0x3234)))
+    log.info("PackTest", string.toHex(pack.pack(">H", 0x3234)))
+    log.info("PackTest", string.toHex(pack.pack("<H", 0x3234)))
     --字符串，无符号短整型，字节型，打包成二进制字符串。由于二进制不能输出，所以转化为十六进制输出。
-    print(string.toHex(pack.pack(">AHb","LUAT",100,10)))
-    
-    print("pack.unpack test:")
-    local stringtest = pack.pack(">AHb","luat",999,10)
+    log.info("PackTest", string.toHex(pack.pack(">AHb", "LUAT", 100, 10)))
+    --"LUAT\x00\x64\x0A"
+    local stringtest = pack.pack(">AHb", "luat", 999, 10)
     --"nextpos"解析开始的位置，解析出来的第一个值val1，第二个val2，第三个val3，根据后面的格式解析
     --这里的字符串要截取出来，如果截取字符串，后面的短整型和一个字节的数都会被覆盖。
-    nextpox1,val1,val2 = pack.unpack(string.sub(stringtest,5,-1),">Hb")
+    nextpox1, val1, val2 = pack.unpack(string.sub(stringtest, 5, -1), ">Hb")
     --nextpox1表示解包后最后的位置，如果包的长度是3，nextpox1输出就是4。匹配输出999,10
-    print(nextpox1,val1,val2) 
+    log.info("PackTest", nextpox1, val1, val2) 
 end
-    
---[[
-    短整型  占2个字节
-    长整型 占用4个字节（32位）
-    double型 占4个字节
-    long double型 占8个字节
- 
-    数据类型    取值范围
-    整型 [signed]int    -2147483648~+2147483648
-    无符号整型unsigned[int]    0~4294967295
-    短整型 short [int]    -32768~32768
-    无符号短整型unsigned short[int]    0~65535
-    长整型 Long int    -2147483648~+2147483648
-    无符号长整型unsigned [int]    0~4294967295
-    字符型[signed] char    -128~+127
-    无符号字符型 unsigned char    0~255 
-    不支持小数类型 --]]
 
---[[
-    函数名：stringtest
-    功能：sting库几个接口的使用演示
-    参数：无
-    返回值：无--]]
+if baseTestConfig.packTest == true then
+    sys.timerLoopStart(packTest, loopTime)
+end
         
-local function stringtest()
-    --注意string.char或者string.byte只针对一个字节，数值不可大于256
-    print(string.char(97,98,99))--将相应的数值转化为字符
-    print(string.byte("abc"),2) --第一个参数是字符串，第二个参数是位置。功能是：将字符串中所给定的位置转化为数值
-    local i=100
-    local string1="luat100great"
-    print("string.format\r\n",string.format("%04d//%s",i,string1))--[[指示符后的控制格式的字符可以为：十进制'd'；十六进制'x'
-    八进制'o'；浮点数'f'；字符串's',控制格式的个数与后面的参数个数一致。功能：按照特定格式输出参数。--]]
-    --打印出"luat great"
-    print("string.gsub\r\n",string.gsub("luat is","is","great"))--第一个参数是目标字符串，第二个参数是标准字符串，第三个是待替换字符串
+local function stringTest()
+
+    local testStr = "Luat is very NB"
+
+    log.info("StringTest.Upper", string.upper(testStr))
+    log.info("StringTest.Lower", string.lower(testStr))
+
+    --第一个参数是目标字符串，第二个参数是标准字符串，第三个是待替换字符串,打印出"luat great"
+    log.info("StringTest.Gsub", string.gsub(testStr, "Luat", "AirM2M"))
+
     --打印出目标字符串在查找字符串中的首尾位置
-    print("string.find\r\n",string.find(string1,"great"))
+    log.info("StringTest.Find", string.find(testStr, "NB"))
+
+    log.info("StringTest.Reverse", string.reverse(testStr))
+
+    local i = 12345
+    
+    log.info("StringTest.Format", string.format("This is %d test string : %s", i, testStr))
+
+    --注意string.char或者string.byte只针对一个字节，数值不可大于256
+    --将相应的数值转化为字符
+    log.info("String.Char", string.char(33, 48, 49, 50, 97, 98, 99))
+
+    --第一个参数是字符串，第二个参数是位置。功能是：将字符串中所给定的位置转化为数值
+    log.info("String.Byte", string.byte("abc", 1))
+    log.info("String.Byte", string.byte("abc", 2))
+    log.info("String.Byte", string.byte("abc", 3))
+
+    log.info("String.len", string.len(testStr))
+
+    log.info("String.rep", string.rep(testStr, 2))
+    
     --匹配字符串,加()指的是返回指定格式的字符串,截取字符串中的数字
-    print("string.match\r\n",string.match(string1,"luat(%d+)great"))
+    log.info("String.Match", string.match(testStr, "Luat (..) very NB"))
+
     --截取字符串，第二个参数是截取的起始位置，第三个是终止位置。
-    print("string.sub\r\n",string.sub(string1,1,4))
-end
-
-
-
---[[函数名：bitstohexs()
-   功能：将二进制数字转化为十六进制，并输出转换后的十六进制数字串，每个字节之间用分隔符隔开
-   打印出十六进制数字串
-   参数：第一个参数二进制数字，第二个是分隔符
-   返回值：          --]]
-
-local function binstohexs(binstring,s)    
-    print(string.toHex(binstring,s)) --调用了基本库中的common库，输出十六进制数字串
-end 
+    log.info("String.Sub", string.sub(testStr, 1, 4))
+   
+    log.info("String.ToHex", string.toHex(testStr))
+    log.info("String.ToHex", string.toHex(testStr, ","))
     
---[[函数名： hexstobits
-    功能：将十六进制数转换为二进制数，并储存在数组中,输出转化后的二进制数
-    参数：十六进制数
-    返回值：                           --]]
-local function hexstobins(hexstring)--将十六进制数字转化为二进制字符串
-    print(string.fromHex(hexstring)) --注意二进制中有些是可打印可见的，有些则不是
+    log.info("String.FromHex", string.fromHex("313233616263"))
+
+    -- log.info("String.ToValue", string.toValue("123abc"))
+
+    log.info("String.Utf8Len", string.utf8Len("Luat中国a"))
+
+    local table1 = string.utf8ToTable("中国2018")
+
+    for k, v in pairs(table1) do
+        log.info("String.Utf8ToTable", k, v)
+    end
+
+    log.info("String.RawurlEncode", string.rawurlEncode("####133"))
+    log.info("String.RawurlEncode", string.rawurlEncode("中国2018"))
+
+    log.info("String.UrlEncode", string.urlEncode("####133"))
+    log.info("String.UrlEncode", string.urlEncode("中国2018"))
+
+    log.info("String.FormatNumberThousands", string.formatNumberThousands(1234567890))
+
+    local table2 = string.split("Luat,is,very,nb", ",")
+
+    for k, v in pairs(table2) do
+        log.info("String.Split", k, v)
+    end
+
 end
 
---[[
-函数名：ucs2ToGb2312
-功能  ：unicode小端编码 转化为 gb2312编码,并打印出gd2312编码数据
-参数  ：
-        ucs2s：unicode小端编码数据,注意输入参数的字节数
-返回值：
-]]
-local function ucs2ToGb2312(ucs2s)
-    print("ucs2ToGb2312")    
-    local gd2312num = common.ucs2ToGb2312(ucs2s)--调用的是common.ucs2ToGb2312，返回的是编码所对应的字符串
-    print("gb2312  code：",gd2312num)    
+if baseTestConfig.stringTest == true then
+    sys.timerLoopStart(stringTest, loopTime)
 end
 
---[[
-函数名：gb2312ToUcs2
-功能  ：gb2312编码 转化为 unicode十六进制小端编码数据并打印
-参数  ：
-        gb2312s：gb2312编码数据，注意输入参数的字节数
-返回值：
-]]
-local function gb2312ToUcs2(gd2312num)
-    print("gb2312ToUcs2")
-    local ucs2num=common.gb2312ToUcs2(gd2312num)
-    print("unicode little-endian code:"..string.toHex(ucs2num))--要将二进制转换为十六进制，否则无法输出
-end 
-
---[[
-函数名：ucs2beToGb2312
-功能  ：unicode大端编码 转化为 gb2312编码，并打印出gb2312编码数据,
-大端编码数据是与小端编码数据位置调换
-参数  ：
-        ucs2s：unicode大端编码数据，注意输入参数的字节数
-返回值：
-]]
-local function ucs2beToGb2312(ucs2s)
-    print("ucs2beToGb2312")
-    local gd2312num=common.ucs2beToGb2312(ucs2s) --转化后的数据直接变成字符可以直接输出 
-    print("gd2312 code ："..gd2312num)    
+local function commonTest()
+    log.info("CommonTest.ucs2ToAscii", common.ucs2ToAscii("0031003200330034"))
+    log.info("CommonTest.nstrToUcs2Hex", common.nstrToUcs2Hex("+1234"))
+    log.info("CommonTest.numToBcdNum", common.numToBcdNum("8618126324567"))
+    log.info("CommonTest.bcdNumToNum", common.bcdNumToNum(common.fromHex("688121364265f7")))
+    log.info("CommonTest.ucs2ToGb2312", common.ucs2ToGb2312(string.fromHex("1162")))
+    log.info("CommonTest.gb2312ToUcs2", string.toHex(common.gb2312ToUcs2(string.fromHex("CED2"))))
+    log.info("CommonTest.ucs2beToGb2312", common.ucs2beToGb2312(string.fromHex("6211")))
+    log.info("CommonTest.gb2312ToUcs2be", string.toHex(common.gb2312ToUcs2be(string.fromHex("CED2"))))
+    log.info("CommonTest.ucs2ToUtf8", string.toHex(common.ucs2ToUtf8(string.fromHex("1162"))))
+    log.info("CommonTest.utf8ToUcs2", string.toHex(common.utf8ToUcs2(string.fromHex("E68891"))))
+    log.info("CommonTest.ucs2beToUtf8", string.toHex(common.ucs2beToUtf8(string.fromHex("6211"))))
+    log.info("CommonTest.utf8ToUcs2be", string.toHex(common.utf8ToUcs2be(string.fromHex("E68891"))))
+    log.info("CommonTest.utf8ToGb2312", common.utf8ToGb2312(string.fromHex("E68891")))
+    log.info("CommonTest.gb2312ToUtf8", common.gb2312ToUtf8(string.fromHex("CED2")))
+    local table1 = common.timeZoneConvert(2018,1,1,18,00,00,0,8)
+    for k, v in pairs(table1) do
+        log.info("CommonTest.timeZoneConvert", k, v)
+    end
 end
 
---[[
-函数名：gb2312ToUcs2be
-功能  ：gb2312编码 转化为 unicode大端编码，并打印出unicode大端编码
-参数  ：
-        gb2312s：gb2312编码数据，注意输入参数的字节数
-返回值：unicode大端编码数据
-]]
-function gb2312ToUcs2be(gb2312s)
-    print("gb2312ToUcs2be")
-    local ucs2benum=common.gb2312ToUcs2be(gb2312s)
-    print("unicode big-endian code :"..string.toHex(ucs2benum))
+if baseTestConfig.commonTest == true then
+    sys.timerLoopStart(commonTest, loopTime)
 end
-    
---[[
-函数名：ucs2ToUtf8
-功能  ：unicode小端编码 转化为 utf8编码,并打印出utf8十六进制编码数据
-参数  ：
-        ucs2s：unicode小端编码数据，注意输入参数的字节数
-返回值：
-]]
-local function ucs2ToUtf8(usc2)
-    print("ucs2ToUtf8")
-    local utf8num=common.ucs2ToUtf8(usc2)
-    print("utf8  code："..string.toHex(utf8num))
-    
-end
-
---[[
-函数名：utf8ToGb2312
-功能  ：utf8编码 转化为 gb2312编码,并打印出gb2312编码数据
-参数  ：
-        utf8s：utf8编码数据，注意输入参数的字节数
-返回值：
-]]
-local function utf8ToGb2312(utf8s)
-    print("utf8ToGb2312")
-    local gb2312num=common.utf8ToGb2312(utf8s)
-    print("gd2312 code："..gb2312num)
-    
-end
-
---[[ 函数调用--]]
-
-bittest()
--- packedtest()
--- stringtest()
-
---[[测试程序，接口举例，用模拟器就可以直接测试,以“我”为例--]]
-
--- binstohexs("ab")
--- hexstobins("3132")
-
--- ucs2ToGb2312(string.fromHex("1162"))  --"1162"是"我"字的ucs2编码，这里调用了string.fromHex将参数转化为二进制，也就是两个字节。
--- gb2312ToUcs2(string.fromHex("CED2")) --"CED2"是"我"字的gb22312编码  
--- ucs2beToGb2312(string.fromHex("6211"))--"6211"是"我"字的ucs2be编码
--- gb2312ToUcs2be(string.fromHex("CED2"))
--- ucs2ToUtf8(string.fromHex("1162"))
--- utf8ToGb2312(string.fromHex("E68891"))--"E68891"是"我"字的utf8编码

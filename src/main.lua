@@ -9,7 +9,7 @@ PRODUCT_KEY = "LMe0gb26NhPbBZ7t3mSk3dxA8f4ZZmM1"
 
 -- 测试配置 设置为true代表开启此项测试
 local LuatTasktestConfig = {
-    baseTest            = true
+    baseTest            = true,
     httpTest            = false,
     socketTest          = false,
     mqttTest            = false,
@@ -144,7 +144,7 @@ sys.taskInit(
     function()
         math.randomseed(os.time())
         while true do
-            print(math.random(1, 100))
+            log.info(math.random(1, 100))
             sys.wait(5000)
         end
     end
