@@ -9,10 +9,10 @@ PRODUCT_KEY = "LMe0gb26NhPbBZ7t3mSk3dxA8f4ZZmM1"
 
 -- 测试配置 设置为true代表开启此项测试
 local LuatTasktestConfig = {
-    baseTest            = true,
+    baseTest            = false,
     httpTest            = false,
     socketTest          = false,
-    mqttTest            = false,
+    mqttTest            = true,
     audioTest           = false,
     gpioTest            = false,
     fsTest              = false,
@@ -31,8 +31,8 @@ LOG_LEVEL = log.LOGLEVEL_TRACE
 -- console.setup(2, 115200)
 
 require "netLed"
-pmd.ldoset(2, pmd.LDO_VLCD)
-netLed.setup(true, pio.P0_1, pio.P0_4)
+-- pmd.ldoset(2, pmd.LDO_VLCD)
+-- netLed.setup(true, pio.P0_1, pio.P0_4)
 
 -- require "errDump"
 -- errDump.request("udp://ota.airm2m.com:9072")
@@ -48,6 +48,7 @@ netLed.setup(true, pio.P0_1, pio.P0_4)
 
 -- lib依赖管理
 require "sys"
+require "led"
 require "net"
 require "common"
 require "utils"
@@ -138,16 +139,6 @@ ntp.timeSync(
             function()
                 log.info("ntp.timeSync", "AutoTimeSync is Done !")
             end
-)
-
-sys.taskInit(
-    function()
-        math.randomseed(os.time())
-        while true do
-            log.info(math.random(1, 100))
-            sys.wait(5000)
-        end
-    end
 )
 
 -- 死机断言

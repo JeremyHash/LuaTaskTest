@@ -1,11 +1,16 @@
 -- GpioTest
 -- Author:LuatTest
 -- CreateDate:20200724
--- UpdateDate:20200724
+-- UpdateDate:20201014
 
-module(...,package.seeall)
+module(..., package.seeall)
 
-require"pins"
+-- 测试配置 设置为true代表开启此项测试
+local GpioTestConfig = {
+    gpioTest = false,
+    ledTest  = false,
+    miscTest = true
+}
 
 --[[
 有些GPIO需要打开对应的ldo电压域才能正常工作，电压域和对应的GPIO关系如下
@@ -33,22 +38,22 @@ x=15时：LDO输出3.177V
 ]]
 
 
--- local x = 1
+local x = 2
 
 -- pmd.ldoset(x,pmd.VLDO6)
 
 -- pmd.ldoset(x,pmd.LDO_VSIM1) -- GPIO 29、30、31
 
--- pmd.ldoset(x,pmd.LDO_VLCD) -- GPIO 0、1、2、3、4
+pmd.ldoset(x,pmd.LDO_VLCD) -- GPIO 0、1、2、3、4
 
 -- pmd.ldoset(x,pmd.LDO_VMMC) -- GPIO 24、25、26、27、28
 
 
 
 function gpioIntFnc(msg)
-    log.info("testGpioSingle.gpioIntFnc",msg)
+    log.info("GpioTest.MSG",msg)
     --上升沿中断
-    if msg==cpu.INT_GPIO_POSEDGE then
+    if msg == cpu.INT_GPIO_POSEDGE then
         log.info("Jeremy_GPIO", "上升")
     --下降沿中断
     else
@@ -56,54 +61,65 @@ function gpioIntFnc(msg)
     end
 end
 
+if GpioTestConfig.gpioTest == true then
+    getGpio0Fnc = pins.setup(0, gpioIntFnc)
+    getGpio1Fnc = pins.setup(1, gpioIntFnc)
+    getGpio2Fnc = pins.setup(2, gpioIntFnc)
+    getGpio3Fnc = pins.setup(3, gpioIntFnc)
+    getGpio4Fnc = pins.setup(4, gpioIntFnc)
+    getGpio5Fnc = pins.setup(5, gpioIntFnc)
+    getGpio9Fnc = pins.setup(9, gpioIntFnc)
+    getGpio10Fnc = pins.setup(10, gpioIntFnc)
+    getGpio11Fnc = pins.setup(11, gpioIntFnc)
+    getGpio12Fnc = pins.setup(12, gpioIntFnc)
+    getGpio13Fnc = pins.setup(13, gpioIntFnc)
+    getGpio14Fnc = pins.setup(14, gpioIntFnc)
+    getGpio15Fnc = pins.setup(15, gpioIntFnc)
+    getGpio17Fnc = pins.setup(17, gpioIntFnc)
+    getGpio18Fnc = pins.setup(18, gpioIntFnc)
+    getGpio19Fnc = pins.setup(19, gpioIntFnc)
+    getGpio20Fnc = pins.setup(20, gpioIntFnc)
+    getGpio21Fnc = pins.setup(21, gpioIntFnc)
+    getGpio22Fnc = pins.setup(22, gpioIntFnc)
+    getGpio23Fnc = pins.setup(23, gpioIntFnc)
+    getGpio24Fnc = pins.setup(24, gpioIntFnc)
+    getGpio25Fnc = pins.setup(25, gpioIntFnc)
+    getGpio26Fnc = pins.setup(26, gpioIntFnc)
+    getGpio27Fnc = pins.setup(27, gpioIntFnc)
+    getGpio28Fnc = pins.setup(28, gpioIntFnc)
+    getGpio29Fnc = pins.setup(29, gpioIntFnc)
+    getGpio30Fnc = pins.setup(30, gpioIntFnc)
+    getGpio31Fnc = pins.setup(31, gpioIntFnc)
+    getGpio32Fnc = pins.setup(32, gpioIntFnc)
+    getGpio33Fnc = pins.setup(33, gpioIntFnc)
+    getGpio34Fnc = pins.setup(34, gpioIntFnc)
+    getGpio35Fnc = pins.setup(35, gpioIntFnc)
+    getGpio36Fnc = pins.setup(36, gpioIntFnc)
+    getGpio37Fnc = pins.setup(37, gpioIntFnc)
+    getGpio38Fnc = pins.setup(38, gpioIntFnc)
+    getGpio39Fnc = pins.setup(39, gpioIntFnc)
+    getGpio40Fnc = pins.setup(40, gpioIntFnc)
+    getGpio41Fnc = pins.setup(41, gpioIntFnc)
+    getGpio42Fnc = pins.setup(42, gpioIntFnc)
+    getGpio49Fnc = pins.setup(49, gpioIntFnc)
+    getGpio50Fnc = pins.setup(50, gpioIntFnc)
+    getGpio51Fnc = pins.setup(51, gpioIntFnc)
+    getGpio52Fnc = pins.setup(52, gpioIntFnc)
+    getGpio61Fnc = pins.setup(61, gpioIntFnc)
+    getGpio62Fnc = pins.setup(62, gpioIntFnc)
+    getGpio63Fnc = pins.setup(63, gpioIntFnc)
+    getGpio64Fnc = pins.setup(64, gpioIntFnc)
+    getGpio65Fnc = pins.setup(65, gpioIntFnc)
+    getGpio66Fnc = pins.setup(66, gpioIntFnc)
+end
 
---GPIO13配置为中断，可通过getGpio13Fnc()获取输入电平，产生中断时，自动执行gpio13IntFnc函数
--- getGpio0Fnc = pins.setup(0,gpioIntFnc)
--- getGpio1Fnc = pins.setup(1,gpioIntFnc)
--- getGpio2Fnc = pins.setup(2,gpioIntFnc)
--- getGpio3Fnc = pins.setup(3,gpioIntFnc)
--- getGpio4Fnc = pins.setup(4,gpioIntFnc)
--- getGpio5Fnc = pins.setup(5,gpioIntFnc)
--- getGpio9Fnc = pins.setup(9,gpioIntFnc)
--- getGpio10Fnc = pins.setup(10,gpioIntFnc)
--- getGpio11Fnc = pins.setup(11,gpioIntFnc)
--- getGpio12Fnc = pins.setup(12,gpioIntFnc)
--- getGpio13Fnc = pins.setup(13,gpioIntFnc)
--- getGpio14Fnc = pins.setup(14,gpioIntFnc)
--- getGpio15Fnc = pins.setup(15,gpioIntFnc)
--- getGpio17Fnc = pins.setup(17,gpioIntFnc)
--- getGpio18Fnc = pins.setup(18,gpioIntFnc)
--- getGpio19Fnc = pins.setup(19,gpioIntFnc)
--- getGpio20Fnc = pins.setup(20,gpioIntFnc)
--- getGpio21Fnc = pins.setup(21,gpioIntFnc)
--- getGpio22Fnc = pins.setup(22,gpioIntFnc)
--- getGpio23Fnc = pins.setup(23,gpioIntFnc)
--- getGpio24Fnc = pins.setup(24,gpioIntFnc)
--- getGpio25Fnc = pins.setup(25,gpioIntFnc)
--- getGpio26Fnc = pins.setup(26,gpioIntFnc)
--- getGpio27Fnc = pins.setup(27,gpioIntFnc)
--- getGpio28Fnc = pins.setup(28,gpioIntFnc)
--- getGpio29Fnc = pins.setup(29,gpioIntFnc)
--- getGpio30Fnc = pins.setup(30,gpioIntFnc)
--- getGpio31Fnc = pins.setup(31,gpioIntFnc)
--- getGpio32Fnc = pins.setup(32,gpioIntFnc)
--- getGpio33Fnc = pins.setup(33,gpioIntFnc)
--- getGpio34Fnc = pins.setup(34,gpioIntFnc)
--- getGpio35Fnc = pins.setup(35,gpioIntFnc)
--- getGpio36Fnc = pins.setup(36,gpioIntFnc)
-getGpio37Fnc = pins.setup(37,gpioIntFnc)
-getGpio38Fnc = pins.setup(38,gpioIntFnc)
-getGpio39Fnc = pins.setup(39,gpioIntFnc)
-getGpio40Fnc = pins.setup(40,gpioIntFnc)
-getGpio41Fnc = pins.setup(41,gpioIntFnc)
-getGpio42Fnc = pins.setup(42,gpioIntFnc)
--- getGpio49Fnc = pins.setup(49,gpioIntFnc)
--- getGpio50Fnc = pins.setup(50,gpioIntFnc)
--- getGpio51Fnc = pins.setup(51,gpioIntFnc)
--- getGpio52Fnc = pins.setup(52,gpioIntFnc)
--- getGpio61Fnc = pins.setup(61,gpioIntFnc)
--- getGpio62Fnc = pins.setup(62,gpioIntFnc)
--- getGpio63Fnc = pins.setup(63,gpioIntFnc)
--- getGpio64Fnc = pins.setup(64,gpioIntFnc)
--- getGpio65Fnc = pins.setup(65,gpioIntFnc)
-getGpio66Fnc = pins.setup(66,gpioIntFnc)
+-- local function ledTest()
+--     local gpio1 = pins.setup(1)
+--     led.blinkPwm(gpio1, 500, 500)
+--     local gpio4 = pins.setup(4)
+--     led.blinkPwm(gpio4, 100, 500)
+-- end
+
+-- if GpioTestConfig.ledTest == true then
+--     ledTest()
+-- end

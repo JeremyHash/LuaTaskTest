@@ -11,7 +11,8 @@ local baseTestConfig = {
     bitTest    = false,
     packTest   = false,
     stringTest = false,
-    commonTest = true
+    commonTest = false,
+    miscTest   = true
 }
 
 local loopTime = 10000
@@ -35,11 +36,10 @@ local function getAdcVal()
     log.info("AdcTest.ADC3.read", adcval, voltval)
 end
 
--- 开启对应的adc通道
-adc.open(2)
-adc.open(3)
-
 if baseTestConfig.adcTest == true then
+    -- 开启对应的adc通道
+    adc.open(2)
+    adc.open(3)
     -- 定时每秒读取adc值
     sys.timerLoopStart(getAdcVal, loopTime)
 end
@@ -203,7 +203,7 @@ local function commonTest()
     log.info("CommonTest.ucs2ToAscii", common.ucs2ToAscii("0031003200330034"))
     log.info("CommonTest.nstrToUcs2Hex", common.nstrToUcs2Hex("+1234"))
     log.info("CommonTest.numToBcdNum", common.numToBcdNum("8618126324567"))
-    log.info("CommonTest.bcdNumToNum", common.bcdNumToNum(common.fromHex("688121364265f7")))
+    log.info("CommonTest.bcdNumToNum", common.bcdNumToNum(string.fromHex("688121364265f7")))
     log.info("CommonTest.ucs2ToGb2312", common.ucs2ToGb2312(string.fromHex("1162")))
     log.info("CommonTest.gb2312ToUcs2", string.toHex(common.gb2312ToUcs2(string.fromHex("CED2"))))
     log.info("CommonTest.ucs2beToGb2312", common.ucs2beToGb2312(string.fromHex("6211")))
@@ -214,7 +214,8 @@ local function commonTest()
     log.info("CommonTest.utf8ToUcs2be", string.toHex(common.utf8ToUcs2be(string.fromHex("E68891"))))
     log.info("CommonTest.utf8ToGb2312", common.utf8ToGb2312(string.fromHex("E68891")))
     log.info("CommonTest.gb2312ToUtf8", common.gb2312ToUtf8(string.fromHex("CED2")))
-    local table1 = common.timeZoneConvert(2018,1,1,18,00,00,0,8)
+
+    local table1 = common.timeZoneConvert(2020, 10, 14, 11, 24, 25, 8, 8)
     for k, v in pairs(table1) do
         log.info("CommonTest.timeZoneConvert", k, v)
     end
@@ -222,4 +223,23 @@ end
 
 if baseTestConfig.commonTest == true then
     sys.timerLoopStart(commonTest, loopTime)
+end
+
+local function miscTest()
+    -- misc.setClock({year=2017, month=2, day=14, hour=14, min=2, sec=58})
+    local table1 = misc.getClock()
+    for k, v in pairs(table1) do
+        log.info("MiscTest.GetClock", k, v)
+    end
+    log.info("MiscTest.GetWeek", misc.getWeek())
+    log.info("MiscTest.GetCalib", misc.getCalib())
+    misc.setSn("Jeremy", function () log.info("MiscTest.SetSnCb", "SUCCESS") end)
+    log.info("MiscTest.GetSn", misc.getSn())
+    log.info("MiscTest.GetImei", misc.getImei())
+    log.info("MiscTest.GetVbatt", misc.getVbatt())
+    log.info("MiscTest.GetMuid", misc.getMuid())
+end
+
+if baseTestConfig.miscTest == true then
+    sys.timerLoopStart(miscTest, loopTime)
 end
