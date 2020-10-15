@@ -13,7 +13,8 @@ local baseTestConfig = {
     stringTest = false,
     commonTest = false,
     miscTest   = false,
-    netTest    = false
+    netTest    = false,
+    tableTest  = true
 }
 
 local loopTime = 10000
@@ -269,4 +270,27 @@ end
 
 if baseTestConfig.netTest == true then
     sys.timerLoopStart(netTest, loopTime)
+end
+
+local function tableTest()
+    local fruits = {"banana","orange","apple"}
+
+    log.info("普通连接后的字符串 ",table.concat(fruits))
+    log.info("指定连接字符连接后的字符串 ",table.concat(fruits,", "))
+    log.info("指定索引连接后的字符串 ",table.concat(fruits,", ", 2,3))
+
+    table.insert(fruits,"mango")
+    log.info("索引为4的元素为 ", fruits[4])
+    table.insert(fruits,2,"grapes")
+    log.info("索引为2的元素为 ", fruits[2])
+    log.info("最后一个元素为 ",fruits[5])
+
+    lastest = table.remove(fruits)
+    log.info("移除的最后一个元素为 ", lastest)
+    firstest = table.remove(fruits, 1)
+    log.info("移除的第一个元素为 ", firstest)
+end
+
+if baseTestConfig.tableTest == true then
+    sys.timerLoopStart(tableTest, loopTime)
 end

@@ -171,29 +171,11 @@ local function testPlaySmsCb(result)
     end
 end
 
--- testPlayRec回调
-local function testPlayRecCb(result)
+-- testPlayStop回调
+local function testPlayStopCb(result)
     if result == 0 then
-        log.info("testPlayRecCb.result","录音播放成功:",result)
-    elseif result == 1 then
-        log.info("testPlayRecCb.result","播放出错:",result)
-    elseif result == 2 then
-        log.info("testPlayRecCb.result","播放优先级不够，没有播放:",result)
-    elseif result == 3 then
-        log.info("testPlayRecCb.result","传入的参数出错，没有播放:",result)
-    elseif result == 4 then
-        log.info("testPlayRecCb.result","被新的播放请求中止:",result)
-    elseif result == 5 then
-        log.info("testPlayRecCb.result","调用audio.stop接口主动停止:",result)
-    end
-end
-
--- testRec回调
-local function testRecCb(result)
-    if result then
-        log.info("testRecCb.result","录音成功:",result)
-    else
-        log.info("testRecCb.result","录音失败:",result)
+        log.info('audio.stop','SUCCESS')
+        
     end
 end
 
@@ -203,28 +185,34 @@ sys.taskInit(function()
     datas = {"audiocore.AMR"}  
     local vol = 1
     local count = 1
+    local speed = 2
     while true do
         -- 播放音频文件
         log.info("vol",vol)
         log.info("testPlayFile","testPlayFile:第"..count.."次")
-        audio.play(CALL,"FILE","/lua/call.mp3",vol,testPlayFileCb)
-        sys.wait(5000)
+        audio.play(CALL,"FILE","/lua/call.mp3",vol,testPlayFileCb,true)
+        sys.wait(3000)
+        audio.stop(testPlayStopCb)
 
         -- 播放tts
         log.info("vol",vol)
         log.info("testPlayTts","testPlayTts:第"..count.."次")
+        audio.setTTSSpeed(speed)
         audio.play(TTS,"TTS",ttsStr,vol,testPlayTtsCb)
         sys.wait(5000)
-          
+        
         -- tts播放时，请求播放新的tts
         log.info("vol",vol)
         log.info("testPlayTts","testPlayTts:第"..count.."次")
         audio.play(TTS,"TTS",ttsStr,vol,testPlayTtsCb)
-        sys.wait(2000)
+        sys.wait(1000)
         --设置优先级相同时的播放策略，1表示停止当前播放，播放新的播放请求
         audio.setStrategy(1)
         audio.play(TTS,"TTS",ttsStr,vol,newtestPlayTtsCb)
-        sys.wait(5000)
+        sys.wait(1000)
+        --设置优先级相同时的播放策略，0表示继续播放正在播放的音频，忽略请求播放的新音频
+        audio.setStrategy(0)
+        audio.play(TTS,"TTS",ttsStr,vol,newtestPlayTtsCb)
 
         -- 播放冲突1
         log.info("vol",vol)
@@ -279,5 +267,6 @@ sys.taskInit(function()
 
         count = count + 1
         vol = (vol==7) and 1 or (vol+1)
+        speed = (vol==100) and 2 or (vol+14)
     end
 end)
