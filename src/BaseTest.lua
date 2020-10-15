@@ -13,7 +13,9 @@ local baseTestConfig = {
     stringTest = false,
     commonTest = false,
     miscTest   = false,
-    netTest    = false
+    netTest    = false,
+    ntpTest    = false,
+    nvmTest    = true
 }
 
 local loopTime = 10000
@@ -258,15 +260,71 @@ if baseTestConfig.miscTest == true then
     sys.timerLoopStart(miscTest, loopTime)
 end
 
-local function netTest()
-    net.switchFly(true)
-    log.info("NetTest.SwitchFly", "飞行模式打开")
-    sys.wait(5000)
-    net.switchFly(false)
-    log.info("NetTest.SwitchFly", "飞行模式关闭")
-
+if baseTestConfig.netTest == true then
+    sys.taskInit(
+        function()
+            sys.waitUntil("IP_READY_IND")
+            while true do
+                net.switchFly(true)
+                log.info("NetTest.SwitchFly", "打开飞行模式")
+                sys.wait(10000)
+                net.switchFly(false)
+                log.info("NetTest.SwitchFly", "关闭飞行模式")
+                log.info("NetTest.GetNetMode", net.getNetMode())
+                log.info("NetTest.GetState", net.getState())
+                log.info("NetTest.GetMcc", net.getMcc())
+                log.info("NetTest.GetMnc", net.getMnc())
+                log.info("NetTest.GetLac", net.getLac())
+                log.info("NetTest.GetCi", net.getCi())
+                log.info("NetTest.GetRssi", net.getRssi())
+                log.info("NetTest.GetCellInfo", net.getCellInfo())
+                log.info("NetTest.GetCellInfoExt", net.getCellInfoExt())
+                log.info("NetTest.GetTa", net.getTa())
+                -- net.getMultiCell(function(cells)
+                --     for k, v in pairs(cells) do
+                --         log.info("NetTest.GetMultiCell" .. k, v)
+                --         if type(v) == "table" then
+                --             for i, j in pairs(v) do
+                --                 print(i, j)
+                --             end
+                --         end
+                --     end
+                -- end)
+                log.info("NetTest.CengQueryPoll.开启查询", net.cengQueryPoll(10000))
+                log.info("NetTest.CsqQueryPoll.开启查询", net.csqQueryPoll(10000))
+                log.info("NetTest.StartQueryAll.开启查询", net.startQueryAll(10000))
+                sys.wait(600000)
+                log.info("NetTest.StopQueryAll.关闭查询", net.stopQueryAll())
+                log.info("NetTest.SetEngMode.关闭工程模式", net.setEngMode(0))
+                sys.wait(10000)
+                log.info("NetTest.SetEngMode.开启工程模式", net.setEngMode(1))
+            end
+        end
+    )
 end
 
-if baseTestConfig.netTest == true then
-    sys.timerLoopStart(netTest, loopTime)
+local function ntpTest()
+    local ntpServers = ntp.getServers()
+    for k, v in pairs(ntpServers) do
+        log.info("NtpTest.NtpServer" .. k, v)
+    end
+    ntp.setServers({"www.baidu.com", "www.sina.com"})
+    local ntpServers = ntp.getServers()
+    for k, v in pairs(ntpServers) do
+        log.info("NtpTest.NtpServer" .. k, v)
+    end
+    local ntpStatus = ntp.isEnd()
+    log.info("NtpTest.Status", ntpStatus)
+end
+
+if baseTestConfig.ntpTest == true then
+    sys.timerLoopStart(ntpTest, loopTime)
+end
+
+local function nvmTest()
+    
+end
+
+if baseTestConfig.nvmTest == true then
+    sys.timerLoopStart(nvmTest, loopTime)
 end
