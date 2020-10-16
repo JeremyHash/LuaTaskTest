@@ -19,9 +19,12 @@ local baseTestConfig = {
     tableTest    = false,
     pmTest       = false,
     powerKeyTest = false,
-    rilTest      = true,
-    simTest      = true,
-    sysTest      = false
+    rilTest      = false,
+    simTest      = false,
+    sysTest      = false,
+    jsonTest     = false,
+    rtosTest     = false,
+    mathTest     = true
 }
 
 local loopTime = 10000
@@ -362,22 +365,22 @@ if baseTestConfig.nvmTest == true then
 end
 
 local function tableTest()
-    local fruits = {"banana","orange","apple"}
+    local fruits = {"banana", "orange", "apple"}
 
-    log.info("普通连接后的字符串 ",table.concat(fruits))
-    log.info("指定连接字符连接后的字符串 ",table.concat(fruits,", "))
-    log.info("指定索引连接后的字符串 ",table.concat(fruits,", ", 2,3))
+    log.info("TableTest.Concat", table.concat(fruits))
+    log.info("TableTest.Concat", table.concat(fruits, ", "))
+    log.info("TableTest.Concat", table.concat(fruits,", ", 2, 3))
 
-    table.insert(fruits,"mango")
-    log.info("索引为4的元素为 ", fruits[4])
-    table.insert(fruits,2,"grapes")
-    log.info("索引为2的元素为 ", fruits[2])
-    log.info("最后一个元素为 ",fruits[5])
+    table.insert(fruits, "mango")
+    log.info("TableTest.Insert.4", fruits[4])
+    table.insert(fruits, 2, "grapes")
+    log.info("TableTest.Insert.2", fruits[2])
+    log.info("TableTest.Insert.5",fruits[5])
 
     lastest = table.remove(fruits)
-    log.info("移除的最后一个元素为 ", lastest)
+    log.info("TableTest.Remove", lastest)
     firstest = table.remove(fruits, 1)
-    log.info("移除的第一个元素为 ", firstest)
+    log.info("TableTest.Remove", firstest)
 end
 
 if baseTestConfig.tableTest == true then
@@ -457,4 +460,89 @@ if baseTestConfig.sysTest == true then
             sys.restart("重启测试")
         end
     )
+end
+
+local function jsonTest()
+    local torigin =
+    {
+        KEY1 = "VALUE1",
+        KEY2 = "VALUE2",
+        KEY3 = "VALUE3",
+        KEY4 = "VALUE4",
+        KEY5 = {KEY5_1 = "VALUE5_1", KEY5_2 = "VALUE5_2"},
+        KEY6 = {1, 2, 3},
+    }
+
+    local jsondata = json.encode(torigin)
+    log.info("JsonTest.encode", jsondata)
+
+
+
+
+    --{"KEY3":"VALUE3","KEY4":"VALUE4","KEY2":"VALUE2","KEY1":"VALUE1","KEY5":{"KEY5_2":"VALU5_2","KEY5_1":"VALU5_1"}},"KEY6":[1,2,3]}
+    local origin = "{\"KEY3\":\"VALUE3\",\"KEY4\":\"VALUE4\",\"KEY2\":\"VALUE2\",\"KEY1\":\"VALUE1\",\"KEY5\":{\"KEY5_2\":\"VALUE5_2\",\"KEY5_1\":\"VALUE5_1\"},\"KEY6\":[1,2,3]}"
+    local tjsondata, result, errinfo = json.decode(origin)
+    if result and type(tjsondata) == "table" then
+        log.info("JsonTest.decode KEY1", tjsondata["KEY1"])
+        log.info("JsonTest.decode KEY2", tjsondata["KEY2"])
+        log.info("JsonTest.decode KEY3", tjsondata["KEY3"])
+        log.info("JsonTest.decode KEY4", tjsondata["KEY4"])
+        log.info("JsonTest.decode KEY5", tjsondata["KEY5"]["KEY5_1"],tjsondata["KEY5"]["KEY5_2"])
+        log.info("JsonTest.decode KEY6", tjsondata["KEY6"][1],tjsondata["KEY6"][2],tjsondata["KEY6"][3])
+    else
+        log.info("JsonTest.decode error", errinfo)
+    end
+end
+
+if baseTestConfig.jsonTest == true then
+    sys.timerLoopStart(jsonTest, loopTime)
+end
+
+local function rtosTest()
+    local testPath = "/RtosTestPath"
+
+    log.info("RtosTest.Poweron_reason", rtos.poweron_reason())
+
+    if rtos.make_dir(testPath) then
+        log.info("RtosTest.MakeDir", "SUCCESS")
+    else
+        log.info("RtosTest.MakeDir", "FAIL")
+    end
+
+    if rtos.remove_dir(testPath) then
+        log.info("RtosTest.RemoveDir", "SUCCESS")
+    else
+        log.info("RtosTest.RemoveDir", "FAIL")
+    end
+
+    log.info("RtosTest.Toint64", string.toHex(rtos.toint64("12345678", "little")))
+end
+
+if baseTestConfig.rtosTest == true then
+    sys.timerLoopStart(rtosTest, loopTime)
+end
+
+local function mathTest()
+    log.info("MathTest.Abs", math.abs(-10086))
+    log.info("MathTest.Ceil", math.ceil(101.456))
+    log.info("MathTest.Floor", math.floor(101.456))
+    log.info("MathTest.Fmod", math.fmod(10, 3))
+    log.info("MathTest.Huge", math.huge)
+    log.info("MathTest.Max", math.max(1, 2, 3, 4.15, 5.78))
+    log.info("MathTest.Min", math.min(1, 2, 3, 4.15, 5.78))
+    log.info("MathTest.MaxInteger", math.maxinteger)
+    log.info("MathTest.MinInteger", math.mininteger)
+    log.info("MathTest.Modf", math.modf(1.15))
+    log.info("MathTest.Pi", math.pi)
+    log.info("MathTest.Sqrt", math.sqrt(9))
+    -- log.info("MathTest.ToInteger", math.tointeger(1.123))
+    -- log.info("MathTest.Type", math.type(1))
+    -- log.info("MathTest.Type", math.type(1.123))
+    -- log.info("MathTest.Type", math.type("1.123"))
+    -- log.info("MathTest.Ult", math.ult(1.1,2.2))
+    -- log.info("MathTest.Ult", math.ult(2.2,1.1))
+end
+
+if baseTestConfig.mathTest == true then
+    sys.timerLoopStart(mathTest, loopTime)
 end

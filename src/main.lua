@@ -21,6 +21,7 @@ local LuatTasktestConfig = {
     lbsLocTest          = false,
     keyPadTest          = false,
     uartTransferTest    = false,
+    cryptoTest          = false
 }
 
 require "log"
@@ -117,6 +118,10 @@ end
 
 if LuatTasktestConfig.uartTransferTest then
     require "UartTransferTest"
+end
+
+if LuatTasktestConfig.cryptoTest then
+    require "CryptoTest"
 end
 
 
