@@ -20,7 +20,6 @@ local LuatTasktestConfig = {
     dispTest            = false,
     lbsLocTest          = false,
     keyPadTest          = false,
-    rilTest             = false,
     uartTransferTest    = false,
 }
 
@@ -66,9 +65,11 @@ require "uiWin"
 require "scanCode"
 require"lbsLoc"
 require "pm"
+require "nvm"
+require "powerKey"
 
 -- 保持唤醒
-pm.wake("LuaTaskTest")
+-- pm.wake("LuaTaskTest")
 
 if LuatTasktestConfig.baseTest then
     require "BaseTest"
@@ -112,10 +113,6 @@ end
 
 if LuatTasktestConfig.keyPadTest then
     require "KeyPadTest"
-end
-
-if LuatTasktestConfig.rilTest then
-    require "RilTest"
 end
 
 if LuatTasktestConfig.uartTransferTest then

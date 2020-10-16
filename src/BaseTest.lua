@@ -7,16 +7,21 @@ module(..., package.seeall)
 
 -- 测试配置 设置为true代表开启此项测试
 local baseTestConfig = {
-    adcTest    = false,
-    bitTest    = false,
-    packTest   = false,
-    stringTest = false,
-    commonTest = false,
-    miscTest   = false,
-    netTest    = false,
-    tableTest  = true
-    ntpTest    = false,
-    nvmTest    = true
+    adcTest      = false,
+    bitTest      = false,
+    packTest     = false,
+    stringTest   = false,
+    commonTest   = false,
+    miscTest     = false,
+    netTest      = false,
+    ntpTest      = false,
+    nvmTest      = false,
+    tableTest    = false,
+    pmTest       = false,
+    powerKeyTest = false,
+    rilTest      = true,
+    simTest      = true,
+    sysTest      = false
 }
 
 local loopTime = 10000
@@ -322,6 +327,40 @@ if baseTestConfig.ntpTest == true then
     sys.timerLoopStart(ntpTest, loopTime)
 end
 
+if baseTestConfig.nvmTest == true then
+    sys.taskInit(
+        function()
+            log.info("NVMMMMM")
+            require "Config"
+            local count = 2
+            local boolVal = true
+            nvm.init("Config.lua")
+
+            while true do
+                log.info("NvmTest.StrPara", nvm.get("strPara"))
+                log.info("NvmTest.NumPara", nvm.get("numPara"))
+                log.info("NvmTest.BoolPara", nvm.get("boolPara"))
+                local personTablePara = nvm.get("personTablePara")
+                log.info("NvmTest.PersonTablePara", personTablePara[1], personTablePara[2], personTablePara[3])
+                log.info("NvmTest.ScoreTablePara.chinese", nvm.gett("scoreTablePara", "chinese"))
+                log.info("NvmTest.ScoreTablePara.math", nvm.gett("scoreTablePara", "math"))
+                log.info("NvmTest.ScoreTablePara.english", nvm.gett("scoreTablePara", "english"))
+                sys.wait(10000)
+                nvm.set("strPara", "LuatTest" .. count)
+                nvm.set("numPara", count)
+                nvm.set("boolPara", boolVal)
+                nvm.set("personTablePara", {"name" .. count, "age" .. count, "sex" .. count})
+                nvm.sett("scoreTablePara", "chinese", count)
+                nvm.flush()
+                log.info("NvmTest.Flush", "SUCCESS")
+                count = count + 1
+                boolVal = not boolVal
+                nvm.restore()
+            end
+        end
+    )
+end
+
 local function tableTest()
     local fruits = {"banana","orange","apple"}
 
@@ -345,11 +384,77 @@ if baseTestConfig.tableTest == true then
     sys.timerLoopStart(tableTest, loopTime)
 end
 
-
-local function nvmTest()
-    
+local function pmTest()
+    log.info("PmTest.IsSleep", pm.isSleep())
+    pm.wake("PmTest")
+    log.info("PmTest.Wake", "SUCCESS")
+    log.info("PmTest.IsSleep", pm.isSleep())
+    pm.sleep("PmTest")
+    log.info("PmTest.Sleep", "SUCCESS")
+    log.info("PmTest.IsSleep", pm.isSleep())
 end
 
-if baseTestConfig.nvmTest == true then
-    sys.timerLoopStart(nvmTest, loopTime)
+if baseTestConfig.pmTest == true then
+    sys.timerLoopStart(pmTest, loopTime)
+end
+
+local function longCb()
+    log.info("PowerKeyTest", "LongCb")
+end
+
+local function shortCb()
+    log.info("PowerKeyTest", "ShortCb")
+end
+
+if baseTestConfig.powerKeyTest == true then
+    powerKey.setup(3000, longCb, shortCb)
+end
+
+if baseTestConfig.rilTest == true then
+    local rilTestCount = 1
+
+    sys.taskInit(
+        function()
+            while true do
+                log.info("RilTest.RilTestCount", "第"..rilTestCount.."次测试开始")
+                ril.request("AT+CSQ")
+                sys.wait(2000)
+                ril.request("AT+CGDCONT?")
+                sys.wait(2000)
+                ril.request("AT+CGATT?")
+                sys.wait(2000)
+                ril.request("AT+EEMGINFO?")
+                sys.wait(2000)
+                log.info("RilTest.RilTestCount", "第"..rilTestCount.."次测试完成")
+                rilTestCount = rilTestCount + 1
+            end
+        end
+    )
+end
+
+local function simTest()
+    log.info("SimTest.GetIccid", sim.getIccid())
+    log.info("SimTest.GetImsi", sim.getImsi())
+    log.info("SimTest.GetMcc", sim.getMcc())
+    log.info("SimTest.GetMnc", sim.getMnc())
+    log.info("SimTest.GetStatus", sim.getStatus())
+    -- log.info("SimTest.GetType", sim.getType())
+    -- sim.setQueryNumber(true)
+    -- log.info("SimTest.SetQueryNumber", "SUCCESS")
+    -- log.info("SimTest.GetNumber", sim.getNumber())
+end
+
+if baseTestConfig.simTest == true then
+    sys.timerLoopStart(simTest, loopTime)
+end
+
+if baseTestConfig.sysTest == true then
+    sys.taskInit(
+        function()
+            sys.wait(5000)
+            log.info("SysTest.Restart", "5秒后模块即将重启")
+            sys.wait(5000)
+            sys.restart("重启测试")
+        end
+    )
 end
