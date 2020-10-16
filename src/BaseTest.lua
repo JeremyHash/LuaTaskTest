@@ -7,16 +7,24 @@ module(..., package.seeall)
 
 -- 测试配置 设置为true代表开启此项测试
 local baseTestConfig = {
-    adcTest    = false,
-    bitTest    = false,
-    packTest   = false,
-    stringTest = false,
-    commonTest = false,
-    miscTest   = false,
-    netTest    = false,
-    tableTest  = true
-    ntpTest    = false,
-    nvmTest    = true
+    adcTest      = false,
+    bitTest      = false,
+    packTest     = false,
+    stringTest   = false,
+    commonTest   = false,
+    miscTest     = false,
+    netTest      = false,
+    ntpTest      = false,
+    nvmTest      = false,
+    tableTest    = false,
+    pmTest       = false,
+    powerKeyTest = false,
+    rilTest      = false,
+    simTest      = false,
+    sysTest      = false,
+    jsonTest     = false,
+    rtosTest     = false,
+    mathTest     = true
 }
 
 local loopTime = 10000
@@ -322,34 +330,219 @@ if baseTestConfig.ntpTest == true then
     sys.timerLoopStart(ntpTest, loopTime)
 end
 
+if baseTestConfig.nvmTest == true then
+    sys.taskInit(
+        function()
+            log.info("NVMMMMM")
+            require "Config"
+            local count = 2
+            local boolVal = true
+            nvm.init("Config.lua")
+
+            while true do
+                log.info("NvmTest.StrPara", nvm.get("strPara"))
+                log.info("NvmTest.NumPara", nvm.get("numPara"))
+                log.info("NvmTest.BoolPara", nvm.get("boolPara"))
+                local personTablePara = nvm.get("personTablePara")
+                log.info("NvmTest.PersonTablePara", personTablePara[1], personTablePara[2], personTablePara[3])
+                log.info("NvmTest.ScoreTablePara.chinese", nvm.gett("scoreTablePara", "chinese"))
+                log.info("NvmTest.ScoreTablePara.math", nvm.gett("scoreTablePara", "math"))
+                log.info("NvmTest.ScoreTablePara.english", nvm.gett("scoreTablePara", "english"))
+                sys.wait(10000)
+                nvm.set("strPara", "LuatTest" .. count)
+                nvm.set("numPara", count)
+                nvm.set("boolPara", boolVal)
+                nvm.set("personTablePara", {"name" .. count, "age" .. count, "sex" .. count})
+                nvm.sett("scoreTablePara", "chinese", count)
+                nvm.flush()
+                log.info("NvmTest.Flush", "SUCCESS")
+                count = count + 1
+                boolVal = not boolVal
+                nvm.restore()
+            end
+        end
+    )
+end
+
 local function tableTest()
-    local fruits = {"banana","orange","apple"}
+    local fruits = {"banana", "orange", "apple"}
 
-    log.info("普通连接后的字符串 ",table.concat(fruits))
-    log.info("指定连接字符连接后的字符串 ",table.concat(fruits,", "))
-    log.info("指定索引连接后的字符串 ",table.concat(fruits,", ", 2,3))
+    log.info("TableTest.Concat", table.concat(fruits))
+    log.info("TableTest.Concat", table.concat(fruits, ", "))
+    log.info("TableTest.Concat", table.concat(fruits,", ", 2, 3))
 
-    table.insert(fruits,"mango")
-    log.info("索引为4的元素为 ", fruits[4])
-    table.insert(fruits,2,"grapes")
-    log.info("索引为2的元素为 ", fruits[2])
-    log.info("最后一个元素为 ",fruits[5])
+    table.insert(fruits, "mango")
+    log.info("TableTest.Insert.4", fruits[4])
+    table.insert(fruits, 2, "grapes")
+    log.info("TableTest.Insert.2", fruits[2])
+    log.info("TableTest.Insert.5",fruits[5])
 
     lastest = table.remove(fruits)
-    log.info("移除的最后一个元素为 ", lastest)
+    log.info("TableTest.Remove", lastest)
     firstest = table.remove(fruits, 1)
-    log.info("移除的第一个元素为 ", firstest)
+    log.info("TableTest.Remove", firstest)
 end
 
 if baseTestConfig.tableTest == true then
     sys.timerLoopStart(tableTest, loopTime)
 end
 
-
-local function nvmTest()
-    
+local function pmTest()
+    log.info("PmTest.IsSleep", pm.isSleep())
+    pm.wake("PmTest")
+    log.info("PmTest.Wake", "SUCCESS")
+    log.info("PmTest.IsSleep", pm.isSleep())
+    pm.sleep("PmTest")
+    log.info("PmTest.Sleep", "SUCCESS")
+    log.info("PmTest.IsSleep", pm.isSleep())
 end
 
-if baseTestConfig.nvmTest == true then
-    sys.timerLoopStart(nvmTest, loopTime)
+if baseTestConfig.pmTest == true then
+    sys.timerLoopStart(pmTest, loopTime)
+end
+
+local function longCb()
+    log.info("PowerKeyTest", "LongCb")
+end
+
+local function shortCb()
+    log.info("PowerKeyTest", "ShortCb")
+end
+
+if baseTestConfig.powerKeyTest == true then
+    powerKey.setup(3000, longCb, shortCb)
+end
+
+if baseTestConfig.rilTest == true then
+    local rilTestCount = 1
+
+    sys.taskInit(
+        function()
+            while true do
+                log.info("RilTest.RilTestCount", "第"..rilTestCount.."次测试开始")
+                ril.request("AT+CSQ")
+                sys.wait(2000)
+                ril.request("AT+CGDCONT?")
+                sys.wait(2000)
+                ril.request("AT+CGATT?")
+                sys.wait(2000)
+                ril.request("AT+EEMGINFO?")
+                sys.wait(2000)
+                log.info("RilTest.RilTestCount", "第"..rilTestCount.."次测试完成")
+                rilTestCount = rilTestCount + 1
+            end
+        end
+    )
+end
+
+local function simTest()
+    log.info("SimTest.GetIccid", sim.getIccid())
+    log.info("SimTest.GetImsi", sim.getImsi())
+    log.info("SimTest.GetMcc", sim.getMcc())
+    log.info("SimTest.GetMnc", sim.getMnc())
+    log.info("SimTest.GetStatus", sim.getStatus())
+    -- log.info("SimTest.GetType", sim.getType())
+    -- sim.setQueryNumber(true)
+    -- log.info("SimTest.SetQueryNumber", "SUCCESS")
+    -- log.info("SimTest.GetNumber", sim.getNumber())
+end
+
+if baseTestConfig.simTest == true then
+    sys.timerLoopStart(simTest, loopTime)
+end
+
+if baseTestConfig.sysTest == true then
+    sys.taskInit(
+        function()
+            sys.wait(5000)
+            log.info("SysTest.Restart", "5秒后模块即将重启")
+            sys.wait(5000)
+            sys.restart("重启测试")
+        end
+    )
+end
+
+local function jsonTest()
+    local torigin =
+    {
+        KEY1 = "VALUE1",
+        KEY2 = "VALUE2",
+        KEY3 = "VALUE3",
+        KEY4 = "VALUE4",
+        KEY5 = {KEY5_1 = "VALUE5_1", KEY5_2 = "VALUE5_2"},
+        KEY6 = {1, 2, 3},
+    }
+
+    local jsondata = json.encode(torigin)
+    log.info("JsonTest.encode", jsondata)
+
+
+
+
+    --{"KEY3":"VALUE3","KEY4":"VALUE4","KEY2":"VALUE2","KEY1":"VALUE1","KEY5":{"KEY5_2":"VALU5_2","KEY5_1":"VALU5_1"}},"KEY6":[1,2,3]}
+    local origin = "{\"KEY3\":\"VALUE3\",\"KEY4\":\"VALUE4\",\"KEY2\":\"VALUE2\",\"KEY1\":\"VALUE1\",\"KEY5\":{\"KEY5_2\":\"VALUE5_2\",\"KEY5_1\":\"VALUE5_1\"},\"KEY6\":[1,2,3]}"
+    local tjsondata, result, errinfo = json.decode(origin)
+    if result and type(tjsondata) == "table" then
+        log.info("JsonTest.decode KEY1", tjsondata["KEY1"])
+        log.info("JsonTest.decode KEY2", tjsondata["KEY2"])
+        log.info("JsonTest.decode KEY3", tjsondata["KEY3"])
+        log.info("JsonTest.decode KEY4", tjsondata["KEY4"])
+        log.info("JsonTest.decode KEY5", tjsondata["KEY5"]["KEY5_1"],tjsondata["KEY5"]["KEY5_2"])
+        log.info("JsonTest.decode KEY6", tjsondata["KEY6"][1],tjsondata["KEY6"][2],tjsondata["KEY6"][3])
+    else
+        log.info("JsonTest.decode error", errinfo)
+    end
+end
+
+if baseTestConfig.jsonTest == true then
+    sys.timerLoopStart(jsonTest, loopTime)
+end
+
+local function rtosTest()
+    local testPath = "/RtosTestPath"
+
+    log.info("RtosTest.Poweron_reason", rtos.poweron_reason())
+
+    if rtos.make_dir(testPath) then
+        log.info("RtosTest.MakeDir", "SUCCESS")
+    else
+        log.info("RtosTest.MakeDir", "FAIL")
+    end
+
+    if rtos.remove_dir(testPath) then
+        log.info("RtosTest.RemoveDir", "SUCCESS")
+    else
+        log.info("RtosTest.RemoveDir", "FAIL")
+    end
+
+    log.info("RtosTest.Toint64", string.toHex(rtos.toint64("12345678", "little")))
+end
+
+if baseTestConfig.rtosTest == true then
+    sys.timerLoopStart(rtosTest, loopTime)
+end
+
+local function mathTest()
+    log.info("MathTest.Abs", math.abs(-10086))
+    log.info("MathTest.Ceil", math.ceil(101.456))
+    log.info("MathTest.Floor", math.floor(101.456))
+    log.info("MathTest.Fmod", math.fmod(10, 3))
+    log.info("MathTest.Huge", math.huge)
+    log.info("MathTest.Max", math.max(1, 2, 3, 4.15, 5.78))
+    log.info("MathTest.Min", math.min(1, 2, 3, 4.15, 5.78))
+    log.info("MathTest.MaxInteger", math.maxinteger)
+    log.info("MathTest.MinInteger", math.mininteger)
+    log.info("MathTest.Modf", math.modf(1.15))
+    log.info("MathTest.Pi", math.pi)
+    log.info("MathTest.Sqrt", math.sqrt(9))
+    -- log.info("MathTest.ToInteger", math.tointeger(1.123))
+    -- log.info("MathTest.Type", math.type(1))
+    -- log.info("MathTest.Type", math.type(1.123))
+    -- log.info("MathTest.Type", math.type("1.123"))
+    -- log.info("MathTest.Ult", math.ult(1.1,2.2))
+    -- log.info("MathTest.Ult", math.ult(2.2,1.1))
+end
+
+if baseTestConfig.mathTest == true then
+    sys.timerLoopStart(mathTest, loopTime)
 end
