@@ -6,10 +6,10 @@
 module(..., package.seeall)
 
 local AudioTestConfig = {
-    playAudio     = false,
+    playAudio     = true,
     playAMRFile   = false,
     playSPXFile   = false,
-    playPCMFile   = true
+    playPCMFile   = false
 }
 
 local waitTime1 = 5000
@@ -242,7 +242,7 @@ sys.taskInit(function()
 
             count = count + 1
             vol = (vol==7) and 1 or (vol+1)
-            speed = (vol==100) and 2 or (vol+14)
+            speed = (speed==100) and 2 or (speed+14)
         end
 
         if AudioTestConfig.playAMRFile == true then
