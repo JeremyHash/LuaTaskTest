@@ -177,7 +177,7 @@ local ttsStr = "上海合宙通信科技有限公司欢迎您"
 sys.taskInit(function()
     local vol = 1
     local count = 1
-    local speed = 2
+    local speed = 4
     while true do
         if AudioTestConfig.playAudio == true then
 
@@ -242,7 +242,7 @@ sys.taskInit(function()
 
             count = count + 1
             vol = (vol==7) and 1 or (vol+1)
-            speed = (speed==100) and 2 or (speed+14)
+            speed = (speed==100) and 4 or (speed+16)
         end
 
         if AudioTestConfig.playAMRFile == true then
