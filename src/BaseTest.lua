@@ -11,7 +11,7 @@ local baseTestConfig = {
     bitTest      = false,
     packTest     = false,
     stringTest   = false,
-    commonTest   = false,
+    commonTest   = true,
     miscTest     = false,
     netTest      = false,
     ntpTest      = false,
@@ -24,7 +24,7 @@ local baseTestConfig = {
     sysTest      = false,
     jsonTest     = false,
     rtosTest     = false,
-    mathTest     = true
+    mathTest     = false
 }
 
 local loopTime = 10000
@@ -212,20 +212,20 @@ if baseTestConfig.stringTest == true then
 end
 
 local function commonTest()
-    log.info("CommonTest.ucs2ToAscii", common.ucs2ToAscii("0031003200330034"))
-    log.info("CommonTest.nstrToUcs2Hex", common.nstrToUcs2Hex("+1234"))
-    log.info("CommonTest.numToBcdNum", common.numToBcdNum("8618126324567"))
-    log.info("CommonTest.bcdNumToNum", common.bcdNumToNum(string.fromHex("688121364265f7")))
-    log.info("CommonTest.ucs2ToGb2312", common.ucs2ToGb2312(string.fromHex("1162")))
-    log.info("CommonTest.gb2312ToUcs2", string.toHex(common.gb2312ToUcs2(string.fromHex("CED2"))))
-    log.info("CommonTest.ucs2beToGb2312", common.ucs2beToGb2312(string.fromHex("6211")))
-    log.info("CommonTest.gb2312ToUcs2be", string.toHex(common.gb2312ToUcs2be(string.fromHex("CED2"))))
-    log.info("CommonTest.ucs2ToUtf8", string.toHex(common.ucs2ToUtf8(string.fromHex("1162"))))
-    log.info("CommonTest.utf8ToUcs2", string.toHex(common.utf8ToUcs2(string.fromHex("E68891"))))
-    log.info("CommonTest.ucs2beToUtf8", string.toHex(common.ucs2beToUtf8(string.fromHex("6211"))))
-    log.info("CommonTest.utf8ToUcs2be", string.toHex(common.utf8ToUcs2be(string.fromHex("E68891"))))
-    log.info("CommonTest.utf8ToGb2312", common.utf8ToGb2312(string.fromHex("E68891")))
-    log.info("CommonTest.gb2312ToUtf8", common.gb2312ToUtf8(string.fromHex("CED2")))
+    log.info("CommonTest.ucs2ToAscii", common.ucs2ToAscii("0030003100320033003400350036003700380039"))
+    log.info("CommonTest.nstrToUcs2Hex", common.nstrToUcs2Hex("+0123456789+0123456789+0123456789+0123456789+0123456789"))
+    log.info("CommonTest.numToBcdNum", string.toHex(common.numToBcdNum("8618126324567F")))
+    log.info("CommonTest.bcdNumToNum", common.bcdNumToNum(string.fromHex("688121364265F7")))
+    log.info("CommonTest.ucs2ToGb2312", common.ucs2ToGb2312(string.fromHex("d98f2f66004e616755004300530032000f5cef7a167f017884768551b95b6c8f62633a4e470042003200330031003200167f017884764b6dd58b8551b95b")))
+    log.info("CommonTest.gb2312ToUcs2", string.toHex(common.gb2312ToUcs2(string.fromHex("D5E2CAC7D2BBCCF555544638B1E0C2EBB5C4C4DAC8DDD7AABBBBCEAA55435332B1E0C2EBB5C4B2E2CAD4C4DAC8DD"))))
+    log.info("CommonTest.ucs2beToGb2312", common.ucs2beToGb2312(string.fromHex("8fd9662f4e006761005500430053003259277aef7f167801768451855bb98f6c63624e3a0047004200320033003100327f16780176846d4b8bd551855bb9")))
+    log.info("CommonTest.gb2312ToUcs2be", string.toHex(common.gb2312ToUcs2be(string.fromHex("D5E2CAC7D2BBCCF555544638B1E0C2EBB5C4C4DAC8DDD7AABBBBCEAA55435332B1E0C2EBB5C4B2E2CAD4C4DAC8DD"))))
+    log.info("CommonTest.ucs2ToUtf8", common.ucs2ToUtf8(string.fromHex("d98f2f66004e61675500430053003200167f017884768551b95b6c8f62633a4e5500540046003800167f017884764b6dd58b8551b95b")))
+    log.info("CommonTest.utf8ToUcs2", string.toHex(common.utf8ToUcs2("这是一条UTF8编码的内容转换为UCS2编码的测试内容")))
+    log.info("CommonTest.ucs2beToUtf8", common.ucs2beToUtf8(string.fromHex("8fd9662f4e00676100550043005300327f167801768451855bb98f6c63624e3a00550054004600387f16780176846d4b8bd551855bb9")))
+    log.info("CommonTest.utf8ToUcs2be", string.toHex(common.utf8ToUcs2be("这是一条UTF8编码的内容转换为UCS2大端编码的测试内容")))
+    log.info("CommonTest.utf8ToGb2312", common.utf8ToGb2312("这是一条UTF8编码的内容转换为GB2312编码的测试内容"))
+    log.info("CommonTest.gb2312ToUtf8", common.gb2312ToUtf8(string.fromHex("D5E2CAC7D2BBCCF5474232333132B1E0C2EBB5C4C4DAC8DDD7AABBBBCEAA55544638B1E0C2EBB5C4B2E2CAD4C4DAC8DD")))
 
     local table1 = common.timeZoneConvert(2020, 10, 14, 11, 24, 25, 8, 8)
     for k, v in pairs(table1) do
@@ -245,7 +245,7 @@ local function miscTest()
     end
     log.info("MiscTest.GetWeek", misc.getWeek())
     log.info("MiscTest.GetCalib", misc.getCalib())
-    misc.setSn("Jeremy", function () log.info("MiscTest.SetSnCb", "SUCCESS") end)
+    misc.setSn("Jeremy", function() log.info("MiscTest.SetSnCb", "SUCCESS") end)
     log.info("MiscTest.GetSn", misc.getSn())
     log.info("MiscTest.GetImei", misc.getImei())
     log.info("MiscTest.GetVbatt", misc.getVbatt())
