@@ -4,12 +4,12 @@
 -- UpdateDate:20200918
 
 PROJECT = "LuaTaskTest"
-VERSION = "1.0.0"
+VERSION = "2.0.0"
 PRODUCT_KEY = "LMe0gb26NhPbBZ7t3mSk3dxA8f4ZZmM1"
 
 -- 测试配置 设置为true代表开启此项测试
-local LuatTasktestConfig = {
-    baseTest            = true,
+local LuatTaskTestConfig = {
+    baseTest            = false,
     httpTest            = false,
     socketTest          = false,
     mqttTest            = false,
@@ -38,8 +38,8 @@ netLed.updateBlinkTime("GPRS", 500, 500)
 -- require "errDump"
 -- errDump.request("udp://ota.airm2m.com:9072")
 
--- require "update"
--- update.request(nil,"http://117.51.140.119:8000/jeremy.bin")
+require "update"
+update.request(nil, "http://117.51.140.119:8000/jeremy.bin")
 -- update.request()
 
 -- 屏幕驱动文件管理
@@ -72,55 +72,55 @@ require "powerKey"
 -- 保持唤醒
 -- pm.wake("LuaTaskTest")
 
-if LuatTasktestConfig.baseTest then
+if LuatTaskTestConfig.baseTest then
     require "BaseTest"
 end
 
-if LuatTasktestConfig.httpTest then
+if LuatTaskTestConfig.httpTest then
     require "HttpTest"
 end
 
-if LuatTasktestConfig.socketTest then
+if LuatTaskTestConfig.socketTest then
     require "SocketTest"
 end
 
-if LuatTasktestConfig.mqttTest then
+if LuatTaskTestConfig.mqttTest then
     require "MqttTest"
 end
 
-if LuatTasktestConfig.audioTest then
+if LuatTaskTestConfig.audioTest then
     require "AudioTest"
 end
 
-if LuatTasktestConfig.gpioTest then
+if LuatTaskTestConfig.gpioTest then
     require "GpioTest"
 end
 
-if LuatTasktestConfig.fsTest then
+if LuatTaskTestConfig.fsTest then
     require "FsTest"
 end
 
-if LuatTasktestConfig.callTest then
+if LuatTaskTestConfig.callTest then
     require "CallTest"
 end
 
-if LuatTasktestConfig.dispTest then
+if LuatTaskTestConfig.dispTest then
     require "DispTest"
 end
 
-if LuatTasktestConfig.lbsLocTest then
+if LuatTaskTestConfig.lbsLocTest then
     require "LbsLocTest"
 end
 
-if LuatTasktestConfig.keyPadTest then
+if LuatTaskTestConfig.keyPadTest then
     require "KeyPadTest"
 end
 
-if LuatTasktestConfig.uartTransferTest then
+if LuatTaskTestConfig.uartTransferTest then
     require "UartTransferTest"
 end
 
-if LuatTasktestConfig.cryptoTest then
+if LuatTaskTestConfig.cryptoTest then
     require "CryptoTest"
 end
 
