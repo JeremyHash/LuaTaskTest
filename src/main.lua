@@ -33,7 +33,7 @@ LOG_LEVEL = log.LOGLEVEL_TRACE
 require "netLed"
 pmd.ldoset(2, pmd.LDO_VLCD)
 netLed.setup(true, pio.P0_1, pio.P0_4)
-netLed.updateBlinkTime("GPRS", 500, 500)
+-- netLed.updateBlinkTime("GPRS", 500, 500)
 
 -- require "errDump"
 -- errDump.request("udp://ota.airm2m.com:9072")
