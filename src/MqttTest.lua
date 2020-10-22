@@ -76,7 +76,7 @@ local function mqttRecTask(id, client, ip, port, transport)
                 end
             end
         else
-            log.info("MqttTest.MqttClient" .. id .. ".connect","连接FAIL")
+            log.info("MqttTest.MqttClient" .. id .. ".connect", "连接FAIL")
         end
 
         sys.wait(5000)
