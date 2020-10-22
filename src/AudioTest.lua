@@ -74,7 +74,7 @@ local function producer(streamType)
             while true do
                 tStreamType = streamType
 		    	while streamPlaying do
-		    		sys.wait(200)
+		    		sys.wait(200)   
 		    	end
 		    	log.info("AudioTest.AudioStreamTest", "AudioStreamPlay Start", streamType)
                 local tAudioFile =
@@ -94,11 +94,6 @@ local function producer(streamType)
                     if not data then 
 		    			fileHandle:close() 
 		    			producing = false 
-                        -- if streamType == audiocore.PCM then
-                        -- 	streamType = audiocore.AMR
-                        -- else
-                        -- 	streamType = audiocore.PCM
-                        -- end
 		    			return 
 		    		end
                     table.insert(tBuffer, data)
