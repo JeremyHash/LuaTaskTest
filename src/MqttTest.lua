@@ -36,7 +36,7 @@ local function mqttPubTask(id, client, ip, port, transport, cert, timeout)
     local topic2 = "topic2-" .. testImei
     local topic3 = "合宙测试-" .. testImei
     log.info("MqttTest.MqttClient" .. id .. ".connect", "开始连接")
-    while not client:connect(ip, port, transport, cert, timeout) do sys.wait(2000) end
+    while not client:connect(ip, port, transport, cert, timeout) do log.info("重新连接") sys.wait(2000) end
     log.info("MqttTest.MqttClient" .. id .. ".connect", "连接SUCCESS")
     while true do
         publishTest(id, client, topic1, topic1 .. "PubTest" .. count, 0, 0)
