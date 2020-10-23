@@ -18,12 +18,12 @@ local LuatTaskTestConfig = {
     gpioTest            = false,
     fsTest              = false,
     callTest            = false,
-    dispTest            = false,
+    dispTest            = true,
     lbsLocTest          = false,
     keyPadTest          = false,
     uartTransferTest    = false,
     cryptoTest          = false,
-    i2cAndSpiTest       = true
+    i2cAndSpiTest       = false
 }
 
 require "log"
@@ -44,10 +44,7 @@ netLed.setup(true, pio.P0_1, pio.P0_4)
 -- update.request(nil, "http://117.51.140.119:8000/jeremy.bin")
 -- update.request()
 
--- 屏幕驱动文件管理
--- require "color_lcd_spi_ILI9341"
--- require "color_lcd_spi_gc9106l"
--- require "color_lcd_spi_st7735"
+
 
 -- lib依赖管理
 require "sys"
@@ -114,6 +111,10 @@ end
 
 if LuatTaskTestConfig.dispTest then
     require "DispTest"
+    -- 屏幕驱动文件管理
+    -- require "color_lcd_spi_ILI9341"
+    require "color_lcd_spi_gc9106l"
+    -- require "color_lcd_spi_st7735"
 end
 
 if LuatTaskTestConfig.lbsLocTest then

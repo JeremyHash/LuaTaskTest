@@ -1,17 +1,17 @@
--- LogoTest
+-- DispTest
 -- Author:LuatTest
 -- CreateDate:20200719
--- UpdateDate:20200719
+-- UpdateDate:20201023
 
-module(...,package.seeall)
+module(..., package.seeall)
 
 local DispTestConfig = {
-    dispLogo        = false,
-    dispScan        = true,
-    dispPhoto       = false,
-    dispPhotoSend   = false,
-    dispQrcode      = false,
-    dispPm          = false
+    dispLogoTest        = true,
+    dispScanTest        = false,
+    dispPhotoTest       = false,
+    dispPhotoSendTest   = false,
+    dispQrcodeTest      = false,
+    dispPmTest          = false
 }
 
 local waitTime1 = 2000
@@ -438,29 +438,29 @@ function setcolor(color)
 end
 
 function sendFile()
-sys.taskInit(
-    function()                
-        local fileHandle = io.open("/testCamera.jpg", "rb")
-        if not fileHandle then
-            log.error("testALiYun.otaCb1 open file error")
-            return
-        end
-        
-        pm.wake("UART_SENT2MCU")
-        uart.on(uartID, "sent", function() sys.publish("UART_SENT2MCU_OK") end)
-        uart.setup(uartID, 115200, 8, uart.PAR_NONE, uart.STOP_1, nil, 1)
-        while true do
-            local data = fileHandle:read(1460)
-            if not data then break end
-            uart.write(uartID, data)
-            sys.waitUntil("UART_SENT2MCU_OK")
-        end
-        
-        uart.close(uartID)
-        pm.sleep("UART_SENT2MCU")
-        fileHandle:close()
-    end
-)
+	sys.taskInit(
+	    function()
+	        local fileHandle = io.open("/testCamera.jpg", "rb")
+	        if not fileHandle then
+	            log.error("testALiYun.otaCb1 open file error")
+	            return
+	        end
+		
+	        pm.wake("UART_SENT2MCU")
+	        uart.on(uartID, "sent", function() sys.publish("UART_SENT2MCU_OK") end)
+	        uart.setup(uartID, 115200, 8, uart.PAR_NONE, uart.STOP_1, nil, 1)
+	        while true do
+	            local data = fileHandle:read(1460)
+	            if not data then break end
+	            uart.write(uartID, data)
+	            sys.waitUntil("UART_SENT2MCU_OK")
+	        end
+		
+	        uart.close(uartID)
+	        pm.sleep("UART_SENT2MCU")
+	        fileHandle:close()
+	    end
+	)
 end
 
 local pos = 
@@ -584,8 +584,6 @@ function openidle()
     appid2 = uiWin.add(winapp)
 end
 
-ntp.timeSync()
-
 function scanCodeCb(result, codeType, codeStr)
     --关闭摄像头预览
     disp.camerapreviewclose()
@@ -612,29 +610,20 @@ sys.taskInit(function()
 
     while true do
 
-        if DispTestConfig.dispLogo == true then
+        if DispTestConfig.dispLogoTest then
             -- 显示logo
             -- 清空LCD显示缓冲区
             disp.clear()
-            if WIDTH==128 and HEIGHT==128 then
-                -- 显示logo图片
-                disp.putimage("/lua/logo_" .. (BPP==1 and "mono.bmp" or "color.png"), BPP==1 and 41 or 0,BPP==1 and 18 or 0)
-            elseif WIDTH==240 and HEIGHT==320 then
-                disp.puttext(common.utf8ToGb2312("欢迎使用Luat"), getxpos(common.utf8ToGb2312("欢迎使用Luat")),10)
-                --显示logo图片
-                disp.putimage("/lua/logo_color_240X320.png", 0, 80)
-            else
-                --从坐标16,0位置开始显示"欢迎使用Luat"
-                disp.puttext(common.utf8ToGb2312("欢迎使用Luat"), getxpos(common.utf8ToGb2312("欢迎使用Luat")), 0)
-                --显示logo图片
-                disp.putimage("/lua/logo_" .. (BPP==1 and "mono.bmp" or "color.png"), BPP==1 and 41 or 1, BPP==1 and 18 or 33)
-            end
+            --从坐标16,0位置开始显示"欢迎使用Luat"
+            disp.puttext(common.utf8ToGb2312("欢迎使用Luat"), getxpos(common.utf8ToGb2312("欢迎使用Luat")), 0)
+            --显示logo图片
+            disp.putimage("/lua/logo_color.png", 1, 33)
             -- 刷新LCD显示缓冲区到LCD屏幕上
             disp.update()
             sys.wait(waitTime1)
         end 
 
-        if DispTestConfig.dispScan == true then
+        if DispTestConfig.dispScanTest then
 			--唤醒系统
 			pm.wake("testScanCode")
             local ret = 0
@@ -653,7 +642,7 @@ sys.taskInit(function()
             sys.wait(10000)
         end
 
-        if DispTestConfig.dispPhoto == true then
+        if DispTestConfig.dispPhotoTest then
             -- 拍照并显示
             --唤醒系统
             pm.wake("testTakePhoto")
@@ -682,7 +671,7 @@ sys.taskInit(function()
             sys.wait(waitTime1)
         end
 
-        if DispTestConfig.dispPhotoSend == true then
+        if DispTestConfig.dispPhotoSendTest then
             -- 拍照并通过uart1发送出去
             --唤醒系统
             pm.wake("testTakePhoto")
@@ -712,7 +701,7 @@ sys.taskInit(function()
             sys.wait(waitTime1)
         end
 
-        if DispTestConfig.dispQrcode == true then
+        if DispTestConfig.dispQrcodeTest then
             --显示二维码
             disp.clear()
             local displayWidth = 100
@@ -722,7 +711,7 @@ sys.taskInit(function()
             sys.wait(waitTime1)
         end
 
-        if DispTestConfig.dispPm == true then
+        if DispTestConfig.dispPmTest then
             --0.1秒后，打开提示框窗口，提示"3秒后进入待机界面"
             --提示框窗口关闭后，自动进入待机界面
             sys.timerStart(openprompt,100,common.utf8ToGb2312("3秒后"),common.utf8ToGb2312("进入待机界面"),nil,openidle)
