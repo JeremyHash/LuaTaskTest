@@ -8,21 +8,12 @@ VERSION = "2.0.0"
 PRODUCT_KEY = "LMe0gb26NhPbBZ7t3mSk3dxA8f4ZZmM1"
 
 -- 测试配置 设置为true代表开启此项测试
-<<<<<<< HEAD
-local LuatTasktestConfig = {
-    baseTest            = false,
-    httpTest            = true,
-    socketTest          = true,
-    mqttTest            = true,
-    audioTest           = false,
-=======
 local LuatTaskTestConfig = {
     baseTest            = false,
     httpTest            = false,
     socketTest          = false,
     mqttTest            = false,
-    audioTest           = true,
->>>>>>> 977bfdc34c3b7c112295292b50741d553b04eba8
+    audioTest           = false,
     gpioTest            = false,
     fsTest              = false,
     callTest            = false,
