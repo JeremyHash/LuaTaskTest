@@ -1,4 +1,9 @@
-module(...,package.seeall)
+-- SocketTest
+-- Author:LuatTest
+-- CreateDate:20200723
+-- UpdateDate:20201023
+
+module(..., package.seeall)
 
 local waitTime = 10000
 
@@ -233,3 +238,5 @@ sys.taskInit(
         end
     end
 )
+
+sys.timerLoopStart(function() log.info("SocketTest.PrintStatus", socket.PrintStatus()) end, 3000)
