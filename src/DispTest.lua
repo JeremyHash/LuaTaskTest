@@ -6,12 +6,12 @@
 module(...,package.seeall)
 
 local DispTestConfig = {
-    dispLogo        = true,
+    dispLogo        = false,
     dispScan        = true,
-    dispPhoto       = true,
-    dispPhotoSend   = true,
-    dispQrcode      = true,
-    dispPm          = true
+    dispPhoto       = false,
+    dispPhotoSend   = false,
+    dispQrcode      = false,
+    dispPm          = false
 }
 
 local waitTime1 = 2000
@@ -635,8 +635,8 @@ sys.taskInit(function()
         end 
 
         if DispTestConfig.dispScan == true then
-            --唤醒系统
-            pm.wake("testScanCode")
+			--唤醒系统
+			pm.wake("testScanCode")
             local ret = 0
             log.info("scan come in")
             --设置扫码回调函数，默认10秒超时

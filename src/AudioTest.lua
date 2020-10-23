@@ -1,14 +1,14 @@
 -- AudioTest
 -- Author:LuatTest
 -- CreateDate:20200717
--- UpdateDate:20201022
+-- UpdateDate:20201023
 
 module(..., package.seeall)
 
 local AudioTestConfig = {
-    audioPlayTest     = true,
+    audioPlayTest     = false,
     audioStreamTest   = false,
-    recordTest        = false
+    recordTest        = true
 }
 
 local waitTime1 = 5000
@@ -116,24 +116,28 @@ local function playCb(r)
     record.delete()
 end
 
-local function readRecordContent()    
+local function readRecordContent()
+    log.info("AudioTest.RecordTest.GetSize", record.getSize())
+    log.info("AudioTest.RecordTest.Exists", record.exists())
+    log.info("AudioTest.RecordTest.IsBusy", record.isBusy())
     --播放录音内容
     log.info("AudioTest.RecordTest", "开始播放录音")
     audio.play(0, "FILE", record.getFilePath(), 7, playCb)
 end
 
-function recordCb1(result,size)
+function recordCb1(result, size)
     log.info("AudioTest.RecordTest.RecordCb", "录音结束")
     log.info("AudioTest.RecordTest.RecordCb", result, size)
     if result then
         log.info("AudioTest.RecordTest.RecordCb", "录制成功")
+        log.info("AudioTest.RecordTest.GetData", record.getData(0, size))
         rcdoffset, rcdsize, rcdcnt = 0, size, (size-1) / RCD_READ_UNIT + 1
         readRecordContent()
     end    
 end
 
 function recordCb2(result, size, tag)
-    log.info("AudioTest.RecordTest.RecordCb", result, size, tag)
+    -- log.info("AudioTest.RecordTest.RecordCb", result, size, tag)
     if tag == "STREAM" then
         local s = audiocore.streamrecordread(size)
         recordBuf = recordBuf .. s
@@ -340,9 +344,9 @@ sys.taskInit(
             end
 
             if AudioTestConfig.recordTest == true then
-                -- log.info("AudioTest.RecordTest", "开始录音")
-                -- record.start(5, recordCb1)
-                -- sys.wait(20000)
+                log.info("AudioTest.RecordTest", "开始普通录音")
+                record.start(5, recordCb1)
+                sys.wait(20000)
 
                 log.info("AudioTest.RecordTest", "开始流录音")
                 record.start(10, recordCb2, "STREAM", 1, 4)

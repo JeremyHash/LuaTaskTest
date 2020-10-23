@@ -1,7 +1,7 @@
 -- BaseTest
 -- Author:LuatTest
 -- CreateDate:20201013
--- UpdateDate:20201013
+-- UpdateDate:20201023
 
 module(..., package.seeall)
 
@@ -11,7 +11,7 @@ local baseTestConfig = {
     bitTest      = false,
     packTest     = false,
     stringTest   = false,
-    commonTest   = true,
+    commonTest   = false,
     miscTest     = false,
     netTest      = false,
     ntpTest      = false,
@@ -24,7 +24,8 @@ local baseTestConfig = {
     sysTest      = false,
     jsonTest     = false,
     rtosTest     = false,
-    mathTest     = false
+    mathTest     = false,
+    pbTest       = true
 }
 
 local loopTime = 10000
@@ -545,4 +546,54 @@ end
 
 if baseTestConfig.mathTest == true then
     sys.timerLoopStart(mathTest, loopTime)
+end
+
+local function setStorageCb(result)
+    if result then
+        log.info("PbTest.SetStorageCb", "SUCCESS")
+    else
+        log.info("PbTest.SetStorageCb", "FAIL")
+    end
+end
+
+local function deleteCb(result)
+    if result then
+        log.info("PbTest.DeleteCb", "SUCCESS")
+    else
+        log.info("PbTest.DeleteCb", "FAIL")
+    end
+end
+
+local function writeCb(result)
+    if result then
+        log.info("PbTest.WriteCb", "SUCCESS")
+    else
+        log.info("PbTest.WriteCb", "FAIL")
+    end
+end
+
+function readCb(result, name, number)
+    if result then
+        log.info("PbTest.ReadCb", "SUCCESS", name, number)
+    else
+        log.info("PbTest.ReadCb", "FAIL", name, number)
+    end
+end
+
+if baseTestConfig.pbTest == true then
+    sys.taskInit(
+        function()
+            local index = 1
+            pb.setStorage("SM", setStorageCb)
+            while true do
+                sys.wait(5000)
+                pb.delete(index, deleteCb)
+                sys.wait(5000)
+                pb.write(index, "LuatTest" .. index, "1234567890", writeCb)
+                sys.wait(5000)
+                pb.read(index, readCb)
+                index = (index == 10) and 1 or (index + 1)
+            end
+        end
+    )
 end

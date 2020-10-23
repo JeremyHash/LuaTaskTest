@@ -4,25 +4,17 @@
 -- UpdateDate:20200918
 
 PROJECT = "LuaTaskTest"
-VERSION = "2.0.0"
+VERSION = "1.0.0"
 PRODUCT_KEY = "LMe0gb26NhPbBZ7t3mSk3dxA8f4ZZmM1"
 
 -- 测试配置 设置为true代表开启此项测试
-<<<<<<< HEAD
-local LuatTasktestConfig = {
-    baseTest            = false,
-    httpTest            = true,
-    socketTest          = true,
-    mqttTest            = true,
-    audioTest           = false,
-=======
 local LuatTaskTestConfig = {
+    aliyunTest          = false,
     baseTest            = false,
     httpTest            = false,
     socketTest          = false,
     mqttTest            = false,
-    audioTest           = true,
->>>>>>> 977bfdc34c3b7c112295292b50741d553b04eba8
+    audioTest           = false,
     gpioTest            = false,
     fsTest              = false,
     callTest            = false,
@@ -30,7 +22,8 @@ local LuatTaskTestConfig = {
     lbsLocTest          = false,
     keyPadTest          = false,
     uartTransferTest    = false,
-    cryptoTest          = false
+    cryptoTest          = false,
+    i2cAndSpiTest       = true
 }
 
 require "log"
@@ -47,13 +40,13 @@ netLed.setup(true, pio.P0_1, pio.P0_4)
 -- require "errDump"
 -- errDump.request("udp://ota.airm2m.com:9072")
 
-require "update"
-update.request(nil, "http://117.51.140.119:8000/jeremy.bin")
+-- require "update"
+-- update.request(nil, "http://117.51.140.119:8000/jeremy.bin")
 -- update.request()
 
 -- 屏幕驱动文件管理
 -- require "color_lcd_spi_ILI9341"
-require "color_lcd_spi_gc9106l"
+-- require "color_lcd_spi_gc9106l"
 -- require "color_lcd_spi_st7735"
 
 -- lib依赖管理
@@ -73,13 +66,19 @@ require "record"
 require "cc"
 require "uiWin"
 require "scanCode"
-require"lbsLoc"
+require "lbsLoc"
 require "pm"
 require "nvm"
 require "powerKey"
+require "aLiYun"
+require "pb"
 
 -- 保持唤醒
 -- pm.wake("LuaTaskTest")
+
+if LuatTaskTestConfig.aliyunTest then
+    require "AliyunTest"
+end
 
 if LuatTaskTestConfig.baseTest then
     require "BaseTest"
@@ -131,6 +130,10 @@ end
 
 if LuatTaskTestConfig.cryptoTest then
     require "CryptoTest"
+end
+
+if LuatTaskTestConfig.i2cAndSpiTest then
+    require "I2CAndSPITest"
 end
 
 
