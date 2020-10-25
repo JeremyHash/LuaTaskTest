@@ -1,17 +1,17 @@
 -- DispTest
 -- Author:LuatTest
 -- CreateDate:20200719
--- UpdateDate:20201023
+-- UpdateDate:20201025
 
 module(..., package.seeall)
 
 local DispTestConfig = {
-    dispLogoTest        = true,
-    dispScanTest        = false,
-    dispPhotoTest       = false,
-    dispPhotoSendTest   = false,
-    dispQrcodeTest      = false,
-    dispPmTest          = false
+    logoTest        = false,
+    scanTest        = false,
+    photoTest       = false,
+    photoSendTest   = false,
+    qrcodeTest      = false,
+    uiWinTest       = false
 }
 
 local waitTime1 = 2000
@@ -423,11 +423,10 @@ local gc0310_sdr =
 
 local WIDTH, HEIGHT, BPP = disp.getlcdinfo()
 local CHAR_WIDTH = 8
-local DEFAULT_WIDTH, DEFAULT_HEIGHT = 320, 240
-local width, data = qrencode.encode('http://www.openluat.com')
+local DEFAULT_WIDTH, DEFAULT_HEIGHT = 128, 160
+local qrCodeWidth, data = qrencode.encode("二维码生成测试")
 local WIDTH1, HEIGHT1 = 132, 162
 local appid, str1, str2, str3, callback, callbackpara
-local uartID = 1
 
 function getxpos(str)
     return (WIDTH - string.len(str) * CHAR_WIDTH) / 2
@@ -437,30 +436,26 @@ function setcolor(color)
     if BPP~=1 then return disp.setcolor(color) end
 end
 
-function sendFile()
-	sys.taskInit(
-	    function()
-	        local fileHandle = io.open("/testCamera.jpg", "rb")
-	        if not fileHandle then
-	            log.error("testALiYun.otaCb1 open file error")
-	            return
-	        end
-		
-	        pm.wake("UART_SENT2MCU")
-	        uart.on(uartID, "sent", function() sys.publish("UART_SENT2MCU_OK") end)
-	        uart.setup(uartID, 115200, 8, uart.PAR_NONE, uart.STOP_1, nil, 1)
-	        while true do
-	            local data = fileHandle:read(1460)
-	            if not data then break end
-	            uart.write(uartID, data)
-	            sys.waitUntil("UART_SENT2MCU_OK")
-	        end
-		
-	        uart.close(uartID)
-	        pm.sleep("UART_SENT2MCU")
-	        fileHandle:close()
-	    end
-	)
+function sendFile(uartID)
+	local fileHandle = io.open("/testCamera.jpg", "rb")
+	if not fileHandle then
+	    log.error("DispTest.SendFile", "OpenFile Error")
+	    return
+	end
+
+	pm.wake("UART_SENT2MCU")
+	uart.on(uartID, "sent", function() sys.publish("UART_SENT2MCU_OK") end)
+	uart.setup(uartID, 115200, 8, uart.PAR_NONE, uart.STOP_1, nil, 1)
+	while true do
+	    local data = fileHandle:read(1460)
+	    if not data then break end
+	    uart.write(uartID, data)
+	    sys.waitUntil("UART_SENT2MCU_OK")
+	end
+
+	uart.close(uartID)
+	pm.sleep("UART_SENT2MCU")
+	fileHandle:close()
 end
 
 local pos = 
@@ -527,9 +522,6 @@ function openprompt(s1, s2 , s3, cb, cbpara, prd)
     sys.timerStart(close, prd or 3000)
 end
 
---appid：窗口id
-local appid2
-
 --[[
 函数名：refresh
 功能  ：窗口刷新处理
@@ -546,10 +538,10 @@ local function refresh()
     local timestr = string.format("%02d", tm.hour) .. ":" .. string.format("%02d", tm.min)
     --显示日期
     setcolor(0x07E0)
-    disp.puttext(datestr,getxpos(datestr), 24)
+    disp.puttext(datestr, getxpos(datestr), 24)
     --显示时间
     setcolor(0x001F)
-    disp.puttext(timestr,getxpos(timestr), 44)
+    disp.puttext(timestr, getxpos(timestr), 44)
     
     --刷新LCD显示缓冲区到LCD屏幕上
     disp.update()
@@ -561,18 +553,6 @@ local winapp =
 {
     onUpdate = refresh,
 }
-
---[[
-函数名：clkind
-功能  ：时间更新处理
-参数  ：无
-返回值：无
-]]
-local function clkind()
-    if uiWin.isActive(appid2) then
-        refresh()
-    end    
-end
 
 --[[
 函数名：open
@@ -590,14 +570,14 @@ function scanCodeCb(result, codeType, codeStr)
     --关闭摄像头
     disp.cameraclose()
     --允许系统休眠
-    pm.sleep("testScanCode")
+    pm.sleep("DispTest.ScanTest")
     --如果有LCD，显示扫描结果
-    if WIDTH~=0 and HEIGHT~=0 then 
+    if WIDTH ~= 0 and HEIGHT ~= 0 then 
         disp.clear()
         if result then
             disp.puttext(common.utf8ToGb2312("扫描成功"), 0, 5)
             disp.puttext(common.utf8ToGb2312("类型: ") .. codeType, 0, 35)
-            log.info("scanCodeCb", codeStr:toHex())
+            log.info("DispTest.ScanCodeCb.CodeStr", codeStr:toHex())
             disp.puttext(common.utf8ToGb2312("结果: ") .. codeStr, 0, 65)                
         else
             disp.puttext(common.utf8ToGb2312("扫描失败"), 0, 5)                
@@ -608,114 +588,126 @@ end
 
 sys.taskInit(function()
 
+	local count = 1
+
+	sys.wait(5000)
+
     while true do
 
-        if DispTestConfig.dispLogoTest then
+		if DispTestConfig.logoTest then
+			log.info("DispTest.LogoTest", "第" .. count .. "次")
             -- 显示logo
             -- 清空LCD显示缓冲区
             disp.clear()
-            --从坐标16,0位置开始显示"欢迎使用Luat"
-            disp.puttext(common.utf8ToGb2312("欢迎使用Luat"), getxpos(common.utf8ToGb2312("欢迎使用Luat")), 0)
-            --显示logo图片
+			--从坐标16,0位置开始显示"欢迎使用Luat"
+			log.info("DispTest.PutText", "LuatTest" .. count)
+            disp.puttext(common.utf8ToGb2312("LuatTest" .. count), getxpos(common.utf8ToGb2312("LuatTest" .. count)), 0)
+			--显示logo图片
+			log.info("DispTest.PutImage", "Logo_color")
             disp.putimage("/lua/logo_color.png", 1, 33)
             -- 刷新LCD显示缓冲区到LCD屏幕上
             disp.update()
-            sys.wait(waitTime1)
+			sys.wait(waitTime2)
         end 
 
-        if DispTestConfig.dispScanTest then
-			--唤醒系统
-			pm.wake("testScanCode")
+		if DispTestConfig.scanTest then
+			log.info("DispTest.ScanTest", "第" .. count .. "次")
+			pm.wake("DispTest.ScanTest")
             local ret = 0
-            log.info("scan come in")
+            log.info("DispTest.ScanTest", "开始扫描")
             --设置扫码回调函数，默认10秒超时
             scanCode.request(scanCodeCb)
             --打开摄像头
             ret = disp.cameraopen_ext(gc0310_sdr)
             --打开摄像头预览   
-            log.info("scan cameraopen_ext ret ", ret)
-            disp.camerapreviewzoom(-2)
+            -- log.info("DispTest.scan cameraopen_ext ret ", ret)
+            -- disp.camerapreviewzoom(-2)
             
-            ret = disp.camerapreview(0, 0, 0, 0, 120, 160)
+            ret = disp.camerapreview(0, 0, 0, 0, WIDTH, HEIGHT)
 
-            log.info("scan camerapreview ret ", ret)
+            -- log.info("DispTest.scan camerapreview ret ", ret)
             sys.wait(10000)
         end
 
-        if DispTestConfig.dispPhotoTest then
+		if DispTestConfig.photoTest then
+			log.info("DispTest.PhotoTest", "第" .. count .. "次")
             -- 拍照并显示
-            --唤醒系统
-            pm.wake("testTakePhoto")
+            pm.wake("DispTest.PhotoTest")
             --打开摄像头
             disp.cameraopen(1, 0, 0, 1)
             --打开摄像头预览
-            disp.camerapreview(0, 0, 0, 0, WIDTH or DEFAULT_WIDTH, HEIGHT or DEFAULT_HEIGHT)
+            disp.camerapreview(0, 0, 0, 0, WIDTH, HEIGHT)
             --设置照片的宽和高像素并且开始拍照
-            disp.cameracapture(WIDTH or DEFAULT_WIDTH, HEIGHT or DEFAULT_HEIGHT)
+            disp.cameracapture(WIDTH, HEIGHT)
             --设置照片保存路径
             disp.camerasavephoto("/testCamera.jpg")
-            log.info("testCamera.takePhotoAndDisplay fileSize", io.fileSize("/testCamera.jpg"))
+            log.info("DispTest.PhotoSize", io.fileSize("/testCamera.jpg"))
             --关闭摄像头预览
             disp.camerapreviewclose()
             --关闭摄像头
             disp.cameraclose()
             --允许系统休眠
-            pm.sleep("testTakePhoto")    
+            pm.sleep("DispTest.PhotoTest")    
             --显示拍照图片   
-            if WIDTH~=0 and HEIGHT~=0 then
+            if WIDTH ~= 0 and HEIGHT ~= 0 then
                 disp.clear()
                 disp.putimage("/testCamera.jpg", 0, 0)
                 disp.puttext(common.utf8ToGb2312("照片尺寸: " .. io.fileSize("/testCamera.jpg")), 0, 5)
                 disp.update()
             end 
-            sys.wait(waitTime1)
+            sys.wait(waitTime2)
         end
 
-        if DispTestConfig.dispPhotoSendTest then
+		if DispTestConfig.photoSendTest then
+			log.info("DispTest.PhotoSendTest", "第" .. count .. "次")
             -- 拍照并通过uart1发送出去
-            --唤醒系统
-            pm.wake("testTakePhoto")
+            pm.wake("DispTest.PhotoSendTest")
             --打开摄像头
             disp.cameraopen(1, 0, 0, 1)
             --打开摄像头预览
-            disp.camerapreview(0, 0, 0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT)
+            disp.camerapreview(0, 0, 0, 0, WIDTH, HEIGHT)
             --设置照片的宽和高像素并且开始拍照
-            disp.cameracapture(DEFAULT_WIDTH, DEFAULT_HEIGHT)
+            disp.cameracapture(WIDTH, HEIGHT)
             --设置照片保存路径
             disp.camerasavephoto("/testCamera.jpg")
-            log.info("testCamera.takePhotoAndSendToUart fileSize", io.fileSize("/testCamera.jpg"))
+            log.info("DispTest.PhotoSize", io.fileSize("/testCamera.jpg"))
             --关闭摄像头预览
             disp.camerapreviewclose()
             --关闭摄像头
             disp.cameraclose()
             --允许系统休眠
-            pm.sleep("testTakePhoto")    
+            pm.sleep("DispTest.PhotoSendTest")    
 
-            sendFile()   
-            if WIDTH~=0 and HEIGHT~=0 then
+            sendFile(1)   
+            if WIDTH ~= 0 and HEIGHT ~= 0 then
                 disp.clear()
                 disp.putimage("/testCamera.jpg", 0, 0)
                 disp.puttext(common.utf8ToGb2312("照片尺寸: " .. io.fileSize("/testCamera.jpg")), 0, 5)
                 disp.update()
             end
-            sys.wait(waitTime1)
+            sys.wait(waitTime2)
         end
 
-        if DispTestConfig.dispQrcodeTest then
+		if DispTestConfig.qrcodeTest then
+			log.info("DispTest.QrCodeTest", "第" .. count .. "次")
             --显示二维码
             disp.clear()
             local displayWidth = 100
-            disp.puttext(common.utf8ToGb2312("Luat官网"), getxpos(common.utf8ToGb2312("Luat官网")), 10)
-            disp.putqrcode(data, width, displayWidth, (WIDTH1-displayWidth)/2, (HEIGHT1-displayWidth)/2)
+            disp.puttext(common.utf8ToGb2312("二维码生成测试"), getxpos(common.utf8ToGb2312("二维码生成测试")), 10)
+            disp.putqrcode(data, qrCodeWidth, displayWidth, (WIDTH1-displayWidth)/2, (HEIGHT1-displayWidth)/2)
             disp.update()
-            sys.wait(waitTime1)
-        end
-
-        if DispTestConfig.dispPmTest then
-            --0.1秒后，打开提示框窗口，提示"3秒后进入待机界面"
-            --提示框窗口关闭后，自动进入待机界面
-            sys.timerStart(openprompt,100,common.utf8ToGb2312("3秒后"),common.utf8ToGb2312("进入待机界面"),nil,openidle)
             sys.wait(waitTime2)
         end
+
+		if DispTestConfig.uiWinTest then
+			log.info("DispTest.UIWinTest", "第" .. count .. "次")
+            --1秒后，打开提示框窗口，提示"3秒后进入待机界面"
+            --提示框窗口关闭后，自动进入待机界面
+            sys.timerStart(openprompt, 1000, common.utf8ToGb2312("3秒后"), common.utf8ToGb2312("进入待机界面"), nil, openidle)
+            sys.wait(waitTime2)
+		end
+		
+		count = count + 1
+
     end
 end)

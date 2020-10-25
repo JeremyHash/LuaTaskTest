@@ -1,7 +1,7 @@
 -- LuaTaskTest
 -- Author:LuatTest
 -- CreateDate:20200716
--- UpdateDate:20200918
+-- UpdateDate:20201025
 
 PROJECT = "LuaTaskTest"
 VERSION = "1.0.0"
@@ -110,11 +110,11 @@ if LuatTaskTestConfig.callTest then
 end
 
 if LuatTaskTestConfig.dispTest then
-    require "DispTest"
     -- 屏幕驱动文件管理
     -- require "color_lcd_spi_ILI9341"
-    require "color_lcd_spi_gc9106l"
-    -- require "color_lcd_spi_st7735"
+    -- require "color_lcd_spi_gc9106l"
+    require "color_lcd_spi_st7735"
+    require "DispTest"
 end
 
 if LuatTaskTestConfig.lbsLocTest then
