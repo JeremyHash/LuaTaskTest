@@ -18,8 +18,8 @@ local LuatTaskTestConfig = {
     gpioTest            = false,
     fsTest              = false,
     callTest            = false,
-    dispTest            = true,
-    lbsLocTest          = false,
+    dispTest            = false,
+    lbsLocTest          = true,
     keyPadTest          = false,
     uartTransferTest    = false,
     cryptoTest          = false,
@@ -64,6 +64,7 @@ require "cc"
 require "uiWin"
 require "scanCode"
 require "lbsLoc"
+require "wifiScan"
 require "pm"
 require "nvm"
 require "powerKey"

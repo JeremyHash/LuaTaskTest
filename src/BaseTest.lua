@@ -1,7 +1,7 @@
 -- BaseTest
 -- Author:LuatTest
 -- CreateDate:20201013
--- UpdateDate:20201023
+-- UpdateDate:20201025
 
 module(..., package.seeall)
 
@@ -25,7 +25,7 @@ local baseTestConfig = {
     jsonTest     = false,
     rtosTest     = false,
     mathTest     = false,
-    pbTest       = true
+    pbTest       = false
 }
 
 local loopTime = 10000
