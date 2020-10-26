@@ -44,7 +44,6 @@ netLed.setup(true, pio.P0_1, pio.P0_4)
 -- update.request()
 
 
-
 -- lib依赖管理
 require "sys"
 require "led"
