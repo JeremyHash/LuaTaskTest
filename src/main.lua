@@ -1,7 +1,7 @@
 -- LuaTaskTest
 -- Author:LuatTest
 -- CreateDate:20200716
--- UpdateDate:20200918
+-- UpdateDate:20201025
 
 PROJECT = "LuaTaskTest"
 VERSION = "1.0.0"
@@ -18,8 +18,8 @@ local LuatTaskTestConfig = {
     gpioTest            = false,
     fsTest              = false,
     callTest            = false,
-    dispTest            = true,
-    lbsLocTest          = false,
+    dispTest            = false,
+    lbsLocTest          = true,
     keyPadTest          = false,
     uartTransferTest    = false,
     cryptoTest          = false,
@@ -44,10 +44,6 @@ netLed.setup(true, pio.P0_1, pio.P0_4)
 -- update.request(nil, "http://117.51.140.119:8000/jeremy.bin")
 -- update.request()
 
--- 屏幕驱动文件管理
--- require "color_lcd_spi_ILI9341"
-require "color_lcd_spi_gc9106l"
--- require "color_lcd_spi_st7735"
 
 -- lib依赖管理
 require "sys"
@@ -67,6 +63,7 @@ require "cc"
 require "uiWin"
 require "scanCode"
 require "lbsLoc"
+require "wifiScan"
 require "pm"
 require "nvm"
 require "powerKey"
@@ -113,6 +110,10 @@ if LuatTaskTestConfig.callTest then
 end
 
 if LuatTaskTestConfig.dispTest then
+    -- 屏幕驱动文件管理
+    -- require "color_lcd_spi_ILI9341"
+    -- require "color_lcd_spi_gc9106l"
+    require "color_lcd_spi_st7735"
     require "DispTest"
 end
 
