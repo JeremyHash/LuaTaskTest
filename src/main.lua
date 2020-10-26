@@ -9,21 +9,20 @@ PRODUCT_KEY = "LMe0gb26NhPbBZ7t3mSk3dxA8f4ZZmM1"
 
 -- 测试配置 设置为true代表开启此项测试
 local LuatTaskTestConfig = {
-    aliyunTest          = false,
-    baseTest            = false,
-    httpTest            = false,
-    socketTest          = false,
-    mqttTest            = false,
-    audioTest           = false,
-    gpioTest            = false,
-    fsTest              = false,
-    callTest            = false,
-    dispTest            = false,
-    lbsLocTest          = true,
-    keyPadTest          = false,
-    uartTransferTest    = false,
-    cryptoTest          = false,
-    i2cAndSpiTest       = false
+    aliyunTest        = false,
+    baseTest          = false,
+    httpTest          = false,
+    socketTest        = false,
+    mqttTest          = false,
+    audioTest         = true,
+    gpioTest          = false,
+    fsTest            = false,
+    keyPadCallSmsTest = false,
+    dispTest          = false,
+    lbsLocTest        = false,
+    uartTransferTest  = false,
+    cryptoTest        = false,
+    i2cAndSpiTest     = false
 }
 
 require "log"
@@ -70,9 +69,10 @@ require "nvm"
 require "powerKey"
 require "aLiYun"
 require "pb"
+-- require "wdt"
 
 -- 保持唤醒
--- pm.wake("LuaTaskTest")
+pm.wake("LuaTaskTest")
 
 if LuatTaskTestConfig.aliyunTest then
     require "AliyunTest"
@@ -106,8 +106,8 @@ if LuatTaskTestConfig.fsTest then
     require "FsTest"
 end
 
-if LuatTaskTestConfig.callTest then
-    require "CallTest"
+if LuatTaskTestConfig.keyPadCallSmsTest then
+    require "KeyPadCallSmsTest"
 end
 
 if LuatTaskTestConfig.dispTest then
@@ -120,10 +120,6 @@ end
 
 if LuatTaskTestConfig.lbsLocTest then
     require "LbsLocTest"
-end
-
-if LuatTaskTestConfig.keyPadTest then
-    require "KeyPadTest"
 end
 
 if LuatTaskTestConfig.uartTransferTest then

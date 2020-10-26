@@ -6,8 +6,8 @@
 module(..., package.seeall)
 
 local AudioTestConfig = {
-    audioPlayTest     = false,
-    audioStreamTest   = false,
+    audioPlayTest     = true,
+    audioStreamTest   = true,
     recordTest        = true
 }
 
