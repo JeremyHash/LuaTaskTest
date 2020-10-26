@@ -148,6 +148,14 @@ local function keyMsg(msg)
     end
 end
 
+local function procnewsms(num, data, datetime)
+    log.info("SmsTest.procnewsms", num, data, datetime)
+end
+
+local function smsSendCb(result, num, data)
+    log.info("SmsTest.smsSendCb", result, num, data)
+end
+
 if callAndSmsTestConfig.callTest then
     --注册按键消息处理函数
     rtos.on(rtos.MSG_KEYPAD, keyMsg)
@@ -159,6 +167,14 @@ if callAndSmsTestConfig.callTest then
     rtos.init_module(rtos.MOD_KEYPAD, 0, 0x3C, 0x0F)
 end
 
+local function smsTest()
+    sms.send("10086", "10086", smsSendCb)
+    sms.send("10086", common.utf8ToGb2312("第2条短信"), smsSendCb)
+    sms.send("10086", "qeiuqwdsahdkjahdkjahdkja122136489759725923759823hfdskfdkjnbzndkjhfskjdfkjdshfkjdsfks83478648732432qeiuqwdsahdkjahdkjahdkja122136489759725923759823hfdskfdkjnbzndkjhfskjdfkjdshfkjdsfks83478648732432qeiuqwdsahdkjahdkjahdkja122136489759725923759823hfdskfdkjnbzndkjhfskjdfkjdshfkjdsfks83478648732432", smsSendCb)
+    sms.send("10086", common.utf8ToGb2312("华康是的撒qeiuqwdsahdkjahdkjahdkja122136489759725923759823hfdskfdkjnbzndkjhfskjdfkjdshfkjdsfks83478648732432qeiuqwdsahdkjahdkjahdkja122136489759725923759823hfdskfdkjnbzndkjhfskjdfkjdshfkjdsfks83478648732432qeiuqwdsahdkjahdkjahdkja122136489759725923759823hfdskfdkjnbzndkjhfskjdfkjdshfkjdsfks83478648732432"), smsSendCb)
+end
+
 if callAndSmsTestConfig.smsTest then
-    
+    sms.setNewSmsCb(procnewsms)
+    sys.timerLoopStart(smsTest, 30000)
 end
