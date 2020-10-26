@@ -239,4 +239,4 @@ sys.taskInit(
     end
 )
 
-sys.timerLoopStart(function() log.info("SocketTest.PrintStatus", socket.PrintStatus()) end, 3000)
+sys.timerLoopStart(function() log.info("SocketTest.PrintStatus", socket.printStatus()) end, 30000)

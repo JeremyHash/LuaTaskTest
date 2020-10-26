@@ -7,7 +7,7 @@ module(..., package.seeall)
 
 -- 测试配置 设置为true代表开启此项测试
 local fsTestConfig = {
-	sdCardTest      = true,
+	sdCardTest      = false,
 	insideFlashTest = true,
 }
 

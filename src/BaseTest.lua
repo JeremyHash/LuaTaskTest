@@ -7,25 +7,25 @@ module(..., package.seeall)
 
 -- 测试配置 设置为true代表开启此项测试
 local baseTestConfig = {
-    adcTest      = false,
-    bitTest      = false,
-    packTest     = false,
-    stringTest   = false,
-    commonTest   = false,
-    miscTest     = false,
-    netTest      = false,
-    ntpTest      = false,
-    nvmTest      = false,
-    tableTest    = false,
-    pmTest       = false,
-    powerKeyTest = false,
-    rilTest      = false,
-    simTest      = false,
+    adcTest      = true,
+    bitTest      = true,
+    packTest     = true,
+    stringTest   = true,
+    commonTest   = true,
+    miscTest     = true,
+    netTest      = true,
+    ntpTest      = true,
+    nvmTest      = true,
+    tableTest    = true,
+    pmTest       = true,
+    powerKeyTest = true,
+    rilTest      = true,
+    simTest      = true,
     sysTest      = false,
-    jsonTest     = false,
-    rtosTest     = false,
-    mathTest     = false,
-    pbTest       = false
+    jsonTest     = true,
+    rtosTest     = true,
+    mathTest     = true,
+    pbTest       = true
 }
 
 local loopTime = 10000
@@ -258,7 +258,7 @@ local function miscTest()
     misc.openPwm(1,2,8)
     log.info("MiscTest.OpenPwm.1.Open", "SUCCESS")
 
-    sys.wait(loopTime)
+    -- sys.wait(loopTime)
 
     misc.closePwm(0)
     log.info("MiscTest.OpenPwm.0.Close", "SUCCESS")

@@ -6,7 +6,7 @@
 module(..., package.seeall)
 
 local AliyunTestConfig = {
-    aliyunMqttTest = false,
+    aliyunMqttTest = true,
     aliyunOtaTest  = false
 }
 

@@ -8,8 +8,7 @@ module(..., package.seeall)
 -- 测试配置 设置为true代表开启此项测试
 local GpioTestConfig = {
     gpioTest = false,
-    ledTest  = false,
-    miscTest = true
+    ledTest  = false
 }
 
 --[[

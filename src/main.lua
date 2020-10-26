@@ -13,8 +13,8 @@ local LuatTaskTestConfig = {
     baseTest          = false,
     httpTest          = false,
     socketTest        = false,
-    mqttTest          = false,
-    audioTest         = true,
+    mqttTest          = true,
+    audioTest         = false,
     gpioTest          = false,
     fsTest            = false,
     keyPadCallSmsTest = false,
@@ -114,7 +114,7 @@ if LuatTaskTestConfig.dispTest then
     -- 屏幕驱动文件管理
     -- require "color_lcd_spi_ILI9341"
     -- require "color_lcd_spi_gc9106l"
-    require "color_lcd_spi_st7735"
+    -- require "color_lcd_spi_st7735"
     require "DispTest"
 end
 
