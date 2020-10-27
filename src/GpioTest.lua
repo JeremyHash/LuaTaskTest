@@ -156,6 +156,7 @@ if GpioTestConfig.gpioOutTest then
                     value = 0
                 end
             end
+        end
     )   
 end
 
