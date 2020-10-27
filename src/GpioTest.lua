@@ -121,7 +121,7 @@ if GpioTestConfig.gpioOutTest then
             while true do
 
                 sys.wait(5000)
-                
+
                 pins.setup(0, value)
                 pins.setup(1, value)
                 pins.setup(2, value)
@@ -151,9 +151,9 @@ if GpioTestConfig.gpioOutTest then
                 pins.setup(28, value)
 
                 if value == 0 then
-                    value == 1
+                    value = 1
                 else
-                    value == 0
+                    value = 0
                 end
             end
     )   
