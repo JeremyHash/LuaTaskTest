@@ -120,7 +120,7 @@ if GpioTestConfig.gpioOutTest then
             local value = 0
             while true do
 
-                sys.wait(5000)
+                sys.wait(2000)
 
                 pins.setup(0, value)
                 pins.setup(1, value)
