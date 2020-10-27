@@ -7,8 +7,9 @@ module(..., package.seeall)
 
 -- 测试配置 设置为true代表开启此项测试
 local GpioTestConfig = {
-    gpioTest = true,
-    ledTest  = false
+    gpioIntTest = false,
+    gpioOutTest = true,
+    ledTest     = false
 }
 
 --[[
@@ -52,14 +53,14 @@ pmd.ldoset(x, pmd.LDO_VLCD) -- GPIO 0、1、2、3、4
 function gpioIntFnc(msg)
     --上升沿中断
     if msg == cpu.INT_GPIO_POSEDGE then
-        log.info("GpioTest.msg", "上升")
+        log.info("GpioIntTest.msg", "上升")
     --下降沿中断
     else
-        log.info("GpioTest.msg", "下降")
+        log.info("GpioIntTest.msg", "下降")
     end
 end
 
-if GpioTestConfig.gpioTest then
+if GpioTestConfig.gpioIntTest then
     getGpio0Fnc = pins.setup(0, gpioIntFnc)
     getGpio1Fnc = pins.setup(1, gpioIntFnc)
     getGpio2Fnc = pins.setup(2, gpioIntFnc)
@@ -113,6 +114,51 @@ if GpioTestConfig.gpioTest then
     -- getGpio66Fnc = pins.setup(66, gpioIntFnc)
 end
 
+if GpioTestConfig.gpioOutTest then
+    sys.taskInit(
+        function()
+            local value = 0
+            while true do
+
+                sys.wait(5000)
+                
+                pins.setup(0, value)
+                pins.setup(1, value)
+                pins.setup(2, value)
+                pins.setup(3, value)
+                pins.setup(4, value)
+                pins.setup(5, value)
+                pins.setup(7, value)
+                pins.setup(8, value)
+                pins.setup(9, value)
+                pins.setup(10, value)
+                pins.setup(11, value)
+                pins.setup(12, value)
+                pins.setup(13, value)
+                pins.setup(14, value)
+                pins.setup(15, value)
+                pins.setup(17, value)
+                pins.setup(18, value)
+                pins.setup(19, value)
+                pins.setup(20, value)
+                pins.setup(21, value)
+                pins.setup(22, value)
+                pins.setup(23, value)
+                pins.setup(24, value)
+                pins.setup(25, value)
+                pins.setup(26, value)
+                pins.setup(27, value)
+                pins.setup(28, value)
+
+                if value == 0 then
+                    value == 1
+                else
+                    value == 0
+                end
+            end
+    )   
+end
+
 -- local function ledTest()
 --     local gpio1 = pins.setup(1)
 --     led.blinkPwm(gpio1, 500, 500)
@@ -120,6 +166,6 @@ end
 --     led.blinkPwm(gpio4, 100, 500)
 -- end
 
--- if GpioTestConfig.ledTest == true then
+-- if GpioTestConfig.ledTest then
 --     ledTest()
 -- end
