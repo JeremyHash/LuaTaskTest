@@ -20,7 +20,7 @@ function getLocCb(result, lat, lng, addr)
     log.info("LbsLocTest.getLocCb.lat", lat)
     log.info("LbsLocTest.getLocCb.lng", lng)
     if result == 0 then
-        log.info("LbsLocTest.getLocCb.result", "定位成功")
+        log.info("LbsLocTest.getLocCb.result", "SUCCESS")
         if lat == lattmp and lng == lngtmp then
             log.info("LbsLocTest.getLocCb", "定位信息未发生改变，本次定位结果不上传服务器")
         else
@@ -60,7 +60,7 @@ function getLocCb(result, lat, lng, addr)
             )
         end
     else
-        log.info("LbsLocTest.getLocCb", "定位失败")
+        log.info("LbsLocTest.getLocCb", "FALSE")
     end
 end
 

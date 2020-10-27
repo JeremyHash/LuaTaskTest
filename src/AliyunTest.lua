@@ -20,12 +20,12 @@ local sConnected
 local publishCnt = 1
 
 local function getDeviceName()
-    return "866714044920188"
+    return "866714049394322"
 end
 
 local function getDeviceSecret()
-    return misc.getSn()
-    -- return "a044c473cdb320c9b698a3592af0e762"
+    -- return misc.getSn()
+    return "a044c473cdb320c9b698a3592af0e762"
 end
 
 local function setDeviceSecret(s)
@@ -87,10 +87,10 @@ aLiYun.setErrHandle(function() sys.restart("ALIYUN_TASK_INACTIVE") end, 300)
 
 if AliyunTestConfig.aliyunMqttTest then
     -- 一机一密
-    -- aLiYun.setup(PRODUCT_KEY, nil, getDeviceName, getDeviceSecret)
+    aLiYun.setup(PRODUCT_KEY, nil, getDeviceName, getDeviceSecret)
 
     -- 一型一密
-    aLiYun.setup(PRODUCT_KEY, PRODUCE_SECRET, getDeviceName, getDeviceSecret, setDeviceSecret)
+    -- aLiYun.setup(PRODUCT_KEY, PRODUCE_SECRET, getDeviceName, getDeviceSecret, setDeviceSecret)
 
     --setMqtt接口不是必须的，aLiYun.lua中有这个接口设置的参数默认值，如果默认值满足不了需求，参考下面注释掉的代码，去设置参数
     --aLiYun.setMqtt(0)

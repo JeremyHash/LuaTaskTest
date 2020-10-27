@@ -13,7 +13,7 @@ local baseTestConfig = {
     stringTest   = true,
     commonTest   = true,
     miscTest     = true,
-    netTest      = true,
+    netTest      = false,
     ntpTest      = true,
     nvmTest      = true,
     tableTest    = true,
@@ -420,7 +420,7 @@ if baseTestConfig.rilTest == true then
     sys.taskInit(
         function()
             while true do
-                log.info("RilTest.RilTestCount", "第"..rilTestCount.."次测试开始")
+                log.info("RilTest.RilTestCount", "第" .. rilTestCount .. "次")
                 ril.request("AT+CSQ")
                 sys.wait(2000)
                 ril.request("AT+CGDCONT?")
@@ -429,7 +429,6 @@ if baseTestConfig.rilTest == true then
                 sys.wait(2000)
                 ril.request("AT+EEMGINFO?")
                 sys.wait(2000)
-                log.info("RilTest.RilTestCount", "第"..rilTestCount.."次测试完成")
                 rilTestCount = rilTestCount + 1
             end
         end

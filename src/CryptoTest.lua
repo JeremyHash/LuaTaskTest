@@ -1,7 +1,7 @@
 -- CryptoTest
 -- Author:LuatTest
 -- CreateDate:20201016
--- UpdateDate:20201016
+-- UpdateDate:20201027
 
 module(..., package.seeall)
 
@@ -31,7 +31,7 @@ local cryptoTestConfig = {
 
 local slen = string.len
 
-local loopTime = 10000
+local loopTime = 60000
 
 --- base64加解密算法测试
 local function base64Test()
