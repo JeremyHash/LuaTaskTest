@@ -21,9 +21,6 @@ local httpTestConfig = {
 
 local waitTime = 20000
 
---同步网络时间，因为证书校验时会用到系统时间
-ntp.timeSync()
-
 --multipart/form-data封装函数
 local function postTestWithMultipartFormData(url,cert,params,timeout,cbFnc,rcvFileName)
     local boundary,body,k,v,kk,vv = "--------------------------"..os.time()..rtos.tick(),{}
