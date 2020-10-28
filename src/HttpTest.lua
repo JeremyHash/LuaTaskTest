@@ -1,7 +1,7 @@
 -- HttpTest
 -- Author:LuatTest
 -- CreateDate:20200716
--- UpdateDate:20200915
+-- UpdateDate:20201028
 
 module(..., package.seeall)
 
@@ -332,30 +332,30 @@ sys.taskInit(
         local count = 1
         while true do
             -- Http GET 请求测试
-            if httpTestConfig.getTest == true then
-                log.info("HttpTest.GetTest","第"..count.."次")
-                http.request("GET",serverAddress,nil,nil,nil,nil,getTestCb)
+            if httpTestConfig.getTest then
+                log.info("HttpTest.GetTest", "第" .. count .. "次")
+                http.request("GET", serverAddress, nil, nil, nil, nil, getTestCb)
                 sys.wait(waitTime)
             end
             
             -- Https Get 请求测试（服务端证书验证_单向认证）
-            if httpTestConfig.getTestWithCA == true then
-                log.info("HttpTest.GetTestWithCA","第"..count.."次")
-                http.request("GET","https://www.baidu.com",{caCert="ca.cer"},nil,nil,nil,getTestWithCACb)
+            if httpTestConfig.getTestWithCA then
+                log.info("HttpTest.GetTestWithCA", "第" .. count .. "次")
+                http.request("GET", "https://www.baidu.com", {caCert = "ca.cer"}, nil, nil, nil, getTestWithCACb)
                 sys.wait(waitTime)
             end
 
             -- Https Get 请求测试（服务端客户端证书验证_双向认证）
-            if httpTestConfig.getTestWithCAAndKey == true then
+            if httpTestConfig.getTestWithCAAndKey then
                 log.info("HttpTest.GetTestWithCAAndKey","第"..count.."次")
                 http.request("GET","https://36.7.87.100:4434",{caCert="ca.crt",clientCert="client.crt",clientKey="client.key"},nil,nil,nil,GetTestWithCAAndKeyCb)
                 sys.wait(waitTime)
             end
 
             -- Https Get 请求测试（保存结果到文件,文件较大）
-            if httpTestConfig.getTestAndSaveToBigFile == true then
+            if httpTestConfig.getTestAndSaveToBigFile then
                 log.info("创建文件前可用空间 "..rtos.get_fs_free_size().." Bytes")
-                if rtos.make_dir("/Jeremy/") == true then
+                if rtos.make_dir("/Jeremy/") then
                     log.info("HttpTest.makeDir", "SUCCESS")
                 else
                     log.error("HttpTest.makeDir", "FAIL")
@@ -366,9 +366,9 @@ sys.taskInit(
             end
 
             -- Https Get 请求测试（保存结果到文件,文件较小）
-            if httpTestConfig.getTestAndSaveToSmallFile == true then
+            if httpTestConfig.getTestAndSaveToSmallFile then
                 log.info("创建文件前可用空间 "..rtos.get_fs_free_size().." Bytes")
-                if rtos.make_dir("/Jeremy/") == true then
+                if rtos.make_dir("/Jeremy/") then
                     log.info("HttpTest.makeDir", "SUCCESS")
                 else
                     log.error("HttpTest.makeDir", "FAIL")
@@ -379,28 +379,28 @@ sys.taskInit(
             end
 
             -- Https Post 请求测试(/)
-            if httpTestConfig.postTest == true then
+            if httpTestConfig.postTest then
                 log.info("HttpTest.PostTest","第"..count.."次")
                 http.request("POST",serverAddress.."/",nil,nil,"PostTest!",nil,postTestCb)
                 sys.wait(waitTime)
             end
 
             -- Https Post 请求测试（自定义Head）
-            if httpTestConfig.postTestWithUserHead == true then
+            if httpTestConfig.postTestWithUserHead then
                 log.info("HttpTest.PostTestWithUserHead","第"..count.."次")
                 http.request("POST",serverAddress.."/withUserHead",nil,{UserHead="Jeremy"},nil,nil,postTestWithUserHeadCb)
                 sys.wait(waitTime)
             end
 
             -- Https Post 请求测试（octet-stream）
-            if httpTestConfig.postTestWithOctetStream == true then
+            if httpTestConfig.postTestWithOctetStream then
                 log.info("HttpTest.PostTestWithOctetStream","第"..count.."次")
                 http.request("POST",serverAddress.."/withOctetStream",nil,{['Content-Type']="application/octet-stream",['Connection']="keep-alive"},{[1]={['file']="/lua/http.lua"}},nil,postTestWithOctetStreamCb)
                 sys.wait(waitTime)
             end
 
             -- Https Post 请求测试（postTestWithFormData）
-            if httpTestConfig.postTestWithMultipartFormData == true then
+            if httpTestConfig.postTestWithMultipartFormData then
                 log.info("HttpTest.PostTestWithMultipartFormData","第"..count.."次")
                 postTestWithMultipartFormData(
                     serverAddress.."/uploadFile",
@@ -424,7 +424,7 @@ sys.taskInit(
             end
 
             -- Https Post 请求测试（withxwwwformurlencoded）
-            if httpTestConfig.postTestWithXwwwformurlencoded == true then
+            if httpTestConfig.postTestWithXwwwformurlencoded then
                 log.info("HttpTest.PostTestWithXwwwformurlencoded","第"..count.."次")
                 http.request("POST",serverAddress.."/withxwwwformurlencoded",nil,
                 {
