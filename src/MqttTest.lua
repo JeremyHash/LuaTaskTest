@@ -1,52 +1,55 @@
 -- MqttTest
 -- Author:LuatTest
 -- CreateDate:20200724
--- UpdateDate:20201014
+-- UpdateDate:20201028
 
 module(..., package.seeall)
-
-
 
 local timeout1 = 3000
 local timeout2 = 5000
 
-local result, data, count
-count = 1
+local result, data
 
-
+local count = 1
 
 local ip1 = "wiki.airm2m.com"
 local port1 = 41883
 local port2 = 48883
 
-
-
 local function publishTest(id, client, topic, pubData, qos, retain)
     if client:publish(topic, pubData, qos, retain) then
         log.info("MqttTest.MqttClient" .. id .. ".publish." .. topic, "发布SUCCESS")
+        log.info("MqttTest.MqttClient" .. id .. ".publish." .. "pubData", pubData)
     else
         log.info("MqttTest.MqttClient" .. id .. ".publish." .. topic, "发布FAIL")
     end
     sys.wait(timeout1)
 end
 
-local function mqttPubTask(id, client, ip, port, transport, cert, timeout)
+local function mqttPubTask(id, client, ip, port, transport, cert)
     local testImei = misc.getImei()
     local topic1 = "topic1-" .. testImei
     local topic2 = "topic2-" .. testImei
     local topic3 = "合宙测试-" .. testImei
-    log.info("MqttTest.MqttClient" .. id .. ".connect", "开始连接")
-    while not client:connect(ip, port, transport, cert, timeout) do log.info("MqttTest.MqttClient" .. id, "重新连接") sys.wait(2000) end
-    log.info("MqttTest.MqttClient" .. id .. ".connect", "连接SUCCESS")
     while true do
-        publishTest(id, client, topic1, topic1 .. "PubTest" .. count, 0, 0)
-        publishTest(id, client, topic2, topic2 .. "PubTest" .. count, 1, 1)
-        publishTest(id, client, topic3, topic3 .. "PubTest" .. count, 2, 0)
-        count = count + 1
+        log.info("MqttTest.MqttClient" .. id .. ".connect", "开始连接")
+        while not client:connect(ip, port, transport, cert) do log.info("MqttTest.MqttClient" .. id, "重新连接") sys.wait(2000) end
+        log.info("MqttTest.MqttClient" .. id .. ".connect", "连接SUCCESS")
+        while true do
+            if client.connected then
+                publishTest(id, client, topic1, topic1 .. "PubTest" .. count, 0, 0)
+                publishTest(id, client, topic2, topic2 .. "PubTest" .. count, 1, 1)
+                publishTest(id, client, topic3, topic3 .. "PubTest" .. count, 2, 0)
+                count = count + 1
+            else
+                log.info("MqttTest.MqttClient" .. id .. ".connect", "连接中断")
+                break
+            end
+        end
+        log.info("MqttTest.MqttClient" .. id .. ".connect", "开始断开连接")
+        client:disconnect()
+        log.info("MqttTest.MqttClient" .. id .. ".connect", "断开连接SUCCESS")
     end
-    log.info("MqttTest.MqttClient" .. id .. ".connect", "开始断开连接")
-    client:disconnect()
-    log.info("MqttTest.MqttClient" .. id .. ".connect", "断开连接SUCCESS")
 end
 
 local function mqttRecTask(id, client, ip, port, transport)
@@ -55,34 +58,36 @@ local function mqttRecTask(id, client, ip, port, transport)
     local topic2 = "topic2-" .. testImei
     local topic3 = "合宙测试-" .. testImei
     while true do
-        if client:connect(ip, port, transport, cert) then
-            log.info("MqttTest.MqttClient"..id..".connect","连接SUCCESS")
-            if client:subscribe({[topic1] = 0, [topic2] = 1, [topic3] = 2}) then
-                log.info("MqttTest.MqttClient" .. id .. ".subscribe","订阅SUCCESS")
-            else
-                log.info("MqttTest.MqttClient" .. id .. ".subscribe","订阅FAIL")
-            end
-            while true do
-                result,data = client:receive(timeout2)
-                if result then
-                    log.info("MqttTest.MqttClient" .. id .. ".receive", "接收SUCCESS")
-                    for k, v in pairs(data) do
-                        print(k, v)
-                    end
-                else
-                    log.info("MqttTest.MqttClient" .. id .. ".receive", "接收FAIL")
-                    log.info("data", data)
-                    sys.wait(1000)
-                end
-            end
+        log.info("MqttTest.MqttClient" .. id .. ".connect", "开始连接")
+        while not client:connect(ip, port, transport, cert) do log.info("MqttTest.MqttClient" .. id, "重新连接") sys.wait(2000) end
+        log.info("MqttTest.MqttClient" .. id .. ".connect", "连接SUCCESS")
+        
+        if client:subscribe({[topic1] = 0, [topic2] = 1, [topic3] = 2}) then
+            log.info("MqttTest.MqttClient" .. id .. ".subscribe", "订阅SUCCESS")
         else
-            log.info("MqttTest.MqttClient" .. id .. ".connect", "连接FAIL")
+            log.info("MqttTest.MqttClient" .. id .. ".subscribe", "订阅FAIL")
+        end
+        while true do
+            result, data = client:receive(timeout2)
+            if result then
+                log.info("MqttTest.MqttClient" .. id .. ".receive", "接收SUCCESS")
+                for k, v in pairs(data) do
+                    print(k, v)
+                end
+            elseif client.connected ~= true then
+                log.info("MqttTest.MqttClient" .. id .. ".receive", "连接中断")
+                break
+            else
+                log.info("MqttTest.MqttClient" .. id .. ".receive", "接收FAIL")
+                log.info("data", data)
+                sys.wait(1000)
+            end
         end
 
-        sys.wait(5000)
-
+        log.info("MqttTest.MqttClient" .. id .. ".connect", "开始断开连接")
+        client:disconnect()
+        log.info("MqttTest.MqttClient" .. id .. ".connect", "断开连接SUCCESS")
     end
-    client:disconnect()
 end
 
 sys.taskInit(
