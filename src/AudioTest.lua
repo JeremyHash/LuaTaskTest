@@ -258,7 +258,8 @@ sys.taskInit(
         local count = 1
         local speed = 4
         sys.wait(1000)
-        audio.setVolume(7)
+        -- audio.setChannel(0)
+        -- pins.setup(15, 1)
         consumer()
 
         local isTTSVersion = rtos.get_version():upper():find("TTS")
@@ -330,7 +331,7 @@ sys.taskInit(
                 speed = (speed == 100) and 4 or (speed + 16)
             end
 
-            if AudioTestConfig.audioStreamTest == true then
+            if AudioTestConfig.audioStreamTest then
                 audio.setVolume(4)
                 log.info("AudioTest.AudioStreamTest.AMRFilePlayTest", "Start")
                 producer(audiocore.AMR)
@@ -343,7 +344,7 @@ sys.taskInit(
                 sys.wait(30000)
             end
 
-            if AudioTestConfig.recordTest == true then
+            if AudioTestConfig.recordTest then
                 log.info("AudioTest.RecordTest", "开始普通录音")
                 record.start(5, recordCb1)
                 sys.wait(20000)

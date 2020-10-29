@@ -9,9 +9,9 @@ PRODUCT_KEY = "LMe0gb26NhPbBZ7t3mSk3dxA8f4ZZmM1"
 
 -- 测试配置 设置为true代表开启此项测试
 local LuatTaskTestConfig = {
-    aliyunTest        = true,
-    httpTest          = true,
-    socketTest        = true,
+    aliyunTest        = false,
+    httpTest          = false,
+    socketTest        = false,
     mqttTest          = true,
     baseTest          = false,
     audioTest         = false,
@@ -115,6 +115,7 @@ if LuatTaskTestConfig.dispTest then
     -- require "color_lcd_spi_ILI9341"
     -- require "color_lcd_spi_gc9106l"
     -- require "color_lcd_spi_st7735"
+    -- require "color_lcd_spi_st7735S"
     require "DispTest"
 end
 

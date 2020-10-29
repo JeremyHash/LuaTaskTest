@@ -103,7 +103,7 @@ sys.taskInit(
     function()
         sys.waitUntil("IP_READY_IND")
         log.info("MqttTest","SUCCESS访问网络, MqttReceive测试开始")
-        local mqttClient2 = mqtt.client("client2-" .. misc.getImei(), 60, "user", "password")
+        local mqttClient2 = mqtt.client("client2-" .. misc.getImei(), 30, "user", "password", nil, {qos = 2, retain = 1, topic = "topic1-" .. 866714049394322, payload = "WILL MESSAGE"}, "3.1")
         mqttRecTask(2, mqttClient2, ip1, port1, "tcp")
     end
 )
