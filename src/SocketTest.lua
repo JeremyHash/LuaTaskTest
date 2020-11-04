@@ -40,15 +40,15 @@ sys.taskInit(
             for i=1, 10 do
                 tcpClient1 = socket.tcp(true, {caCert="ca.crt"})
                 connectResult, socketId = tcpClient1:connect(ip1, port1)
-                log.info("SocketTest.tcpClient1.connectResult, socketId",connectResult,socketId)
-                if connectResult == true then
+                log.info("SocketTest.tcpClient1.connectResult, socketId", connectResult, socketId)
+                if connectResult then
                     if tcpClient1:send("GET / HTTP/1.1\r\nHost: 36.7.87.100\r\nConnection: keep-alive\r\n\r\n") then
                         log.info("SocketTest.tcpClient1.sendResult", "SUCCESS")
-                        result,data = tcpClient1:recv(5000)
+                        result, data = tcpClient1:recv(5000)
                         if result then
                             log.info("SocketTest.tcpClient1.recv", data)
                         end
-                        result,data = tcpClient1:recv(5000)
+                        result, data = tcpClient1:recv(5000)
                         if result then
                             log.info("SocketTest.tcpClient1.recv", data)
                         end
@@ -69,18 +69,18 @@ sys.taskInit(
             -- 双向认证Client2
             for i=1, 10 do
                 tcpClient2 = socket.tcp(true, {caCert="ca.crt", clientCert="client.crt", clientKey="client.key"})
-                connectResult,socketId = tcpClient2:connect(ip1, port2)
-                log.info("SocketTest.tcpClient2.connectResult, socketId",connectResult,socketId)
-                if connectResult == true then
+                connectResult, socketId = tcpClient2:connect(ip1, port2)
+                log.info("SocketTest.tcpClient2.connectResult, socketId", connectResult, socketId)
+                if connectResult then
                     if tcpClient2:send("GET / HTTP/1.1\r\nHost: 36.7.87.100\r\nConnection: keep-alive\r\n\r\n") then
                         log.info("SocketTest.tcpClient2.sendResult", "SUCCESS")
-                        result,data = tcpClient2:recv(5000)
+                        result, data = tcpClient2:recv(5000)
                         if result then
-                            log.info("SocketTest.tcpClient2.recv",data)
+                            log.info("SocketTest.tcpClient2.recv", data)
                         end
-                        result,data = tcpClient2:recv(5000)
+                        result, data = tcpClient2:recv(5000)
                         if result then
-                            log.info("SocketTest.tcpClient2.recv",data)
+                            log.info("SocketTest.tcpClient2.recv", data)
                         end
                     else
                         log.error("SocketTest.tcpClient2.sendResult", "FAIL")
@@ -96,7 +96,7 @@ sys.taskInit(
 
             sys.wait(waitTime)
 
-            connectResult,socketId = tcpClient3:connect(ip2, port3)
+            connectResult, socketId = tcpClient3:connect(ip2, port3)
             log.info("SocketTest.tcpClient3.connectResult,socketId", connectResult, socketId)
             if connectResult then
                 for i=1, 10 do

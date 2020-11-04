@@ -6,11 +6,11 @@
 module(..., package.seeall)
 
 local DispTestConfig = {
-    logoTest        = false,
+    logoTest        = true,
     scanTest        = false,
     photoTest       = false,
     photoSendTest   = false,
-    qrcodeTest      = false,
+    qrcodeTest      = true,
     uiWinTest       = false
 }
 
