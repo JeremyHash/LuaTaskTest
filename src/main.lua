@@ -12,7 +12,7 @@ local LuatTaskTestConfig = {
     aliyunTest        = false,
     httpTest          = false,
     socketTest        = false,
-    mqttTest          = true,
+    mqttTest          = false,
     baseTest          = false,
     audioTest         = false,
     gpioTest          = false,
@@ -28,8 +28,8 @@ local LuatTaskTestConfig = {
 require "log"
 LOG_LEVEL = log.LOGLEVEL_TRACE
 
--- require "console"
--- console.setup(2, 115200)
+require "console"
+console.setup(2, 115200)
 
 require "netLed"
 pmd.ldoset(2, pmd.LDO_VLCD)
@@ -142,7 +142,11 @@ sys.taskInit(
                     log.info("VERSION", rtos.get_version(), VERSION)
 				    log.info("FSFREESIZE", rtos.get_fs_free_size() .. " Bytes")
                     log.info("RAMUSEAGE", collectgarbage("count") .. " KB")
-                    sys.wait(30000)
+                    local timeTable = misc.getClock()
+                    for k, v in pairs(timeTable) do
+                        log.info(k, v)
+                    end
+                    sys.wait(5000)
                 end
             end
 )

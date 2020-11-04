@@ -35,7 +35,6 @@ local loopTime = 60000
 
 --- base64加解密算法测试
 local function base64Test()
-    pcall(rsaTest)
     local originStr = "123456crypto.base64_encodemodule(...,package.seeall)sys.timerStart(test,5000)jdklasdjklaskdjklsa"
     local encodeStr = crypto.base64_encode(originStr, slen(originStr))
     log.info("CryptoTest.base64.encode", encodeStr)

@@ -8,7 +8,7 @@ module(..., package.seeall)
 -- 测试配置 设置为true代表开启此项测试
 local LbsLocTestConfig = {
     lbsLocTest  = true,
-    wifiLocTest = false
+    wifiLocTest = true
 }
 
 local serverAddress = "http://wiki.airm2m.com:48080/postLbsLocInfo"

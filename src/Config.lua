@@ -9,3 +9,19 @@ scoreTablePara = {
     math    = 2,
     english = 3
 }
+manyTablePara = {
+    table1 = {
+        table11 = 11,
+        table12 = "table12",
+        table13 = true
+    },
+    table2 = {
+        table21 = {
+            table211 = 1,
+            table212 = "2",
+            table213 = false
+        },
+        table22 = "table22",
+        table23 = false
+    }
+}
