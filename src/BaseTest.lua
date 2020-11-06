@@ -8,24 +8,24 @@ module(..., package.seeall)
 -- 测试配置 设置为true代表开启此项测试
 local baseTestConfig = {
     adcTest      = true,
-    bitTest      = true,
-    packTest     = true,
-    stringTest   = true,
-    commonTest   = true,
-    miscTest     = true,
+    bitTest      = false,
+    packTest     = false,
+    stringTest   = false,
+    commonTest   = false,
+    miscTest     = false,
     netTest      = false,
-    ntpTest      = true,
-    nvmTest      = true,
-    tableTest    = true,
-    pmTest       = true,
-    powerKeyTest = true,
-    rilTest      = true,
-    simTest      = true,
+    ntpTest      = false,
+    nvmTest      = false,
+    tableTest    = false,
+    pmTest       = false,
+    powerKeyTest = false,
+    rilTest      = false,
+    simTest      = false,
     sysTest      = false,
-    jsonTest     = true,
-    rtosTest     = true,
-    mathTest     = true,
-    pbTest       = true
+    jsonTest     = false,
+    rtosTest     = false,
+    mathTest     = false,
+    pbTest       = false
 }
 
 local loopTime = 10000
@@ -33,27 +33,28 @@ local loopTime = 10000
 -- ADC测量精度(10bit，电压测量范围为0到1.85V，分辨率为1850/1024=1.8MV，测量精度误差为20MV)
 local function getAdcVal()
 
-    --ADC2接口用来读取电压
     local ADC2 = 2
     local ADC3 = 3
 
     -- 读取adc
     -- adcval为number类型，表示adc的原始值，无效值为0xFFFF
     -- voltval为number类型，表示转换后的电压值，单位为毫伏，无效值为0xFFFF
-    local adcval,voltval
+    local adcval, voltval
 
-    adcval,voltval = adc.read(ADC2)
+    adc.open(ADC2)
+    adc.open(ADC3)
+
+    adcval, voltval = adc.read(ADC2)
     log.info("AdcTest.ADC2.read", adcval, voltval)
 
-    adcval,voltval = adc.read(ADC3)
+    adcval, voltval = adc.read(ADC3)
     log.info("AdcTest.ADC3.read", adcval, voltval)
+
+    adc.colse(ADC2)
+    adc.colse(ADC3)
 end
 
-if baseTestConfig.adcTest == true then
-    -- 开启对应的adc通道
-    adc.open(2)
-    adc.open(3)
-    -- 定时每秒读取adc值
+if baseTestConfig.adcTest then
     sys.timerLoopStart(getAdcVal, loopTime)
 end
 
@@ -61,17 +62,23 @@ end
 local function bitTest()
     --参数是位数，作用是1向左移动两位
     -- 0001 -> 0100 
-    log.info("BitTest.bit", bit.bit(2))
+    for i = 1, 32 do
+        log.info("BitTest.bit", bit.bit(i))
+    end
     
     -- 测试位数是否被置1
     --第一个参数是是测试数字，第二个是测试位置。从右向左数0到7。是1返回true，否则返回false
     -- 0101
-    log.info("BitTest.isset", bit.isset(5, 0))
-    log.info("BitTest.isset", bit.isset(5, 1))
-    log.info("BitTest.isset", bit.isset(5, 2))
-    log.info("BitTest.isset", bit.isset(5, 3))
+    -- log.info("BitTest.isset", bit.isset(5, 0))
+    -- log.info("BitTest.isset", bit.isset(5, 1))
+    -- log.info("BitTest.isset", bit.isset(5, 2))
+    -- log.info("BitTest.isset", bit.isset(5, 3))
+    -- TODO for i = 1, 32
+    log.info("BitTest.isset", bit.isset(0xFFFFFFFF, 1))
+    log.info("BitTest.isset", bit.isset(0x00000000, 1))
     
     -- 测试位数是否被置0
+    -- TODO 和isset一样
     log.info("BitTest.isclear", bit.isclear(5, 0))
     log.info("BitTest.isclear", bit.isclear(5, 1))
     log.info("BitTest.isclear", bit.isclear(5, 2))
@@ -79,30 +86,38 @@ local function bitTest()
     
     --在相应的位数置1
     -- 0000 -> 1111
+    -- TODO 设置的位置不按顺序
+    -- TODO 循环置1 少传位置 多传位置
     log.info("BitTest.set", bit.set(0, 0, 1, 2, 3))
     
     --在相应的位置置0
     -- 0101 -> 0000
+    -- TODO 和置1相同
     log.info("BitTest.clear", bit.clear(5, 0, 2))
     
     --按位取反
     -- 0101 -> 1010
-    log.info("BitTest.bnot", bit.bnot(5))
+    -- TODO 0xFFFFFFF 0x00000000 0xF0F0F0F0
+    log.info("BitTest.bnot", bit.bnot(0x0101))
     
     --与
     -- 0001 && 0001 -> 0001
+    -- TODO 0xFFFFFFFF &&  &&  三个数字相与
     log.info("BitTest.band", bit.band(1, 1))
     
     --或
     -- 0001 | 0010 -> 0011
+    -- TODO 和与相同的修改
     log.info("BitTest.bor", bit.bor(1, 2))
     
     --异或,相同为0，不同为1
     -- 0001 ⊕ 0010 -> 0011
+    -- TODO 同上
     log.info("BitTest.bxor", bit.bxor(1, 2))
     
     --逻辑左移
     -- 0001 -> 0100
+    -- TODO 0x00000000 0xFFFFFFFF 
     log.info("BitTest.lshift", bit.lshift(1, 2))
     
     --逻辑右移，“001”
@@ -111,10 +126,11 @@ local function bitTest()
     
     --算数右移，左边添加的数与符号有关
     -- 0010 -> 0000
+    -- TODO 0xFFFFFFFF 
     log.info("BitTest.arshift", bit.arshift(2, 2))
 end
 
-if baseTestConfig.bitTest == true then
+if baseTestConfig.bitTest then
     sys.timerLoopStart(bitTest, loopTime)
 end
     
@@ -132,30 +148,33 @@ local function packTest()
     --这里的字符串要截取出来，如果截取字符串，后面的短整型和一个字节的数都会被覆盖。
     nextpox1, val1, val2 = pack.unpack(string.sub(stringtest, 5, -1), ">Hb")
     --nextpox1表示解包后最后的位置，如果包的长度是3，nextpox1输出就是4。匹配输出999,10
-    log.info("PackTest", nextpox1, val1, val2) 
+    log.info("PackTest", nextpox1, val1, val2)
 end
 
-if baseTestConfig.packTest == true then
+if baseTestConfig.packTest then
     sys.timerLoopStart(packTest, loopTime)
 end
         
 local function stringTest()
 
-    local testStr = "Luat is very NB"
+    local testStr = "Luat is very NB,NB (10086)"
 
     log.info("StringTest.Upper", string.upper(testStr))
     log.info("StringTest.Lower", string.lower(testStr))
 
     --第一个参数是目标字符串，第二个参数是标准字符串，第三个是待替换字符串,打印出"luat great"
+    -- TODO 添加正则匹配的情况
     log.info("StringTest.Gsub", string.gsub(testStr, "Luat", "AirM2M"))
 
     --打印出目标字符串在查找字符串中的首尾位置
+    -- TODO 搜索初始位置 plain
     log.info("StringTest.Find", string.find(testStr, "NB"))
 
     log.info("StringTest.Reverse", string.reverse(testStr))
 
     local i = 12345
     
+    -- TODO %x %X
     log.info("StringTest.Format", string.format("This is %d test string : %s", i, testStr))
 
     --注意string.char或者string.byte只针对一个字节，数值不可大于256
@@ -184,7 +203,9 @@ local function stringTest()
 
     -- log.info("String.ToValue", string.toValue("123abc"))
 
-    log.info("String.Utf8Len", string.utf8Len("Luat中国a"))
+    -- TODO 增加一些外文字符的长度测试
+    local utf8Len = string.utf8Len("Luat中国a")
+    log.info("String.Utf8Len", utf8Len, utf8Len == 10)
 
     local table1 = string.utf8ToTable("中国2018")
 
@@ -192,6 +213,7 @@ local function stringTest()
         log.info("String.Utf8ToTable", k, v)
     end
 
+    -- TODO 增加测试字符串的复杂度
     log.info("String.RawurlEncode", string.rawurlEncode("####133"))
     log.info("String.RawurlEncode", string.rawurlEncode("中国2018"))
 
@@ -200,7 +222,7 @@ local function stringTest()
 
     log.info("String.FormatNumberThousands", string.formatNumberThousands(1234567890))
 
-    local table2 = string.split("Luat,is,very,nb", ",")
+    local table2 = string.split("Luat,is,very,nb,", ",")
 
     for k, v in pairs(table2) do
         log.info("String.Split", k, v)
@@ -208,7 +230,7 @@ local function stringTest()
 
 end
 
-if baseTestConfig.stringTest == true then
+if baseTestConfig.stringTest then
     sys.timerLoopStart(stringTest, loopTime)
 end
 
@@ -217,7 +239,7 @@ local function commonTest()
     log.info("CommonTest.nstrToUcs2Hex", common.nstrToUcs2Hex("+0123456789+0123456789+0123456789+0123456789+0123456789"))
     log.info("CommonTest.numToBcdNum", string.toHex(common.numToBcdNum("8618126324567F")))
     log.info("CommonTest.bcdNumToNum", common.bcdNumToNum(string.fromHex("688121364265F7")))
-    log.info("CommonTest.ucs2ToGb2312", common.ucs2ToGb2312(string.fromHex("d98f2f66004e616755004300530032000f5cef7a167f017884768551b95b6c8f62633a4e470042003200330031003200167f017884764b6dd58b8551b95b")))
+    log.info("CommonTest.ucs2ToGb2312", common.ucs2ToGb2312(string.fromHex("xd98f2f66004e616755004300530032000f5cef7a167f017884768551b95b6c8f62633a4e470042003200330031003200167f017884764b6dd58b8551b95b")))
     log.info("CommonTest.gb2312ToUcs2", string.toHex(common.gb2312ToUcs2(string.fromHex("D5E2CAC7D2BBCCF555544638B1E0C2EBB5C4C4DAC8DDD7AABBBBCEAA55435332B1E0C2EBB5C4B2E2CAD4C4DAC8DD"))))
     log.info("CommonTest.ucs2beToGb2312", common.ucs2beToGb2312(string.fromHex("8fd9662f4e006761005500430053003259277aef7f167801768451855bb98f6c63624e3a0047004200320033003100327f16780176846d4b8bd551855bb9")))
     log.info("CommonTest.gb2312ToUcs2be", string.toHex(common.gb2312ToUcs2be(string.fromHex("D5E2CAC7D2BBCCF555544638B1E0C2EBB5C4C4DAC8DDD7AABBBBCEAA55435332B1E0C2EBB5C4B2E2CAD4C4DAC8DD"))))
@@ -234,7 +256,7 @@ local function commonTest()
     end
 end
 
-if baseTestConfig.commonTest == true then
+if baseTestConfig.commonTest then
     sys.timerLoopStart(commonTest, loopTime)
 end
 
@@ -245,17 +267,19 @@ local function miscTest()
         log.info("MiscTest.GetClock", k, v)
     end
     log.info("MiscTest.GetWeek", misc.getWeek())
+    -- 获取校准标志
     log.info("MiscTest.GetCalib", misc.getCalib())
+    -- TODO SN长度
     misc.setSn("Jeremy", function() log.info("MiscTest.SetSnCb", "SUCCESS") end)
     log.info("MiscTest.GetSn", misc.getSn())
     log.info("MiscTest.GetImei", misc.getImei())
     log.info("MiscTest.GetVbatt", misc.getVbatt())
     log.info("MiscTest.GetMuid", misc.getMuid())
     -- 通道0，频率为50000Hz，占空比为0.2：
-    misc.openPwm(0,500,100)
+    misc.openPwm(0, 500, 100)
     log.info("MiscTest.OpenPwm.0.Open", "SUCCESS")
     -- 通道1，时钟周期为500ms，高电平时间为125毫秒：
-    misc.openPwm(1,2,8)
+    misc.openPwm(1, 2, 8)
     log.info("MiscTest.OpenPwm.1.Open", "SUCCESS")
 
     -- sys.wait(loopTime)
@@ -266,7 +290,7 @@ local function miscTest()
     log.info("MiscTest.OpenPwm.1.Close", "SUCCESS")
 end
 
-if baseTestConfig.miscTest == true then
+if baseTestConfig.miscTest then
     sys.timerLoopStart(miscTest, loopTime)
 end
 
@@ -280,6 +304,7 @@ if baseTestConfig.netTest == true then
                 sys.wait(10000)
                 net.switchFly(false)
                 log.info("NetTest.SwitchFly", "关闭飞行模式")
+                -- TODO 查询到的NETMODE和实际情况是否一致（欠费卡 未注册的状态）
                 log.info("NetTest.GetNetMode", net.getNetMode())
                 log.info("NetTest.GetState", net.getState())
                 log.info("NetTest.GetMcc", net.getMcc())
@@ -327,14 +352,13 @@ local function ntpTest()
     log.info("NtpTest.Status", ntpStatus)
 end
 
-if baseTestConfig.ntpTest == true then
+if baseTestConfig.ntpTest then
     sys.timerLoopStart(ntpTest, loopTime)
 end
 
-if baseTestConfig.nvmTest == true then
+if baseTestConfig.nvmTest then
     sys.taskInit(
         function()
-            log.info("NVMMMMM")
             require "Config"
             local count = 2
             local boolVal = true
@@ -349,7 +373,13 @@ if baseTestConfig.nvmTest == true then
                 log.info("NvmTest.ScoreTablePara.chinese", nvm.gett("scoreTablePara", "chinese"))
                 log.info("NvmTest.ScoreTablePara.math", nvm.gett("scoreTablePara", "math"))
                 log.info("NvmTest.ScoreTablePara.english", nvm.gett("scoreTablePara", "english"))
+                local table2 = nvm.gett("manyTablePara", "table2")
+                for k, v in pairs(table2) do
+                    log.info("NvmTest.manyTablePara.table2." .. k, v)
+                end
                 sys.wait(10000)
+                table2.table23 = boolVal
+                nvm.sett("manyTablePara", "table2", table2)
                 nvm.set("strPara", "LuatTest" .. count)
                 nvm.set("numPara", count)
                 nvm.set("boolPara", boolVal)
@@ -359,6 +389,7 @@ if baseTestConfig.nvmTest == true then
                 log.info("NvmTest.Flush", "SUCCESS")
                 count = count + 1
                 boolVal = not boolVal
+                -- TODO BUG?
                 nvm.restore()
             end
         end
@@ -384,7 +415,7 @@ local function tableTest()
     log.info("TableTest.Remove", firstest)
 end
 
-if baseTestConfig.tableTest == true then
+if baseTestConfig.tableTest then
     sys.timerLoopStart(tableTest, loopTime)
 end
 
@@ -398,23 +429,24 @@ local function pmTest()
     log.info("PmTest.IsSleep", pm.isSleep())
 end
 
-if baseTestConfig.pmTest == true then
+if baseTestConfig.pmTest then
     sys.timerLoopStart(pmTest, loopTime)
 end
 
 local function longCb()
     log.info("PowerKeyTest", "LongCb")
+    rtos.poweroff()
 end
 
 local function shortCb()
     log.info("PowerKeyTest", "ShortCb")
 end
 
-if baseTestConfig.powerKeyTest == true then
+if baseTestConfig.powerKeyTest then
     powerKey.setup(3000, longCb, shortCb)
 end
 
-if baseTestConfig.rilTest == true then
+if baseTestConfig.rilTest then
     local rilTestCount = 1
 
     sys.taskInit(
@@ -447,11 +479,12 @@ local function simTest()
     -- log.info("SimTest.GetNumber", sim.getNumber())
 end
 
-if baseTestConfig.simTest == true then
+if baseTestConfig.simTest then
     sys.timerLoopStart(simTest, loopTime)
 end
 
-if baseTestConfig.sysTest == true then
+if baseTestConfig.sysTest then
+    -- TODO timerSTOP timerIsActive
     sys.taskInit(
         function()
             sys.wait(5000)
@@ -476,9 +509,6 @@ local function jsonTest()
     local jsondata = json.encode(torigin)
     log.info("JsonTest.encode", jsondata)
 
-
-
-
     --{"KEY3":"VALUE3","KEY4":"VALUE4","KEY2":"VALUE2","KEY1":"VALUE1","KEY5":{"KEY5_2":"VALU5_2","KEY5_1":"VALU5_1"}},"KEY6":[1,2,3]}
     local origin = "{\"KEY3\":\"VALUE3\",\"KEY4\":\"VALUE4\",\"KEY2\":\"VALUE2\",\"KEY1\":\"VALUE1\",\"KEY5\":{\"KEY5_2\":\"VALUE5_2\",\"KEY5_1\":\"VALUE5_1\"},\"KEY6\":[1,2,3]}"
     local tjsondata, result, errinfo = json.decode(origin)
@@ -487,18 +517,19 @@ local function jsonTest()
         log.info("JsonTest.decode KEY2", tjsondata["KEY2"])
         log.info("JsonTest.decode KEY3", tjsondata["KEY3"])
         log.info("JsonTest.decode KEY4", tjsondata["KEY4"])
-        log.info("JsonTest.decode KEY5", tjsondata["KEY5"]["KEY5_1"],tjsondata["KEY5"]["KEY5_2"])
-        log.info("JsonTest.decode KEY6", tjsondata["KEY6"][1],tjsondata["KEY6"][2],tjsondata["KEY6"][3])
+        log.info("JsonTest.decode KEY5", tjsondata["KEY5"]["KEY5_1"], tjsondata["KEY5"]["KEY5_2"])
+        log.info("JsonTest.decode KEY6", tjsondata["KEY6"][1], tjsondata["KEY6"][2], tjsondata["KEY6"][3])
     else
         log.info("JsonTest.decode error", errinfo)
     end
 end
 
-if baseTestConfig.jsonTest == true then
+if baseTestConfig.jsonTest then
     sys.timerLoopStart(jsonTest, loopTime)
 end
 
 local function rtosTest()
+    -- TODO 多层路径
     local testPath = "/RtosTestPath"
 
     log.info("RtosTest.Poweron_reason", rtos.poweron_reason())
@@ -518,7 +549,7 @@ local function rtosTest()
     log.info("RtosTest.Toint64", string.toHex(rtos.toint64("12345678", "little")))
 end
 
-if baseTestConfig.rtosTest == true then
+if baseTestConfig.rtosTest then
     sys.timerLoopStart(rtosTest, loopTime)
 end
 
@@ -543,7 +574,7 @@ local function mathTest()
     -- log.info("MathTest.Ult", math.ult(2.2,1.1))
 end
 
-if baseTestConfig.mathTest == true then
+if baseTestConfig.mathTest then
     sys.timerLoopStart(mathTest, loopTime)
 end
 
@@ -579,7 +610,7 @@ function readCb(result, name, number)
     end
 end
 
-if baseTestConfig.pbTest == true then
+if baseTestConfig.pbTest then
     sys.taskInit(
         function()
             local index = 1
@@ -591,7 +622,9 @@ if baseTestConfig.pbTest == true then
                 pb.write(index, "LuatTest" .. index, "1234567890", writeCb)
                 sys.wait(5000)
                 pb.read(index, readCb)
-                index = (index == 10) and 1 or (index + 1)
+                -- TODO 查询卡电话本容量 写满
+                -- TODO LuaTask 库消息 doc 缺少说明 
+                index = (index == 20) and 1 or (index + 1)
             end
         end
     )
