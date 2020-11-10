@@ -7,7 +7,7 @@ module(..., package.seeall)
 
 -- 测试配置 设置为true代表开启此项测试
 local baseTestConfig = {
-    adcTest      = true,
+    adcTest      = false,
     bitTest      = false,
     packTest     = false,
     stringTest   = false,
@@ -28,10 +28,10 @@ local baseTestConfig = {
     pbTest       = false
 }
 
-local loopTime = 10000
+local loopTime = 30000
 
 -- ADC测量精度(10bit，电压测量范围为0到1.85V，分辨率为1850/1024=1.8MV，测量精度误差为20MV)
-local function getAdcVal()
+local function adcTest()
 
     local ADC2 = 2
     local ADC3 = 3
@@ -43,6 +43,7 @@ local function getAdcVal()
 
     adc.open(ADC2)
     adc.open(ADC3)
+    log.info("AdcTest.open", "ADC功能打开")
 
     adcval, voltval = adc.read(ADC2)
     log.info("AdcTest.ADC2.read", adcval, voltval)
@@ -50,90 +51,153 @@ local function getAdcVal()
     adcval, voltval = adc.read(ADC3)
     log.info("AdcTest.ADC3.read", adcval, voltval)
 
-    adc.colse(ADC2)
-    adc.colse(ADC3)
+    adc.close(ADC2)
+    adc.close(ADC3)
+    log.info("AdcTest.open", "ADC功能关闭")
 end
 
 if baseTestConfig.adcTest then
-    sys.timerLoopStart(getAdcVal, loopTime)
+    sys.timerLoopStart(adcTest, loopTime)
 end
 
 -- BitTest
 local function bitTest()
     --参数是位数，作用是1向左移动两位
     -- 0001 -> 0100 
-    for i = 1, 32 do
+    for i = 0, 31 do
         log.info("BitTest.bit", bit.bit(i))
     end
     
     -- 测试位数是否被置1
     --第一个参数是是测试数字，第二个是测试位置。从右向左数0到7。是1返回true，否则返回false
     -- 0101
-    -- log.info("BitTest.isset", bit.isset(5, 0))
-    -- log.info("BitTest.isset", bit.isset(5, 1))
-    -- log.info("BitTest.isset", bit.isset(5, 2))
-    -- log.info("BitTest.isset", bit.isset(5, 3))
-    -- TODO for i = 1, 32
-    log.info("BitTest.isset", bit.isset(0xFFFFFFFF, 1))
-    log.info("BitTest.isset", bit.isset(0x00000000, 1))
+    for i = 0, 31 do
+        if bit.isset(0xFFFFFFFF, i) == true then
+            log.info("BitTest.isset", "pass")
+        else
+            log.info("BitTest.isset", "fail")
+        end
+        if bit.isset(0x00000000, i) == false then
+            log.info("BitTest.isset", "pass")
+        else
+            log.info("BitTest.isset", "fail")
+        end
+    end
     
     -- 测试位数是否被置0
-    -- TODO 和isset一样
-    log.info("BitTest.isclear", bit.isclear(5, 0))
-    log.info("BitTest.isclear", bit.isclear(5, 1))
-    log.info("BitTest.isclear", bit.isclear(5, 2))
-    log.info("BitTest.isclear", bit.isclear(5, 3))
+    for i = 0, 31 do
+        if bit.isclear(0xFFFFFFFF, i) == false then
+            log.info("BitTest.isclear", "pass")
+        else
+            log.info("BitTest.isclear", "fail")
+        end
+        if bit.isclear(0x00000000, i) == true then
+            log.info("BitTest.isclear", "pass")
+        else
+            log.info("BitTest.isclear", "fail")
+        end
+    end
     
     --在相应的位数置1
     -- 0000 -> 1111
-    -- TODO 设置的位置不按顺序
-    -- TODO 循环置1 少传位置 多传位置
-    log.info("BitTest.set", bit.set(0, 0, 1, 2, 3))
+    if bit.set(0, 0, 1, 2, 3, 4, 5, 6, 7) == 255 then
+        log.info("BitTest.set", "pass")
+    else
+        log.info("BitTest.set", "fail")
+    end
+
+    if bit.set(0, 6, 3, 2, 1, 7, 5, 0, 4) == 255 then
+        log.info("BitTest.set", "pass")
+    else
+        log.info("BitTest.set", "fail")
+    end
     
     --在相应的位置置0
     -- 0101 -> 0000
-    -- TODO 和置1相同
-    log.info("BitTest.clear", bit.clear(5, 0, 2))
+    if bit.clear(0xFF, 0, 1, 2, 3, 4, 5, 6, 7) == 0 then
+        log.info("BitTest.clear", "pass")
+    else
+        log.info("BitTest.clear", "fail")
+    end
+
+    if bit.clear(0xFF, 6, 3, 2, 1, 7, 5, 0, 4) == 0 then
+        log.info("BitTest.clear", "pass")
+    else
+        log.info("BitTest.clear", "fail")
+    end
     
     --按位取反
     -- 0101 -> 1010
-    -- TODO 0xFFFFFFF 0x00000000 0xF0F0F0F0
-    log.info("BitTest.bnot", bit.bnot(0x0101))
+    if bit.bnot(0xFFFFFFFF) == 0 then
+        log.info("BitTest.bnot", "pass")
+    else
+        log.info("BitTest.bnot", "fail")
+    end
+    if bit.bnot(0x00000000) == 0xFFFFFFFF then
+        log.info("BitTest.bnot", "pass")
+    else
+        log.info("BitTest.bnot", "fail")
+    end
+    if bit.bnot(0xF0F0F0F0) == 0x0F0F0F0F then
+        log.info("BitTest.bnot", "pass")
+    else
+        log.info("BitTest.bnot", "fail")
+    end
     
     --与
     -- 0001 && 0001 -> 0001
-    -- TODO 0xFFFFFFFF &&  &&  三个数字相与
-    log.info("BitTest.band", bit.band(1, 1))
+    if bit.band(0xAAA, 0xAA0, 0xA00) == 0xA00 then
+        log.info("BitTest.band", "pass")
+    else
+        log.info("BitTest.band", "fail")
+    end
     
     --或
     -- 0001 | 0010 -> 0011
-    -- TODO 和与相同的修改
-    log.info("BitTest.bor", bit.bor(1, 2))
+    if bit.bor(0xA00, 0x0A0, 0x00A) == 0xAAA then
+        log.info("BitTest.bor", "pass")
+    else
+        log.info("BitTest.bor", "fail")
+    end
     
     --异或,相同为0，不同为1
     -- 0001 ⊕ 0010 -> 0011
-    -- TODO 同上
-    log.info("BitTest.bxor", bit.bxor(1, 2))
+    if bit.bxor(0x01, 0x02, 0x04, 0x08) == 0x0F then
+        log.info("BitTest.bxor", "pass")
+    else
+        log.info("BitTest.bxor", "fail")
+    end
     
     --逻辑左移
     -- 0001 -> 0100
-    -- TODO 0x00000000 0xFFFFFFFF 
-    log.info("BitTest.lshift", bit.lshift(1, 2))
+    if bit.lshift(0xFFFFFFFF, 1) == -2 then
+        log.info("BitTest.lshift", "pass")
+    else
+        log.info("BitTest.lshift", "fail")
+    end
     
     --逻辑右移，“001”
     -- 0100 -> 0001
-    log.info("BitTest.rshift", bit.rshift(4, 2))
+    if bit.rshift(0xFFFFFFFF, 1) == 0x7FFFFFFF then
+        log.info("BitTest.rshift", "pass")
+    else
+        log.info("BitTest.rshift", "fail")
+    end
     
     --算数右移，左边添加的数与符号有关
     -- 0010 -> 0000
-    -- TODO 0xFFFFFFFF 
-    log.info("BitTest.arshift", bit.arshift(2, 2))
+    if bit.arshift(0xFFFFFFFF, 1) == -1 then
+        log.info("BitTest.arshift", "pass")
+    else
+        log.info("BitTest.arshift", "fail")
+    end
 end
 
 if baseTestConfig.bitTest then
     sys.timerLoopStart(bitTest, loopTime)
 end
-    
+
+-- TODO 完善PACK测试
 local function packTest()
     --[[将一些变量按照格式包装在字符串.'z'有限零字符串，'p'长字节优先，'P'长字符优先，
     'a'长词组优先，'A'字符串型，'f'浮点型,'d'双精度型,'n'Lua 数字,'c'字符型,'b'无符号字符型,'h'短型,'H'无符号短型
@@ -163,19 +227,18 @@ local function stringTest()
     log.info("StringTest.Lower", string.lower(testStr))
 
     --第一个参数是目标字符串，第二个参数是标准字符串，第三个是待替换字符串,打印出"luat great"
-    -- TODO 添加正则匹配的情况
-    log.info("StringTest.Gsub", string.gsub(testStr, "Luat", "AirM2M"))
+    log.info("StringTest.Gsub", string.gsub(testStr, "L%w%w%w", "AirM2M"))
 
     --打印出目标字符串在查找字符串中的首尾位置
-    -- TODO 搜索初始位置 plain
-    log.info("StringTest.Find", string.find(testStr, "NB"))
+    log.info("StringTest.Find", string.find(testStr, "NB", 1, true))
+    log.info("StringTest.Find", string.find(testStr, "N%w", 16, false))
 
     log.info("StringTest.Reverse", string.reverse(testStr))
 
-    local i = 12345
-    
-    -- TODO %x %X
+    local i = 43981
     log.info("StringTest.Format", string.format("This is %d test string : %s", i, testStr))
+    log.info("StringTest.Format", string.format("%d(Hex) = %x / %X", i, i, i))
+
 
     --注意string.char或者string.byte只针对一个字节，数值不可大于256
     --将相应的数值转化为字符
@@ -203,22 +266,19 @@ local function stringTest()
 
     -- log.info("String.ToValue", string.toValue("123abc"))
 
-    -- TODO 增加一些外文字符的长度测试
-    local utf8Len = string.utf8Len("Luat中国a")
-    log.info("String.Utf8Len", utf8Len, utf8Len == 10)
+    local utf8Len = string.utf8Len("Luat中国こにちはПривет🤣❤💚☢")
+    log.info("String.Utf8Len", utf8Len)
 
-    local table1 = string.utf8ToTable("中国2018")
+    local table1 = string.utf8ToTable("Luat中国こにちはПривет🤣❤💚☢")
 
     for k, v in pairs(table1) do
         log.info("String.Utf8ToTable", k, v)
     end
 
-    -- TODO 增加测试字符串的复杂度
-    log.info("String.RawurlEncode", string.rawurlEncode("####133"))
-    log.info("String.RawurlEncode", string.rawurlEncode("中国2018"))
-
-    log.info("String.UrlEncode", string.urlEncode("####133"))
-    log.info("String.UrlEncode", string.urlEncode("中国2018"))
+    log.info("String.RawurlEncode", string.rawurlEncode("####133Luat中国こにちはПривет🤣❤💚☢"))
+    
+    log.info("String.UrlEncode", string.urlEncode("####133Luat中国こにちはПривет🤣❤💚☢"))
+    log.info("String.UrlEncode", string.urlEncode("####133Luat中国こにちはПривет🤣❤💚☢"))
 
     log.info("String.FormatNumberThousands", string.formatNumberThousands(1234567890))
 
@@ -269,9 +329,9 @@ local function miscTest()
     log.info("MiscTest.GetWeek", misc.getWeek())
     -- 获取校准标志
     log.info("MiscTest.GetCalib", misc.getCalib())
-    -- TODO SN长度
-    misc.setSn("Jeremy", function() log.info("MiscTest.SetSnCb", "SUCCESS") end)
+    misc.setSn(string.rep("12345678", 8), function() log.info("MiscTest.SetSnCb", "SUCCESS") end)
     log.info("MiscTest.GetSn", misc.getSn())
+    log.info("MiscTest.GetSn.len", string.len(misc.getSn()))
     log.info("MiscTest.GetImei", misc.getImei())
     log.info("MiscTest.GetVbatt", misc.getVbatt())
     log.info("MiscTest.GetMuid", misc.getMuid())
@@ -484,7 +544,23 @@ if baseTestConfig.simTest then
 end
 
 if baseTestConfig.sysTest then
-    -- TODO timerSTOP timerIsActive
+    local count = 1
+    local timerId
+    timerId = sys.timerLoopStart(
+        function()
+            if count < 10 then
+                log.info("SysTest.timerLoopStart", count)
+                log.info("SysTest.timerIsActive", sys.timerIsActive(timerId))
+                count = count + 1
+            else
+                sys.timerStop(timerId)
+                log.info("SysTest.timerStop", "计时器停止")
+                log.info("SysTest.timerIsActive", sys.timerIsActive(timerId))
+            end
+        end,
+        3000
+    )
+    log.info("SysTest.timerId", timerId)
     sys.taskInit(
         function()
             sys.wait(5000)
@@ -529,8 +605,7 @@ if baseTestConfig.jsonTest then
 end
 
 local function rtosTest()
-    -- TODO 多层路径
-    local testPath = "/RtosTestPath"
+    local testPath = "/RtosTestPath/RtosTestPath/RtosTestPath/RtosTestPath/RtosTestPath/"
 
     log.info("RtosTest.Poweron_reason", rtos.poweron_reason())
 
@@ -622,9 +697,7 @@ if baseTestConfig.pbTest then
                 pb.write(index, "LuatTest" .. index, "1234567890", writeCb)
                 sys.wait(5000)
                 pb.read(index, readCb)
-                -- TODO 查询卡电话本容量 写满
-                -- TODO LuaTask 库消息 doc 缺少说明 
-                index = (index == 20) and 1 or (index + 1)
+                index = (index == 50) and 1 or (index + 1)
             end
         end
     )
