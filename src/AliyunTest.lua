@@ -5,11 +5,6 @@
 
 module(..., package.seeall)
 
-local AliyunTestConfig = {
-    aliyunMqttTest = true,
-    aliyunOtaTest  = false
-}
-
 local PRODUCT_KEY = "a1K4TWp6E6z"
 local PRODUCE_SECRET = "oqBAqpeFwQTKyn4M"
 
@@ -32,21 +27,12 @@ local function setDeviceSecret(s)
     misc.setSn(s)
 end
 
---[[
-函数名：pubqos1testackcb
-功能  ：发布1条qos为1的消息后收到PUBACK的回调函数
-参数  ：
-		usertag：调用mqttclient:publish时传入的usertag
-		result：true表示发布成功，false或者nil表示失败
-返回值：无
-]]
 local function publishTestCb(result, para)
     log.info("AliyunTest.publishTestCb", result, para)
     sys.timerStart(publishTest, 20000)
     publishCnt = publishCnt + 1
 end
 
---发布一条QOS为1的消息
 function publishTest()
     if sConnected then
         --注意：在此处自己去控制payload的内容编码，aLiYun库中不会对payload的内容做任何编码转换
@@ -85,7 +71,7 @@ end
 
 aLiYun.setErrHandle(function() sys.restart("ALIYUN_TASK_INACTIVE") end, 300)
 
-if AliyunTestConfig.aliyunMqttTest then
+if LuaTaskTestConfig.aliyunTest.aliyunMqttTest then
     -- 一机一密
     aLiYun.setup(PRODUCT_KEY, nil, getDeviceName, getDeviceSecret)
 
@@ -98,6 +84,6 @@ if AliyunTestConfig.aliyunMqttTest then
     aLiYun.on("connect", connectCbFnc)
 end
 
-if AliyunTestConfig.aliyunOtaTest then
+if LuaTaskTestConfig.aliyunTest.aliyunOtaTest then
     require "aLiYunOta"
 end

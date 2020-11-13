@@ -5,13 +5,6 @@
 
 module(..., package.seeall)
 
--- 测试配置 设置为true代表开启此项测试
-local LbsLocTestConfig = {
-    cellLocTest = true,
-    wifiLocTest = true,
-    gpsLocTest     = true
-}
-
 local postCellLocInfoAddress = "http://wiki.airm2m.com:48080/postCellLocInfo"
 local postWiFiLocInfoAddress = "http://wiki.airm2m.com:48080/postWiFiLocInfo"
 local postGPSLocInfoAddress = "http://wiki.airm2m.com:48080/postGPSLocInfo"
@@ -72,7 +65,7 @@ function getCellLocCb(result, lat, lng, addr)
     end
 end
 
-if LbsLocTestConfig.cellLocTest then
+if LuaTaskTestConfig.lbsLocTest.cellLocTest then
     sys.timerLoopStart(
         function()
             log.info("CellLocTest", "开始基站定位")
@@ -149,7 +142,7 @@ local function wifiLocTest()
     )
 end
 
-if LbsLocTestConfig.wifiLocTest then
+if LuaTaskTestConfig.lbsLocTest.wifiLocTest then
     sys.timerLoopStart(wifiLocTest, loopTime)
 end
 
@@ -205,9 +198,9 @@ local function printGpsInfo()
     end
 end
 
-if LbsLocTestConfig.gpsLocTest then
-    require "gpsZkw"
-    require "agpsZkw"
+if LuaTaskTestConfig.lbsLocTest.gpsLocTest then
+    -- require "gpsZkw"
+    -- require "agpsZkw"
     
     log.info("GPSTest", "打开GPS")
     gpsZkw.open(gpsZkw.DEFAULT, {tag = "GPSLocTest"})

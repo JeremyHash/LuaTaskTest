@@ -5,20 +5,6 @@
 
 module(..., package.seeall)
 
--- 测试配置 设置为true代表开启此项测试
-local httpTestConfig = {
-    getTest                        = true,
-    getTestWithCA                  = true,
-    getTestWithCAAndKey            = true,
-    getTestAndSaveToBigFile        = true,
-    getTestAndSaveToSmallFile      = true,
-    postTest                       = true,
-    postTestWithUserHead           = true,
-    postTestWithOctetStream        = true,
-    postTestWithMultipartFormData  = true,
-    postTestWithXwwwformurlencoded = true
-}
-
 local waitTime = 20000
 
 --multipart/form-data封装函数
@@ -329,75 +315,75 @@ sys.taskInit(
         local count = 1
         while true do
             -- Http GET 请求测试
-            if httpTestConfig.getTest then
+            if LuaTaskTestConfig.httpTest.getTest then
                 log.info("HttpTest.GetTest", "第" .. count .. "次")
                 http.request("GET", serverAddress, nil, nil, nil, nil, getTestCb)
                 sys.wait(waitTime)
             end
             
             -- Https Get 请求测试（服务端证书验证_单向认证）
-            if httpTestConfig.getTestWithCA then
+            if LuaTaskTestConfig.httpTest.getTestWithCA then
                 log.info("HttpTest.GetTestWithCA", "第" .. count .. "次")
                 http.request("GET", "https://www.baidu.com", {caCert = "ca.cer"}, nil, nil, nil, getTestWithCACb)
                 sys.wait(waitTime)
             end
 
             -- Https Get 请求测试（服务端客户端证书验证_双向认证）
-            if httpTestConfig.getTestWithCAAndKey then
+            if LuaTaskTestConfig.httpTest.getTestWithCAAndKey then
                 log.info("HttpTest.GetTestWithCAAndKey","第"..count.."次")
                 http.request("GET","https://36.7.87.100:4434",{caCert="ca.crt",clientCert="client.crt",clientKey="client.key"},nil,nil,nil,GetTestWithCAAndKeyCb)
                 sys.wait(waitTime)
             end
 
             -- Https Get 请求测试（保存结果到文件,文件较大）
-            if httpTestConfig.getTestAndSaveToBigFile then
-                log.info("创建文件前可用空间 "..rtos.get_fs_free_size().." Bytes")
+            if LuaTaskTestConfig.httpTest.getTestAndSaveToBigFile then
+                log.info("创建文件前可用空间 " .. rtos.get_fs_free_size() .. " Bytes")
                 if rtos.make_dir("/Jeremy/") then
-                    log.info("HttpTest.makeDir", "SUCCESS")
+                    log.info("HttpTest.GetTestAndSaveToBigFile.makeDir", "SUCCESS")
                 else
-                    log.error("HttpTest.makeDir", "FAIL")
+                    log.error("HttpTest.GetTestAndSaveToBigFile.makeDir", "FAIL")
                 end
-                log.info("HttpTest.GetTestAndSaveToBigFile","第"..count.."次")
-                http.request("GET","https://www.baidu.com",{caCert="ca.cer"},nil,nil,nil,getTestAndSaveToBigFileCb,"/Jeremy/baidu.html")
+                log.info("HttpTest.GetTestAndSaveToBigFile", "第" .. count .. "次")
+                http.request("GET","https://www.baidu.com",{caCert="ca.cer"}, nil, nil, nil, getTestAndSaveToBigFileCb, "/Jeremy/baidu.html")
                 sys.wait(waitTime)
             end
 
             -- Https Get 请求测试（保存结果到文件,文件较小）
-            if httpTestConfig.getTestAndSaveToSmallFile then
-                log.info("创建文件前可用空间 "..rtos.get_fs_free_size().." Bytes")
+            if LuaTaskTestConfig.httpTest.getTestAndSaveToSmallFile then
+                log.info("创建文件前可用空间 " .. rtos.get_fs_free_size() .. " Bytes")
                 if rtos.make_dir("/Jeremy/") then
-                    log.info("HttpTest.makeDir", "SUCCESS")
+                    log.info("HttpTest.GetTestAndSaveToSmallFile.makeDir", "SUCCESS")
                 else
-                    log.error("HttpTest.makeDir", "FAIL")
+                    log.error("HttpTest.GetTestAndSaveToSmallFile.makeDir", "FAIL")
                 end
-                log.info("HttpTest.GetTestAndSaveToSmallFile","第"..count.."次")
-                http.request("GET","https://www.lua.org/",nil,nil,nil,nil,getTestAndSaveToSmallFileCb,"/Jeremy/lua.html")
+                log.info("HttpTest.GetTestAndSaveToSmallFile", "第" .. count .. "次")
+                http.request("GET","https://www.lua.org/", nil, nil, nil, nil, getTestAndSaveToSmallFileCb, "/Jeremy/lua.html")
                 sys.wait(waitTime)
             end
 
             -- Https Post 请求测试(/)
-            if httpTestConfig.postTest then
+            if LuaTaskTestConfig.httpTest.postTest then
                 log.info("HttpTest.PostTest","第"..count.."次")
                 http.request("POST",serverAddress.."/",nil,nil,"PostTest!",nil,postTestCb)
                 sys.wait(waitTime)
             end
 
             -- Https Post 请求测试（自定义Head）
-            if httpTestConfig.postTestWithUserHead then
+            if LuaTaskTestConfig.httpTest.postTestWithUserHead then
                 log.info("HttpTest.PostTestWithUserHead","第"..count.."次")
                 http.request("POST",serverAddress.."/withUserHead",nil,{UserHead="Jeremy"},nil,nil,postTestWithUserHeadCb)
                 sys.wait(waitTime)
             end
 
             -- Https Post 请求测试（octet-stream）
-            if httpTestConfig.postTestWithOctetStream then
+            if LuaTaskTestConfig.httpTest.postTestWithOctetStream then
                 log.info("HttpTest.PostTestWithOctetStream","第"..count.."次")
                 http.request("POST",serverAddress.."/withOctetStream",nil,{['Content-Type']="application/octet-stream",['Connection']="keep-alive"},{[1]={['file']="/lua/http.lua"}},nil,postTestWithOctetStreamCb)
                 sys.wait(waitTime)
             end
 
             -- Https Post 请求测试（postTestWithFormData）
-            if httpTestConfig.postTestWithMultipartFormData then
+            if LuaTaskTestConfig.httpTest.postTestWithMultipartFormData then
                 log.info("HttpTest.PostTestWithMultipartFormData","第"..count.."次")
                 postTestWithMultipartFormData(
                     serverAddress.."/uploadFile",
@@ -421,7 +407,7 @@ sys.taskInit(
             end
 
             -- Https Post 请求测试（withxwwwformurlencoded）
-            if httpTestConfig.postTestWithXwwwformurlencoded then
+            if LuaTaskTestConfig.httpTest.postTestWithXwwwformurlencoded then
                 log.info("HttpTest.PostTestWithXwwwformurlencoded","第"..count.."次")
                 http.request("POST",serverAddress.."/withxwwwformurlencoded",nil,
                 {

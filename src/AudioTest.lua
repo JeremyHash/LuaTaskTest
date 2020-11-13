@@ -5,12 +5,6 @@
 
 module(..., package.seeall)
 
-local AudioTestConfig = {
-    audioPlayTest     = true,
-    audioStreamTest   = true,
-    recordTest        = true
-}
-
 local waitTime1 = 5000
 local waitTime2 = 1000
 
@@ -265,7 +259,7 @@ sys.taskInit(
         local isTTSVersion = rtos.get_version():upper():find("TTS")
 
         while true do
-            if AudioTestConfig.audioPlayTest == true then
+            if LuaTaskTestConfig.audioTest.audioPlayTest == true then
             
                 -- 播放音频文件
                 log.info("AudioTest.AudioPlayTest.Vol", vol)
@@ -331,7 +325,7 @@ sys.taskInit(
                 speed = (speed == 100) and 4 or (speed + 16)
             end
 
-            if AudioTestConfig.audioStreamTest then
+            if LuaTaskTestConfig.audioTest.audioStreamTest then
                 audio.setVolume(4)
                 log.info("AudioTest.AudioStreamTest.AMRFilePlayTest", "Start")
                 producer(audiocore.AMR)
@@ -344,7 +338,7 @@ sys.taskInit(
                 sys.wait(30000)
             end
 
-            if AudioTestConfig.recordTest then
+            if LuaTaskTestConfig.audioTest.recordTest then
                 log.info("AudioTest.RecordTest", "开始普通录音")
                 record.start(5, recordCb1)
                 sys.wait(20000)

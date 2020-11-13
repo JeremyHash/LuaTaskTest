@@ -5,15 +5,6 @@
 
 module(..., package.seeall)
 
-local DispTestConfig = {
-    logoTest        = true,
-    scanTest        = false,
-    photoTest       = false,
-    photoSendTest   = false,
-    qrcodeTest      = true,
-    uiWinTest       = false
-}
-
 local waitTime1 = 2000
 local waitTime2 = 5000
 
@@ -594,7 +585,7 @@ sys.taskInit(function()
 
     while true do
 
-		if DispTestConfig.logoTest then
+		if LuaTaskTestConfig.dispTest.logoTest then
 			log.info("DispTest.LogoTest", "第" .. count .. "次")
             -- 显示logo
             -- 清空LCD显示缓冲区
@@ -610,7 +601,7 @@ sys.taskInit(function()
 			sys.wait(waitTime2)
         end 
 
-		if DispTestConfig.scanTest then
+		if LuaTaskTestConfig.dispTest.scanTest then
 			log.info("DispTest.ScanTest", "第" .. count .. "次")
 			pm.wake("DispTest.ScanTest")
             local ret = 0
@@ -629,7 +620,7 @@ sys.taskInit(function()
             sys.wait(10000)
         end
 
-		if DispTestConfig.photoTest then
+		if LuaTaskTestConfig.dispTest.photoTest then
 			log.info("DispTest.PhotoTest", "第" .. count .. "次")
             -- 拍照并显示
             pm.wake("DispTest.PhotoTest")
@@ -658,7 +649,7 @@ sys.taskInit(function()
             sys.wait(waitTime2)
         end
 
-		if DispTestConfig.photoSendTest then
+		if LuaTaskTestConfig.dispTest.photoSendTest then
 			log.info("DispTest.PhotoSendTest", "第" .. count .. "次")
             -- 拍照并通过uart1发送出去
             pm.wake("DispTest.PhotoSendTest")
@@ -688,7 +679,7 @@ sys.taskInit(function()
             sys.wait(waitTime2)
         end
 
-		if DispTestConfig.qrcodeTest then
+		if LuaTaskTestConfig.dispTest.qrcodeTest then
 			log.info("DispTest.QrCodeTest", "第" .. count .. "次")
             --显示二维码
             disp.clear()
@@ -699,7 +690,7 @@ sys.taskInit(function()
             sys.wait(waitTime2)
         end
 
-		if DispTestConfig.uiWinTest then
+		if LuaTaskTestConfig.dispTest.uiWinTest then
 			log.info("DispTest.UIWinTest", "第" .. count .. "次")
             --1秒后，打开提示框窗口，提示"3秒后进入待机界面"
             --提示框窗口关闭后，自动进入待机界面

@@ -38,7 +38,7 @@ sys.taskInit(
 
             -- 单向认证Client1
             for i=1, 10 do
-                tcpClient1 = socket.tcp(true, {caCert="ca.crt"})
+                tcpClient1 = socket.tcp(true, {caCert = "ca.crt"})
                 connectResult, socketId = tcpClient1:connect(ip1, port1)
                 log.info("SocketTest.tcpClient1.connectResult, socketId", connectResult, socketId)
                 if connectResult then
@@ -68,7 +68,7 @@ sys.taskInit(
 
             -- 双向认证Client2
             for i=1, 10 do
-                tcpClient2 = socket.tcp(true, {caCert="ca.crt", clientCert="client.crt", clientKey="client.key"})
+                tcpClient2 = socket.tcp(true, {caCert = "ca.crt", clientCert = "client.crt", clientKey = "client.key"})
                 connectResult, socketId = tcpClient2:connect(ip1, port2)
                 log.info("SocketTest.tcpClient2.connectResult, socketId", connectResult, socketId)
                 if connectResult then

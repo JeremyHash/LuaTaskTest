@@ -4,7 +4,7 @@
 合宙LuaTask 自动化测试工具
 #### 软件架构
  + Lua V5.1
- + LuaTask V2.3.4
+ + LuaTask V2.3.5
 #### 功能模块
  + aliyunTest       
  + httpTest         

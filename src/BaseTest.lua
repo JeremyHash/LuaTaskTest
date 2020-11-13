@@ -1,40 +1,30 @@
 -- BaseTest
 -- Author:LuatTest
 -- CreateDate:20201013
--- UpdateDate:20201025
+-- UpdateDate:20201110
 
 module(..., package.seeall)
-
--- 测试配置 设置为true代表开启此项测试
-local baseTestConfig = {
-    adcTest      = false,
-    bitTest      = false,
-    packTest     = false,
-    stringTest   = false,
-    commonTest   = false,
-    miscTest     = false,
-    netTest      = false,
-    ntpTest      = false,
-    nvmTest      = false,
-    tableTest    = false,
-    pmTest       = false,
-    powerKeyTest = false,
-    rilTest      = false,
-    simTest      = false,
-    sysTest      = false,
-    jsonTest     = false,
-    rtosTest     = false,
-    mathTest     = false,
-    pbTest       = false
-}
 
 local loopTime = 30000
 
 -- ADC测量精度(10bit，电压测量范围为0到1.85V，分辨率为1850/1024=1.8MV，测量精度误差为20MV)
 local function adcTest()
 
-    local ADC2 = 2
-    local ADC3 = 3
+    local ADC2, ADC3
+
+    if LuaTaskTestConfig.modType == "8910" then
+        -- 8910
+        ADC2 = 2
+        ADC3 = 3
+    elseif LuaTaskTestConfig.modType == "1802" then 
+        -- 1802
+        ADC2 = 0
+        ADC3 = 1
+    elseif LuaTaskTestConfig.modType == "1802S" then
+        -- 1802S
+        ADC2 = 0
+        ADC3 = 1
+    end
 
     -- 读取adc
     -- adcval为number类型，表示adc的原始值，无效值为0xFFFF
@@ -56,7 +46,7 @@ local function adcTest()
     log.info("AdcTest.open", "ADC功能关闭")
 end
 
-if baseTestConfig.adcTest then
+if LuaTaskTestConfig.baseTest.adcTest then
     sys.timerLoopStart(adcTest, loopTime)
 end
 
@@ -193,7 +183,7 @@ local function bitTest()
     end
 end
 
-if baseTestConfig.bitTest then
+if LuaTaskTestConfig.baseTest.bitTest then
     sys.timerLoopStart(bitTest, loopTime)
 end
 
@@ -215,7 +205,7 @@ local function packTest()
     log.info("PackTest", nextpox1, val1, val2)
 end
 
-if baseTestConfig.packTest then
+if LuaTaskTestConfig.baseTest.packTest then
     sys.timerLoopStart(packTest, loopTime)
 end
         
@@ -290,7 +280,7 @@ local function stringTest()
 
 end
 
-if baseTestConfig.stringTest then
+if LuaTaskTestConfig.baseTest.stringTest then
     sys.timerLoopStart(stringTest, loopTime)
 end
 
@@ -316,7 +306,7 @@ local function commonTest()
     end
 end
 
-if baseTestConfig.commonTest then
+if LuaTaskTestConfig.baseTest.commonTest then
     sys.timerLoopStart(commonTest, loopTime)
 end
 
@@ -350,11 +340,11 @@ local function miscTest()
     log.info("MiscTest.OpenPwm.1.Close", "SUCCESS")
 end
 
-if baseTestConfig.miscTest then
+if LuaTaskTestConfig.baseTest.miscTest then
     sys.timerLoopStart(miscTest, loopTime)
 end
 
-if baseTestConfig.netTest == true then
+if LuaTaskTestConfig.baseTest.netTest then
     sys.taskInit(
         function()
             sys.waitUntil("IP_READY_IND")
@@ -412,11 +402,11 @@ local function ntpTest()
     log.info("NtpTest.Status", ntpStatus)
 end
 
-if baseTestConfig.ntpTest then
+if LuaTaskTestConfig.baseTest.ntpTest then
     sys.timerLoopStart(ntpTest, loopTime)
 end
 
-if baseTestConfig.nvmTest then
+if LuaTaskTestConfig.baseTest.nvmTest then
     sys.taskInit(
         function()
             require "Config"
@@ -475,7 +465,7 @@ local function tableTest()
     log.info("TableTest.Remove", firstest)
 end
 
-if baseTestConfig.tableTest then
+if LuaTaskTestConfig.baseTest.tableTest then
     sys.timerLoopStart(tableTest, loopTime)
 end
 
@@ -489,7 +479,7 @@ local function pmTest()
     log.info("PmTest.IsSleep", pm.isSleep())
 end
 
-if baseTestConfig.pmTest then
+if LuaTaskTestConfig.baseTest.pmTest then
     sys.timerLoopStart(pmTest, loopTime)
 end
 
@@ -502,11 +492,11 @@ local function shortCb()
     log.info("PowerKeyTest", "ShortCb")
 end
 
-if baseTestConfig.powerKeyTest then
+if LuaTaskTestConfig.baseTest.powerKeyTest then
     powerKey.setup(3000, longCb, shortCb)
 end
 
-if baseTestConfig.rilTest then
+if LuaTaskTestConfig.baseTest.rilTest then
     local rilTestCount = 1
 
     sys.taskInit(
@@ -539,11 +529,11 @@ local function simTest()
     -- log.info("SimTest.GetNumber", sim.getNumber())
 end
 
-if baseTestConfig.simTest then
+if LuaTaskTestConfig.baseTest.simTest then
     sys.timerLoopStart(simTest, loopTime)
 end
 
-if baseTestConfig.sysTest then
+if LuaTaskTestConfig.baseTest.sysTest then
     local count = 1
     local timerId
     timerId = sys.timerLoopStart(
@@ -600,12 +590,12 @@ local function jsonTest()
     end
 end
 
-if baseTestConfig.jsonTest then
+if LuaTaskTestConfig.baseTest.jsonTest then
     sys.timerLoopStart(jsonTest, loopTime)
 end
 
 local function rtosTest()
-    local testPath = "/RtosTestPath/RtosTestPath/RtosTestPath/RtosTestPath/RtosTestPath/"
+    local testPath = "/RtosTestPath"
 
     log.info("RtosTest.Poweron_reason", rtos.poweron_reason())
 
@@ -624,7 +614,7 @@ local function rtosTest()
     log.info("RtosTest.Toint64", string.toHex(rtos.toint64("12345678", "little")))
 end
 
-if baseTestConfig.rtosTest then
+if LuaTaskTestConfig.baseTest.rtosTest then
     sys.timerLoopStart(rtosTest, loopTime)
 end
 
@@ -649,7 +639,7 @@ local function mathTest()
     -- log.info("MathTest.Ult", math.ult(2.2,1.1))
 end
 
-if baseTestConfig.mathTest then
+if LuaTaskTestConfig.baseTest.mathTest then
     sys.timerLoopStart(mathTest, loopTime)
 end
 
@@ -685,10 +675,11 @@ function readCb(result, name, number)
     end
 end
 
-if baseTestConfig.pbTest then
+if LuaTaskTestConfig.baseTest.pbTest then
     sys.taskInit(
         function()
             local index = 1
+            sys.wait(30000)
             pb.setStorage("SM", setStorageCb)
             while true do
                 sys.wait(5000)

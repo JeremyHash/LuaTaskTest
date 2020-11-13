@@ -13,22 +13,6 @@ http://tool.chacuo.net/cryptaes
 进行测试
 ]]
 
--- 测试配置 设置为true代表开启此项测试
-local cryptoTestConfig = {
-    base64Test     = true,
-    hmacMd5Test    = true,
-    xxteaTest      = true,
-    flowMd5Test    = true,
-    md5Test        = true,
-    hmacSha1Test   = true,
-    sha1Test       = true,
-    sha256Test     = true,
-    hmacSha256Test = true,
-    crcTest        = true,
-    aesTest        = true,
-    rsaTest        = true
-}
-
 local slen = string.len
 
 local loopTime = 60000
@@ -41,7 +25,7 @@ local function base64Test()
     log.info("CryptoTest.base64.decode", crypto.base64_decode(encodeStr, slen(encodeStr)))
 end
 
-if cryptoTestConfig.base64Test == true then
+if LuaTaskTestConfig.cryptoTest.base64Test then
     sys.timerLoopStart(base64Test, loopTime)
 end
 
@@ -53,7 +37,7 @@ local function hmacMd5Test()
     log.info("CryptoTest.hmac_md5", crypto.hmac_md5(originStr, slen(originStr), signKey, slen(signKey)))
 end
 
-if cryptoTestConfig.hmacMd5Test == true then
+if LuaTaskTestConfig.cryptoTest.hmacMd5Test then
     sys.timerLoopStart(hmacMd5Test, loopTime)
 end
 
@@ -69,7 +53,7 @@ local function xxteaTest()
     end
 end
 
-if cryptoTestConfig.xxteaTest == true then
+if LuaTaskTestConfig.cryptoTest.xxteaTest then
     sys.timerLoopStart(xxteaTest, loopTime)
 end
 
@@ -84,7 +68,7 @@ local function flowMd5Test()
     log.info("CryptoTest.flowMd5Test", fmd5Obj:hexdigest())
 end
 
-if cryptoTestConfig.flowMd5Test == true then
+if LuaTaskTestConfig.cryptoTest.flowMd5Test then
     sys.timerLoopStart(flowMd5Test, loopTime)
 end
 
@@ -98,7 +82,7 @@ local function md5Test()
 	log.info("CryptoTest.file_md5Test", crypto.md5("/lua/sys.lua", "file"))
 end
 
-if cryptoTestConfig.md5Test == true then
+if LuaTaskTestConfig.cryptoTest.md5Test then
     sys.timerLoopStart(md5Test, loopTime)
 end
 
@@ -109,7 +93,7 @@ local function hmacSha1Test()
     log.info("CryptoTest.hmacSha1Test", crypto.hmac_sha1(originStr, slen(originStr), signKey, slen(signKey)))
 end
 
-if cryptoTestConfig.hmacSha1Test == true then
+if LuaTaskTestConfig.cryptoTest.hmacSha1Test then
     sys.timerLoopStart(hmacSha1Test, loopTime)
 end
 
@@ -119,7 +103,7 @@ local function sha1Test()
     log.info("CryptoTest.sha1Test", crypto.sha1(originStr, slen(originStr)))
 end
 
-if cryptoTestConfig.sha1Test == true then
+if LuaTaskTestConfig.cryptoTest.sha1Test then
     sys.timerLoopStart(sha1Test, loopTime)
 end
 
@@ -129,7 +113,7 @@ local function sha256Test()
     log.info("CryptoTest.sha256Test", crypto.sha256(originStr, slen(originStr)))
 end
 
-if cryptoTestConfig.sha256Test == true then
+if LuaTaskTestConfig.cryptoTest.sha256Test then
     sys.timerLoopStart(sha256Test, loopTime)
 end
 
@@ -141,7 +125,7 @@ local function hmacSha256Test()
     end
 end
 
-if cryptoTestConfig.hmacSha256Test == true then
+if LuaTaskTestConfig.cryptoTest.hmacSha256Test then
     sys.timerLoopStart(hmacSha256Test, loopTime)
 end
 
@@ -164,7 +148,7 @@ local function crcTest()
     -- log.info("CryptoTest.crc32",string.format("%08X",crypto.crc32(originStr,slen(originStr))))
 end
 
-if cryptoTestConfig.crcTest == true then
+if LuaTaskTestConfig.cryptoTest.crcTest then
     sys.timerLoopStart(crcTest, loopTime)
 end
 
@@ -351,7 +335,7 @@ local function aesTest()
     log.info("CryptoTest.decrypt",crypto.aes_decrypt("CTR","NONE",encodeStr,"12345678901234567890123456789012","1234567890666666"))
 end
 
-if cryptoTestConfig.aesTest == true then
+if LuaTaskTestConfig.cryptoTest.aesTest then
     sys.timerLoopStart(aesTest, loopTime)
 end
 
@@ -388,6 +372,6 @@ local function rsaTest()
     log.info("rsaTest.verifyResult customer",verifyResult)
 end
 
-if cryptoTestConfig.rsaTest == true then
+if LuaTaskTestConfig.cryptoTest.rsaTest then
     sys.timerLoopStart(rsaTest, loopTime)
 end

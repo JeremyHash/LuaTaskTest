@@ -5,12 +5,6 @@
 
 module(..., package.seeall)
 
--- 测试配置 设置为true代表开启此项测试
-local fsTestConfig = {
-	sdCardTest      = false,
-	insideFlashTest = true,
-}
-
 local function readFile(filename)
 	local filehandle = io.open(filename, "r")
 	if filehandle then
@@ -108,7 +102,7 @@ end
 -- end
 
 -- SD卡读写测试
-if fsTestConfig.sdCardTest == true then
+if LuaTaskTestConfig.fsTest.sdCardTest then
 	sys.taskInit(
 		function()
 			local sdcardPath = "/sdcard0"
@@ -149,7 +143,7 @@ if fsTestConfig.sdCardTest == true then
 end
 
 -- 模块内部FLASH读写测试
-if fsTestConfig.insideFlashTest == true then
+if LuaTaskTestConfig.fsTest.insideFlashTest then
 	sys.taskInit(
 		function ()
 	        sys.wait(4000)
@@ -157,7 +151,7 @@ if fsTestConfig.insideFlashTest == true then
 			local mkdirRes = rtos.make_dir(testPath)
 			log.info("FsTest.FlashTest.MkdirRes", mkdirRes)
 
-			deleteFile(testPath .. "/FsWriteTest1.txt")
+			-- deleteFile(testPath .. "/FsWriteTest1.txt")
 			log.info("FsTest.FileExists", io.exists(testPath .. "/FsWriteTest1.txt"))
 			if mkdirRes == true then
 				while true do
@@ -176,7 +170,7 @@ if fsTestConfig.insideFlashTest == true then
 						log.info("FsTest.PathInfo." .. k, v)
 					end
 					sys.wait(2000)
-					local file = io.open("/FileSeekTest.txt", "w")
+					local file = io.open("/FileSeekTest.txt", "r")
 					file:write("FileSeekTest")
 					log.info("FsTest.FileSeek", file:seek("end"))
 					log.info("FsTest.FileSeek", file:seek("set"))

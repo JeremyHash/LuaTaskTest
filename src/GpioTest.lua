@@ -5,13 +5,6 @@
 
 module(..., package.seeall)
 
--- 测试配置 设置为true代表开启此项测试
-local GpioTestConfig = {
-    gpioIntTest = false,
-    gpioOutTest = true,
-    ledTest     = false
-}
-
 --[[
 有些GPIO需要打开对应的ldo电压域才能正常工作，电压域和对应的GPIO关系如下
 pmd.ldoset(x,pmd.LDO_VSIM1) -- GPIO 29、30、31
@@ -60,7 +53,7 @@ function gpioIntFnc(msg)
     end
 end
 
-if GpioTestConfig.gpioIntTest then
+if LuaTaskTestConfig.gpioTest.gpioIntTest then
     getGpio0Fnc = pins.setup(0, gpioIntFnc)
     getGpio1Fnc = pins.setup(1, gpioIntFnc)
     getGpio2Fnc = pins.setup(2, gpioIntFnc)
@@ -114,7 +107,7 @@ if GpioTestConfig.gpioIntTest then
     -- getGpio66Fnc = pins.setup(66, gpioIntFnc)
 end
 
-if GpioTestConfig.gpioOutTest then
+if LuaTaskTestConfig.gpioTest.gpioOutTest then
     sys.taskInit(
         function()
             local value = 0
@@ -167,6 +160,6 @@ end
 --     led.blinkPwm(gpio4, 100, 500)
 -- end
 
--- if GpioTestConfig.ledTest then
+-- if LuaTaskTestConfig.gpioTest.ledTest then
 --     ledTest()
 -- end

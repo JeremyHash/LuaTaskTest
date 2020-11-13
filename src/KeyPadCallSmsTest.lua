@@ -5,11 +5,6 @@
 
 module(..., package.seeall)
 
-local callAndSmsTestConfig = {
-    callTest = true,
-    smsTest  = false,
-}
-
 local phoneNum = ""
 
 local function keyMsg(msg)
@@ -156,7 +151,7 @@ local function smsSendCb(result, num, data)
     log.info("SmsTest.smsSendCb", result, num, data)
 end
 
-if callAndSmsTestConfig.callTest then
+if LuaTaskTestConfig.keyPadCallSmsTest.callTest then
     --注册按键消息处理函数
     rtos.on(rtos.MSG_KEYPAD, keyMsg)
     --初始化键盘阵列
@@ -174,7 +169,7 @@ local function smsTest()
     sms.send("10086", common.utf8ToGb2312("华康是的撒qeiuqwdsahdkjahdkjahdkja122136489759725923759823hfdskfdkjnbzndkjhfskjdfkjdshfkjdsfks83478648732432qeiuqwdsahdkjahdkjahdkja122136489759725923759823hfdskfdkjnbzndkjhfskjdfkjdshfkjdsfks83478648732432qeiuqwdsahdkjahdkjahdkja122136489759725923759823hfdskfdkjnbzndkjhfskjdfkjdshfkjdsfks83478648732432"), smsSendCb)
 end
 
-if callAndSmsTestConfig.smsTest then
+if LuaTaskTestConfig.keyPadCallSmsTest.smsTest then
     sms.setNewSmsCb(procnewsms)
     sys.timerLoopStart(smsTest, 30000)
 end
