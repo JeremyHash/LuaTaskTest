@@ -170,8 +170,10 @@ if LuaTaskTestConfig.fsTest.insideFlashTest then
 						log.info("FsTest.PathInfo." .. k, v)
 					end
 					sys.wait(2000)
-					local file = io.open("/FileSeekTest.txt", "r")
+					local file = io.open("/FileSeekTest.txt", "w")
 					file:write("FileSeekTest")
+					file:close()
+					local file = io.open("/FileSeekTest.txt", "r")
 					log.info("FsTest.FileSeek", file:seek("end"))
 					log.info("FsTest.FileSeek", file:seek("set"))
 					log.info("FsTest.FileSeek", file:seek())
