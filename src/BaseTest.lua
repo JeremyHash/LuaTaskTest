@@ -351,9 +351,10 @@ if LuaTaskTestConfig.baseTest.netTest then
             while true do
                 net.switchFly(true)
                 log.info("NetTest.SwitchFly", "打开飞行模式")
-                sys.wait(10000)
+                sys.wait(5000)
                 net.switchFly(false)
                 log.info("NetTest.SwitchFly", "关闭飞行模式")
+                sys.waitUntil("IP_READY_IND")
                 -- TODO 查询到的NETMODE和实际情况是否一致（欠费卡 未注册的状态）
                 log.info("NetTest.GetNetMode", net.getNetMode())
                 log.info("NetTest.GetState", net.getState())
@@ -378,7 +379,7 @@ if LuaTaskTestConfig.baseTest.netTest then
                 log.info("NetTest.CengQueryPoll.开启查询", net.cengQueryPoll(10000))
                 log.info("NetTest.CsqQueryPoll.开启查询", net.csqQueryPoll(10000))
                 log.info("NetTest.StartQueryAll.开启查询", net.startQueryAll(10000))
-                sys.wait(600000)
+                sys.wait(60000)
                 log.info("NetTest.StopQueryAll.关闭查询", net.stopQueryAll())
                 log.info("NetTest.SetEngMode.关闭工程模式", net.setEngMode(0))
                 sys.wait(10000)
@@ -546,19 +547,13 @@ if LuaTaskTestConfig.baseTest.sysTest then
                 sys.timerStop(timerId)
                 log.info("SysTest.timerStop", "计时器停止")
                 log.info("SysTest.timerIsActive", sys.timerIsActive(timerId))
+                log.info("SysTest.Restart", "重启测试")
+                sys.restart("重启测试")
             end
         end,
         3000
     )
     log.info("SysTest.timerId", timerId)
-    sys.taskInit(
-        function()
-            sys.wait(5000)
-            log.info("SysTest.Restart", "5秒后模块即将重启")
-            sys.wait(5000)
-            sys.restart("重启测试")
-        end
-    )
 end
 
 local function jsonTest()
