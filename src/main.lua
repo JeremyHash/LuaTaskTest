@@ -9,7 +9,7 @@ PRODUCT_KEY = "LMe0gb26NhPbBZ7t3mSk3dxA8f4ZZmM1"
 
 -- 测试配置 设置为true代表开启此项测试
 LuaTaskTestConfig = {
-    modType = "1802S",
+    modType = "8910",
     aliyunTest = {
         aliyunMqttTest = false,
         aliyunOtaTest  = false
@@ -82,18 +82,18 @@ LuaTaskTestConfig = {
     },
     uartTransferTest  = false,
     cryptoTest = {
-        base64Test     = true,
-        hmacMd5Test    = true,
-        xxteaTest      = true,
-        flowMd5Test    = true,
-        md5Test        = true,
-        hmacSha1Test   = true,
-        sha1Test       = true,
-        sha256Test     = true,
-        hmacSha256Test = true,
-        crcTest        = true,
-        aesTest        = true,
-        rsaTest        = true
+        base64Test     = false,
+        hmacMd5Test    = false,
+        xxteaTest      = false,
+        flowMd5Test    = false,
+        md5Test        = false,
+        hmacSha1Test   = false,
+        sha1Test       = false,
+        sha256Test     = false,
+        hmacSha256Test = false,
+        crcTest        = false,
+        aesTest        = false,
+        rsaTest        = false
     },
     i2cAndSpiTest = {
         I2CTest = false,
@@ -124,9 +124,8 @@ end
 -- errDump.request("udp://ota.airm2m.com:9072")
 
 -- require "update"
--- update.request(nil, "http://117.51.140.119:8000/jeremy.bin")
 -- update.request()
-
+-- update.request(nil, "http://117.51.140.119:8000/jeremy.bin")
 
 -- lib依赖管理
 require "sys"
@@ -143,7 +142,7 @@ require "mqtt"
 require "pins"
 -- require "record"
 require "cc"
-require "sms"
+-- require "sms"
 -- require "uiWin"
 -- require "scanCode"
 require "lbsLoc"
@@ -213,7 +212,12 @@ for k, v in pairs(LuaTaskTestConfig.keyPadCallSmsTest) do
     end
 end
 
--- require "DispTest"
+for k, v in pairs(LuaTaskTestConfig.dispTest) do
+    if v then
+        require "DispTest"
+        break
+    end
+end
 
 for k, v in pairs(LuaTaskTestConfig.lbsLocTest) do
     if v then
