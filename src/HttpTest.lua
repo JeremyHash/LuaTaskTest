@@ -8,17 +8,17 @@ module(..., package.seeall)
 local waitTime = 20000
 
 --multipart/form-data封装函数
-local function postTestWithMultipartFormData(url,cert,params,timeout,cbFnc,rcvFileName)
-    local boundary,body,k,v,kk,vv = "--------------------------"..os.time()..rtos.tick(),{}
+local function postTestWithMultipartFormData(url, cert, params, timeout, cbFnc, rcvFileName)
+    local boundary, body, k, v, kk, vv = "--------------------------" .. os.time() .. rtos.tick(), {}
     
-    for k,v in pairs(params) do
-        if k=="texts" then
+    for k, v in pairs(params) do
+        if k == "texts" then
             local bodyText = ""
-            for kk,vv in pairs(v) do
-                bodyText = bodyText.."--"..boundary.."\r\nContent-Disposition: form-data; name=\""..kk.."\"\r\n\r\n"..vv.."\r\n"
+            for kk, vv in pairs(v) do
+                bodyText = bodyText .. "--" .. boundary .. "\r\nContent-Disposition: form-data; name=\"" .. kk .. "\"\r\n\r\n" .. vv .. "\r\n"
             end
-            body[#body+1] = bodyText
-        elseif k=="files" then
+            body[#body + 1] = bodyText
+        elseif k == "files" then
             local contentType =
             {
                 jpg = "image/jpeg",
@@ -27,22 +27,22 @@ local function postTestWithMultipartFormData(url,cert,params,timeout,cbFnc,rcvFi
                 txt = "text/plain",
                 lua = "text/plain"
             }
-            for kk,vv in pairs(v) do
-                print(kk,vv)
-                body[#body+1] = "--"..boundary.."\r\nContent-Disposition: form-data; name=\""..kk.."\"; filename=\""..kk.."\"\r\nContent-Type: "..contentType[vv:match("%.(%w+)$")].."\r\n\r\n"
-                body[#body+1] = {file = vv}
-                body[#body+1] = "\r\n"
+            for kk, vv in pairs(v) do
+                print(kk, vv)
+                body[#body + 1] = "--" .. boundary .. "\r\nContent-Disposition: form-data; name=\"" .. kk .. "\"; filename=\"" .. kk .. "\"\r\nContent-Type: " .. contentType[vv:match("%.(%w+)$")] .. "\r\n\r\n"
+                body[#body + 1] = {file = vv}
+                body[#body + 1] = "\r\n"
             end
         end
     end    
-    body[#body+1] = "--"..boundary.."--\r\n"
+    body[#body + 1] = "--" .. boundary .. "--\r\n"
         
     http.request(
         "POST",
         url,
         cert,
         {
-            ["Content-Type"] = "multipart/form-data; boundary="..boundary,
+            ["Content-Type"] = "multipart/form-data; boundary=" .. boundary,
             ["Connection"] = "keep-alive"
         },
         body,
@@ -64,26 +64,35 @@ local function urlencodeTab(params)
 end
 
 -- getTest回调
-local function getTestCb(result,prompt,head,body)
+local function getTestCb(result, prompt, head, body)
     if result then
         log.info("HttpTest.GetTestCb.result", "SUCCESS")
+        log.info("HttpTest.GetTestCb.prompt", "Http状态码:", prompt)
+        if head then
+            log.info("HttpTest.GetTestCb.Head", "遍历响应头")
+            for k, v in pairs(head) do
+                log.info("HttpTest.GetTestCb.Head", k .. " : " .. v)
+            end
+        else
+            log.error("HttpTest.GetTestCb.Head", "读取响应头FAIL")
+        end
+
+        if body then
+            log.info("HttpTest.GetTestCb.Body", body)
+            log.info("HttpTest.GetTestCb.BodyLen", body:len())
+            if body == "LuatHttpTestServerGetTestOK" then
+                log.info("HttpTest.GetTestCb", "getTestSuccess")
+            else
+                log.error("HttpTest.GetTestCb", "getTestFail")
+            end
+        else
+            log.error("HttpTest.GetTestCb.Body", "读取响应体FAIL")
+        end
     else
-        log.info("HttpTest.GetTestCb.result", "FAIL")
+        log.error("HttpTest.GetTestCb.result", "FAIL")
+        log.error("HttpTest.GetTestCb.prompt", prompt)
     end
-    log.info("HttpTest.GetTestCb.prompt", "Http状态码:", prompt)
-    if result and head then
-        log.info("HttpTest.GetTestCb.Head","遍历响应头")
-        for k,v in pairs(head) do
-            log.info("HttpTest.GetTestCb.Head",k.." : "..v)
-        end
-    end
-    if result and body then
-        log.info("HttpTest.GetTestCb.Body","body="..body)
-        log.info("HttpTest.GetTestCb.Body","bodyLen="..body:len())
-        if body=="LuatHttpTestServerGetTestOK" then
-            log.info("HttpTest.GetTestCb","getTestPass")
-        end
-    end
+
 end
 
 -- getTestWithCA回调
