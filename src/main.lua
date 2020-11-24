@@ -101,9 +101,8 @@ LuaTaskTestConfig = {
     }
 }
 
--- TODO 增加不同日志等级的信息分类
 require "log"
-LOG_LEVEL = log.LOGLEVEL_TRACE
+LOG_LEVEL = log.LOGLEVEL_INFO
 
 -- require "console"
 -- console.setup(2, 115200)

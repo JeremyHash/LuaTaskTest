@@ -117,6 +117,9 @@ local function taskClient(method,protocal,auth,host,port,path,cert,head,body,tim
             if not rcvChunked then
                 contentLen = tonumber(rspHead["Content-Length"] or "2147483647")
             end
+            if method == "HEAD" then 
+				contentLen = 0
+			end
             --未处理的body数据
             rcvCache = rcvCache:sub(d2+1,-1)
             break

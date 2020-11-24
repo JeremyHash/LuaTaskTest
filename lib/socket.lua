@@ -462,7 +462,7 @@ rtos.on(rtos.MSG_SOCK_RECV_IND, function(msg)
     
     -- local s = socketcore.sock_recv(msg.socket_index, msg.recv_len)
     -- log.debug("socket.recv", "total " .. msg.recv_len .. " bytes", "first " .. 30 .. " bytes", s:sub(1, 30))
-    log.debug("socket.recv", msg.recv_len, sockets[msg.socket_index].rcvProcFnc)
+    log.trace("socket.recv", msg.recv_len, sockets[msg.socket_index].rcvProcFnc)
     if sockets[msg.socket_index].rcvProcFnc then
         sockets[msg.socket_index].rcvProcFnc(socketcore.sock_recv, msg.socket_index, msg.recv_len)
     else
@@ -470,7 +470,7 @@ rtos.on(rtos.MSG_SOCK_RECV_IND, function(msg)
             coroutine.resume(sockets[msg.socket_index].co, true, socketcore.sock_recv(msg.socket_index, msg.recv_len))
         else -- 数据进缓冲区，缓冲区溢出采用覆盖模式
             if #sockets[msg.socket_index].input > INDEX_MAX then
-                log.error("socket recv", "out of stack", "block")
+                log.trace("socket recv", "out of stack", "block")
                 -- sockets[msg.socket_index].input = {}
                 sockets[msg.socket_index].isBlock = true
                 sockets[msg.socket_index].msg = msg
