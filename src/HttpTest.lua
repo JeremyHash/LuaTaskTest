@@ -5,7 +5,7 @@
 
 module(..., package.seeall)
 
-local waitTime = 20000
+local waitTime = 30000
 
 --multipart/form-data封装函数
 local function postTestWithMultipartFormData(url, cert, params, timeout, cbFnc, rcvFileName)
@@ -80,7 +80,7 @@ local function getTestCb(result, prompt, head, body)
         if body then
             log.info("HttpTest.GetTestCb.Body", body)
             log.info("HttpTest.GetTestCb.BodyLen", body:len())
-            if body == "LuatHttpTestServerGetTestOK" then
+            if body == "getTestSuccess" then
                 log.info("HttpTest.GetTestCb", "getTestSuccess")
             else
                 log.error("HttpTest.GetTestCb", "getTestFail")
@@ -91,6 +91,95 @@ local function getTestCb(result, prompt, head, body)
     else
         log.error("HttpTest.GetTestCb.result", "FAIL")
         log.error("HttpTest.GetTestCb.prompt", prompt)
+    end
+end
+
+-- getTest回调
+local function getWaitTestCb(result, prompt, head, body)
+    local tag = "HttpTest.GetWaitTestCb"
+    if result then
+        log.info(tag .. ".result", "SUCCESS")
+        log.info(tag .. ".prompt", "Http状态码:", prompt)
+        if head then
+            log.info(tag .. ".Head", "遍历响应头")
+            for k, v in pairs(head) do
+                log.info(tag .. ".Head", k .. " : " .. v)
+            end
+        else
+            log.error(tag .. ".Head", "读取响应头FAIL")
+        end
+
+        if body then
+            log.info(tag .. ".Body", body)
+            log.info(tag .. ".BodyLen", body:len())
+            if body == "waitTestSuccess" then
+                log.info(tag, "getTestSuccess")
+            else
+                log.error(tag, "getTestFail")
+            end
+        else
+            log.error(tag .. ".Body", "读取响应体FAIL")
+        end
+    else
+        log.error(tag .. ".result", result)
+        log.error(tag .. ".prompt", prompt)
+        if prompt == "receive timeout" then
+            log.info(tag, "getWaitTestSuccess")
+        end
+    end
+end
+
+-- get301Test回调
+local function get301TestCb(result, prompt, head, body)
+    local tag = "HttpTest.get301TestCb"
+    if result then
+        log.info(tag .. ".result", "SUCCESS")
+        log.info(tag .. ".prompt", "Http状态码:", prompt)
+        if head then
+            log.info(tag .. ".Head", "遍历响应头")
+            for k, v in pairs(head) do
+                log.info(tag .. ".Head", k .. " : " .. v)
+            end
+        else
+            log.error(tag .. ".Head", "读取响应头FAIL")
+        end
+
+        if body then
+            log.info(tag .. ".Body", body)
+            log.info(tag .. ".BodyLen", body:len())
+        else
+            log.error(tag .. ".Body", "读取响应体FAIL")
+        end
+    else
+        log.error(tag .. ".result", "FAIL")
+        log.error(tag .. ".prompt", prompt)
+    end
+end
+
+-- get302Test回调
+local function get302TestCb(result, prompt, head, body)
+    local tag = "HttpTest.get302TestCb"
+    if result then
+        log.info(tag .. ".result", "SUCCESS")
+        log.info(tag .. ".prompt", "Http状态码:", prompt)
+        if head then
+            log.info(tag .. ".Head", "遍历响应头")
+            for k, v in pairs(head) do
+                log.info(tag .. ".Head", k .. " : " .. v)
+            end
+        else
+            log.error(tag .. ".Head", "读取响应头FAIL")
+        end
+
+        if body then
+            log.info(tag .. ".Body", body)
+            log.info(tag .. ".BodyLen", body:len())
+        else
+            log.error(tag .. ".Body", "读取响应体FAIL")
+        end
+    else
+        log.error(tag .. ".result", "FAIL")
+        log.error(tag .. ".prompt", prompt)
     end
 end
 
@@ -207,7 +296,7 @@ end
 
 -- 处理小文件回调
 local function getTestAndSaveToSmallFileCb(result, prompt, head, filePath)
-    local fileSize
+    local MD5Header, fileSize
     if result then
         log.info("HttpTest.getTestAndSaveToSmallFileCb.result", "SUCCESS")
         log.info("HttpTest.getTestAndSaveToSmallFileCb.prompt", "Http状态码:", prompt)
@@ -215,6 +304,9 @@ local function getTestAndSaveToSmallFileCb(result, prompt, head, filePath)
             log.info("HttpTest.getTestAndSaveToSmallFileCb.Head","遍历响应头")
             for k, v in pairs(head) do
                 log.info("HttpTest.getTestAndSaveToSmallFileCb.Head", k .. " : " .. v)
+                if k == "MD5" then
+                    MD5Header = v
+                end
                 if k == "Content-Length" then
                     fileSize = v
                 end
@@ -233,6 +325,14 @@ local function getTestAndSaveToSmallFileCb(result, prompt, head, filePath)
 
             if size == tonumber(fileSize) then
                 log.info("HttpTest.getTestAndSaveToSmallFileCb.fileSize", "fileSize验证SUCCESS")
+                local calMD5 = crypto.md5(filePath, "file")
+                log.info("HttpTest.getTestAndSaveToSmallFileCb.CalMD5", calMD5)
+
+                if MD5Header == calMD5 then
+                    log.info("HttpTest.getTestAndSaveToSmallFileCb.CalMD5", "MD5校验SUCCESS")
+                else
+                    log.error("HttpTest.getTestAndSaveToSmallFileCb.CalMD5", "MD5校验FAIL")
+                end
             else
                 log.error("HttpTest.getTestAndSaveToSmallFileCb.fileSize", "fileSize验证FAIL")
             end
@@ -270,7 +370,7 @@ local function postTestCb(result, prompt, head, body)
         if body then
             log.info("HttpTest.postTestCb.Body", body)
             log.info("HttpTest.postTestCb.BodyLen", body:len())
-            if body == "LuatHttpTestServerPostTestOK" then
+            if body == "postTestSuccess" then
                 log.info("HttpTest.postTestCb", "postTestSuccess")
             else
                 log.error("HttpTest.postTestCb", "postTestFail")
@@ -281,6 +381,38 @@ local function postTestCb(result, prompt, head, body)
     else
         log.error("HttpTest.postTestCb.result", "FAIL")
         log.error("HttpTest.postTestCb.prompt", prompt)
+    end
+end
+
+-- postJsonTest回调
+local function postJsonTestCb(result, prompt, head, body)
+    local tag = "HttpTest.postJsonTestCb"
+    if result then
+        log.info(tag .. ".result", "SUCCESS")
+        log.info(tag .. ".prompt", "Http状态码:", prompt)
+        if head then
+            log.info(tag .. ".Head", "遍历响应头")
+            for k, v in pairs(head) do
+                log.info(tag .. ".Head", k .. " : " .. v)
+            end
+        else
+            log.error(tag .. ".Head", "读取响应头FAIL")
+        end
+
+        if body then
+            log.info(tag .. ".Body", body)
+            log.info(tag .. ".BodyLen", body:len())
+            if body == "postJsonTestSuccess" then
+                log.info(tag, "postTestSuccess")
+            else
+                log.error(tag, "postTestFail")
+            end
+        else
+            log.error(tag .. ".Body", "读取响应体FAIL")
+        end
+    else
+        log.error(tag .. ".result", "FAIL")
+        log.error(tag .. ".prompt", prompt)
     end
 end
 
@@ -302,7 +434,7 @@ local function postTestWithUserHeadCb(result,prompt,head,body)
             log.info("HttpTest.postTestWithUserHeadCb.Body", body)
             log.info("HttpTest.postTestWithUserHeadCb.BodyLen", body:len())
             if body == "PostTestWithUserHeadPass" then
-                log.info("HttpTest.postTestWithUserHeadCb", "PostTestWithUserHeadPass")
+                log.info("HttpTest.postTestWithUserHeadCb", "PostTestWithUserHeadSuccess")
             else
                 log.error("HttpTest.postTestWithUserHeadCb", "PostTestWithUserHeadFail")
             end
@@ -316,62 +448,95 @@ local function postTestWithUserHeadCb(result,prompt,head,body)
 end
 
 -- postTestWithOctetStreamCb回调
-local function postTestWithOctetStreamCb(result,prompt,head,body)
+local function postTestWithOctetStreamCb(result, prompt, head, body)
     if result then
-        log.info("HttpTest.PostTestWithOctetStreamCb.result", "SUCCESS")
-    else
-        log.info("HttpTest.PostTestWithOctetStreamCb.result", "FAIL")
-    end
-    log.info("HttpTest.PostTestWithOctetStreamCb.prompt", "Http状态码:", prompt)
-    if result and head then
-        log.info("HttpTest.PostTestWithOctetStreamCb.Head","遍历响应头")
-        for k,v in pairs(head) do
-            log.info("HttpTest.PostTestWithOctetStreamCb.Head",k.." : "..v)
+        log.info("HttpTest.postTestWithOctetStreamCb.result", "SUCCESS")
+        log.info("HttpTest.postTestWithOctetStreamCb.prompt", "Http状态码:", prompt)
+        if head then
+            log.info("HttpTest.postTestWithOctetStreamCb.Head", "遍历响应头")
+            for k, v in pairs(head) do
+                log.info("HttpTest.postTestWithOctetStreamCb.Head", k .. " : " .. v)
+            end
+        else
+            log.error("HttpTest.postTestWithOctetStreamCb.Head", "读取响应头FAIL")
         end
-    end
-    if result and body then
-        log.info("HttpTest.PostTestWithOctetStreamCb.Body","body="..body)
-        log.info("HttpTest.PostTestWithOctetStreamCb.Body","bodyLen="..body:len())
+
+        if body then
+            log.info("HttpTest.postTestWithOctetStreamCb.Body", body)
+            log.info("HttpTest.postTestWithOctetStreamCb.BodyLen", body:len())
+            if body == "PostTestWithOctetStreamSuccess" then
+                log.info("HttpTest.postTestWithOctetStreamCb", "postTestWithOctetStreamSuccess")
+            else
+                log.error("HttpTest.postTestWithOctetStreamCb", "postTestWithOctetStreamFail")
+            end
+        else
+            log.error("HttpTest.postTestWithOctetStreamCb.Body", "读取响应体FAIL")
+        end
+    else
+        log.error("HttpTest.postTestWithOctetStreamCb.result", "FAIL")
+        log.error("HttpTest.postTestWithOctetStreamCb.prompt", prompt)
     end
 end
 
 -- postTestWithMultipartFormDataCb回调
-local function postTestWithMultipartFormDataCb(result,prompt,head,body)
+local function postTestWithMultipartFormDataCb(result, prompt, head, body)
     if result then
-        log.info("HttpTest.PostTestWithMultipartFormDataCb.result", "SUCCESS")
-    else
-        log.info("HttpTest.PostTestWithMultipartFormDataCb.result", "FAIL")
-    end
-    log.info("HttpTest.PostTestWithMultipartFormDataCb.prompt", "Http状态码:", prompt)
-    if result and head then
-        log.info("HttpTest.PostTestWithMultipartFormDataCb.Head","遍历响应头")
-        for k,v in pairs(head) do
-            log.info("HttpTest.PostTestWithMultipartFormDataCb.Head",k.." : "..v)
+        log.info("HttpTest.postTestWithMultipartFormDataCb.result", "SUCCESS")
+        log.info("HttpTest.postTestWithMultipartFormDataCb.prompt", "Http状态码:", prompt)
+        if head then
+            log.info("HttpTest.postTestWithMultipartFormDataCb.Head", "遍历响应头")
+            for k, v in pairs(head) do
+                log.info("HttpTest.postTestWithMultipartFormDataCb.Head", k .. " : " .. v)
+            end
+        else
+            log.error("HttpTest.postTestWithMultipartFormDataCb.Head", "读取响应头FAIL")
         end
-    end
-    if result and body then
-        log.info("HttpTest.PostTestWithMultipartFormDataCb.Body","body="..body)
-        log.info("HttpTest.PostTestWithMultipartFormDataCb.Body","bodyLen="..body:len())
+
+        if body then
+            log.info("HttpTest.postTestWithMultipartFormDataCb.Body", body)
+            log.info("HttpTest.postTestWithMultipartFormDataCb.BodyLen", body:len())
+            if body == "postTestWithMultipartFormDataSuccess" then
+                log.info("HttpTest.postTestWithMultipartFormDataCb", "postTestWithMultipartFormDataSuccess")
+            else
+                log.error("HttpTest.postTestWithMultipartFormDataCb", "postTestWithMultipartFormDataFail")
+            end
+        else
+            log.error("HttpTest.postTestWithMultipartFormDataCb.Body", "读取响应体FAIL")
+        end
+    else
+        log.error("HttpTest.postTestWithMultipartFormDataCb.result", "FAIL")
+        log.error("HttpTest.postTestWithMultipartFormDataCb.prompt", prompt)
     end
 end
 
 -- postTestWithXwwwformurlencodedCb回调
-local function postTestWithXwwwformurlencodedCb(result,prompt,head,body)
+local function postTestWithXwwwformurlencodedCb(result, prompt, head, body)
     if result then
-        log.info("HttpTest.PostTestWithXwwwformurlencodedCb.result", "SUCCESS")
-    else
-        log.info("HttpTest.PostTestWithXwwwformurlencodedCb.result", "FAIL")
-    end
-    log.info("HttpTest.PostTestWithXwwwformurlencodedCb.prompt", "Http状态码:", prompt)
-    if result and head then
-        log.info("HttpTest.PostTestWithXwwwformurlencodedCb.Head","遍历响应头")
-        for k,v in pairs(head) do
-            log.info("HttpTest.PostTestWithXwwwformurlencodedCb.Head",k.." : "..v)
+        log.info("HttpTest.postTestWithMultipartFormDataCb.result", "SUCCESS")
+        log.info("HttpTest.postTestWithMultipartFormDataCb.prompt", "Http状态码:", prompt)
+        if head then
+            log.info("HttpTest.postTestWithMultipartFormDataCb.Head", "遍历响应头")
+            for k, v in pairs(head) do
+                log.info("HttpTest.postTestWithMultipartFormDataCb.Head", k .. " : " .. v)
+            end
+        else
+            log.error("HttpTest.postTestWithMultipartFormDataCb.Head", "读取响应头FAIL")
         end
-    end
-    if result and body then
-        log.info("HttpTest.PostTestWithXwwwformurlencodedCb.Body","body="..body)
-        log.info("HttpTest.PostTestWithXwwwformurlencodedCb.Body","bodyLen=" .. body:len())
+
+        if body then
+            log.info("HttpTest.postTestWithMultipartFormDataCb.Body", body)
+            log.info("HttpTest.postTestWithMultipartFormDataCb.BodyLen", body:len())
+            if body == "postTestWithMultipartFormDataSuccess" then
+                log.info("HttpTest.postTestWithMultipartFormDataCb", "postTestWithMultipartFormDataSuccess")
+            else
+                log.error("HttpTest.postTestWithMultipartFormDataCb", "postTestWithMultipartFormDataFail")
+            end
+        else
+            log.error("HttpTest.postTestWithMultipartFormDataCb.Body", "读取响应体FAIL")
+        end
+    else
+        log.error("HttpTest.postTestWithMultipartFormDataCb.result", "FAIL")
+        log.error("HttpTest.postTestWithMultipartFormDataCb.prompt", prompt)
     end
 end
 
@@ -386,7 +551,28 @@ sys.taskInit(
             -- Http GET 请求测试
             if LuaTaskTestConfig.httpTest.getTest then
                 log.info("HttpTest.GetTest", "第" .. count .. "次")
-                http.request("GET", serverAddress, nil, nil, nil, nil, getTestCb)
+                http.request("GET", serverAddress .. "?test1=1&test2=22&test3=333&test4=四四四四&test5=FiveFiveFiveFiveFive&test6=ろくろくろくろくろくろく", nil, nil, nil, nil, getTestCb)
+                sys.wait(waitTime)
+            end
+
+            -- Http GET 请求测试(waitTest)
+            if LuaTaskTestConfig.httpTest.getWaitTest then
+                log.info("HttpTest.GetWaitTest", "第" .. count .. "次")
+                http.request("GET", serverAddress .. "/waitTest", nil, nil, nil, 10000, getWaitTestCb)
+                sys.wait(waitTime)
+            end
+
+            -- Http GET 请求301重定向测试
+            if LuaTaskTestConfig.httpTest.get301Test then
+                log.info("HttpTest.Get301Test", "第" .. count .. "次")
+                http.request("GET", serverAddress .. "/redirect301", nil, nil, nil, nil, get301TestCb)
+                sys.wait(waitTime)
+            end
+
+            -- Http GET 请求302重定向测试
+            if LuaTaskTestConfig.httpTest.get302Test then
+                log.info("HttpTest.Get302Test", "第" .. count .. "次")
+                http.request("GET", serverAddress .. "/redirect302", nil, nil, nil, nil, get302TestCb)
                 sys.wait(waitTime)
             end
             
@@ -413,7 +599,7 @@ sys.taskInit(
                     log.error("HttpTest.GetTestAndSaveToBigFile.makeDir", "FAIL")
                 end
                 log.info("HttpTest.GetTestAndSaveToBigFile", "第" .. count .. "次")
-                http.request("GET", serverAddress .. "/download/600K",nil, nil, nil, nil, getTestAndSaveToBigFileCb, "/Jeremy/600K")
+                http.request("GET", serverAddress .. "/download/600K", nil, nil, nil, nil, getTestAndSaveToBigFileCb, "/Jeremy/600K")
                 sys.wait(waitTime)
             end
 
@@ -426,7 +612,7 @@ sys.taskInit(
                     log.error("HttpTest.GetTestAndSaveToSmallFile.makeDir", "FAIL")
                 end
                 log.info("HttpTest.GetTestAndSaveToSmallFile", "第" .. count .. "次")
-                http.request("GET", "https://www.lua.org/", nil, nil, nil, nil, getTestAndSaveToSmallFileCb, "/Jeremy/lua.html")
+                http.request("GET", serverAddress .. "/download/2K", nil, nil, nil, nil, getTestAndSaveToSmallFileCb, "/Jeremy/2K")
                 sys.wait(waitTime)
             end
 
@@ -434,6 +620,31 @@ sys.taskInit(
             if LuaTaskTestConfig.httpTest.postTest then
                 log.info("HttpTest.PostTest", "第" .. count .. "次")
                 http.request("POST", serverAddress .. "/", nil, nil, "PostTest", nil, postTestCb)
+                sys.wait(waitTime)
+            end
+
+            -- Https Post 请求测试(TestJson)
+            if LuaTaskTestConfig.httpTest.postJsonTest then
+                log.info("HttpTest.PostJsonTest", "第" .. count .. "次")
+                local testJson = {
+                    ["imei"] = "123456789012345",
+                    ["mcc"] = "460",
+                    ["mnc"] = "0",
+                    ["lac"] = "21133",
+                    ["ci"] = "52365",
+                    ["hex"] = "10"
+                }
+                http.request(
+                    "POST",
+                    serverAddress .. "/postJsonTest",
+                    nil,
+                    {
+                        ["Content-Type"] = "application/json",
+                    },
+                    json.encode(testJson),
+                    nil,
+                    postJsonTestCb
+                )
                 sys.wait(waitTime)
             end
 
@@ -445,6 +656,7 @@ sys.taskInit(
                     serverAddress .. "/withUserHead",
                     nil,
                     {
+                        ["Connection"] = "close",
                         ["UserHead"] = "PostTestWithUserHead",
                         ["Cookie"] = testCookie,
                         ["User-Agent"] = "AirM2M",
@@ -459,27 +671,44 @@ sys.taskInit(
 
             -- Https Post 请求测试（octet-stream）
             if LuaTaskTestConfig.httpTest.postTestWithOctetStream then
-                log.info("HttpTest.PostTestWithOctetStream","第"..count.."次")
-                http.request("POST",serverAddress.."/withOctetStream",nil,{['Content-Type']="application/octet-stream",['Connection']="keep-alive"},{[1]={['file']="/lua/http.lua"}},nil,postTestWithOctetStreamCb)
+                log.info("HttpTest.PostTestWithOctetStream", "第" .. count .. "次")
+                http.request(
+                    "POST",
+                    serverAddress .. "/withOctetStream",
+                    nil,
+                    {
+                        ["Content-Type"] = "application/octet-stream",
+                        ["Connection"] = "keep-alive",
+                        ["MD5"] = crypto.md5("/lua/logo_color.png", "file")
+                    },
+                    {
+                        [1] = {
+                                ["file"] = "/lua/logo_color.png"
+                              }
+                    },
+                    nil,
+                    postTestWithOctetStreamCb
+                )
                 sys.wait(waitTime)
             end
 
             -- Https Post 请求测试（postTestWithFormData）
             if LuaTaskTestConfig.httpTest.postTestWithMultipartFormData then
-                log.info("HttpTest.PostTestWithMultipartFormData","第"..count.."次")
+                log.info("HttpTest.PostTestWithMultipartFormData", "第" .. count .. "次")
                 postTestWithMultipartFormData(
-                    serverAddress.."/uploadFile",
+                    serverAddress .. "/uploadFile",
                     nil,
                     {
                         texts = 
                         {
                             ["imei"] = "862991234567890",
-                            ["time"] = "20180802180345"
+                            ["time"] = "20180802180345",
+                            ["md5"] = crypto.md5("/lua/logo_color.png", "file")
                         },
 
                         files =
                         {
-                            ["FormDataUploadFile"] = "/lua/http.lua"
+                            ["FormDataUploadFile"] = "/lua/logo_color.png"
                         }
                     },
                     nil,
@@ -490,12 +719,26 @@ sys.taskInit(
 
             -- Https Post 请求测试（withxwwwformurlencoded）
             if LuaTaskTestConfig.httpTest.postTestWithXwwwformurlencoded then
-                log.info("HttpTest.PostTestWithXwwwformurlencoded","第"..count.."次")
-                http.request("POST",serverAddress.."/withxwwwformurlencoded",nil,
-                {
-                    ["Content-Type"]="application/x-www-form-urlencoded",
-                },
-                urlencodeTab({content="x-www-form-urlencoded Test!", author="Jeremy"}),nil,postTestWithXwwwformurlencodedCb)
+                log.info("HttpTest.PostTestWithXwwwformurlencoded", "第" .. count .. "次")
+                http.request(
+                    "POST",
+                    serverAddress .. "/withxwwwformurlencoded",
+                    nil,
+                    {
+                        ["Content-Type"] = "application/x-www-form-urlencoded",
+                    },
+                    urlencodeTab(
+                        {
+                            content = "x-www-form-urlencoded Test",
+                            author = "LuatTest",
+                            email = "yanjunjie@airm2m.com",
+                            userName = "yanjunjie",
+                            passwd = "1234567890!@#$%^&*()"
+                        }
+                    ),
+                    nil,
+                    postTestWithXwwwformurlencodedCb
+                )
                 sys.wait(waitTime)
             end
 
