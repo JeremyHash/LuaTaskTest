@@ -511,32 +511,117 @@ end
 
 -- postTestWithXwwwformurlencodedCb回调
 local function postTestWithXwwwformurlencodedCb(result, prompt, head, body)
+    local tag = "HttpTest.postTestWithXwwwformurlencodedCb"
     if result then
-        log.info("HttpTest.postTestWithMultipartFormDataCb.result", "SUCCESS")
-        log.info("HttpTest.postTestWithMultipartFormDataCb.prompt", "Http状态码:", prompt)
+        log.info(tag .. ".result", "SUCCESS")
+        log.info(tag .. ".prompt", "Http状态码:", prompt)
         if head then
-            log.info("HttpTest.postTestWithMultipartFormDataCb.Head", "遍历响应头")
+            log.info(tag .. ".Head", "遍历响应头")
             for k, v in pairs(head) do
-                log.info("HttpTest.postTestWithMultipartFormDataCb.Head", k .. " : " .. v)
+                log.info(tag .. ".Head", k .. " : " .. v)
             end
         else
-            log.error("HttpTest.postTestWithMultipartFormDataCb.Head", "读取响应头FAIL")
+            log.error(tag .. ".Head", "读取响应头FAIL")
         end
 
         if body then
-            log.info("HttpTest.postTestWithMultipartFormDataCb.Body", body)
-            log.info("HttpTest.postTestWithMultipartFormDataCb.BodyLen", body:len())
-            if body == "postTestWithMultipartFormDataSuccess" then
-                log.info("HttpTest.postTestWithMultipartFormDataCb", "postTestWithMultipartFormDataSuccess")
+            log.info(tag .. ".Body", body)
+            log.info(tag .. ".BodyLen", body:len())
+            if body == "postTestWithXwwwformurlencodedSuccess" then
+                log.info(tag, "postTestWithXwwwformurlencodedSuccess")
             else
-                log.error("HttpTest.postTestWithMultipartFormDataCb", "postTestWithMultipartFormDataFail")
+                log.error(tag, "postTestWithXwwwformurlencodedFail")
             end
         else
-            log.error("HttpTest.postTestWithMultipartFormDataCb.Body", "读取响应体FAIL")
+            log.error(tag .. ".Body", "读取响应体FAIL")
         end
     else
-        log.error("HttpTest.postTestWithMultipartFormDataCb.result", "FAIL")
-        log.error("HttpTest.postTestWithMultipartFormDataCb.prompt", prompt)
+        log.error(tag .. ".result", "FAIL")
+        log.error(tag .. ".prompt", prompt)
+    end
+end
+
+-- headTest回调
+local function headTestCb(result, prompt, head, body)
+    local tag = "HttpTest.headTestCb"
+    if result then
+        log.info(tag .. ".result", "SUCCESS")
+        log.info(tag .. ".prompt", "Http状态码:", prompt)
+        if head then
+            log.info(tag .. ".Head", "遍历响应头")
+            for k, v in pairs(head) do
+                log.info(tag .. ".Head", k .. " : " .. v)
+            end
+        else
+            log.error(tag .. ".Head", "读取响应头FAIL")
+        end
+    else
+        log.error(tag .. ".result", "FAIL")
+        log.error(tag .. ".prompt", prompt)
+    end
+end
+
+-- putTest回调
+local function putTestCb(result, prompt, head, body)
+    local tag = "HttpTest.putTestCb"
+    if result then
+        log.info(tag .. ".result", "SUCCESS")
+        log.info(tag .. ".prompt", "Http状态码:", prompt)
+        if head then
+            log.info(tag .. ".Head", "遍历响应头")
+            for k, v in pairs(head) do
+                log.info(tag .. ".Head", k .. " : " .. v)
+            end
+        else
+            log.error(tag .. ".Head", "读取响应头FAIL")
+        end
+
+        if body then
+            log.info(tag .. ".Body", body)
+            log.info(tag .. ".BodyLen", body:len())
+            if body == "putTestSuccess" then
+                log.info(tag, "putTestSuccess")
+            else
+                log.error(tag, "putTestFail")
+            end
+        else
+            log.error(tag .. ".Body", "读取响应体FAIL")
+        end
+    else
+        log.error(tag .. ".result", "FAIL")
+        log.error(tag .. ".prompt", prompt)
+    end
+end
+
+-- deleteTest回调
+local function deleteTestCb(result, prompt, head, body)
+    local tag = "HttpTest.deleteTestCb"
+    if result then
+        log.info(tag .. ".result", "SUCCESS")
+        log.info(tag .. ".prompt", "Http状态码:", prompt)
+        if head then
+            log.info(tag .. ".Head", "遍历响应头")
+            for k, v in pairs(head) do
+                log.info(tag .. ".Head", k .. " : " .. v)
+            end
+        else
+            log.error(tag .. ".Head", "读取响应头FAIL")
+        end
+
+        if body then
+            log.info(tag .. ".Body", body)
+            log.info(tag .. ".BodyLen", body:len())
+            if body == "deleteTestSuccess" then
+                log.info(tag, "deleteTestSuccess")
+            else
+                log.error(tag, "deleteTestFail")
+            end
+        else
+            log.error(tag .. ".Body", "读取响应体FAIL")
+        end
+    else
+        log.error(tag .. ".result", "FAIL")
+        log.error(tag .. ".prompt", prompt)
     end
 end
 
@@ -551,7 +636,7 @@ sys.taskInit(
             -- Http GET 请求测试
             if LuaTaskTestConfig.httpTest.getTest then
                 log.info("HttpTest.GetTest", "第" .. count .. "次")
-                http.request("GET", serverAddress .. "?test1=1&test2=22&test3=333&test4=四四四四&test5=FiveFiveFiveFiveFive&test6=ろくろくろくろくろくろく", nil, nil, nil, nil, getTestCb)
+                http.request("GET", serverAddress .. "/?test1=1&test2=22&test3=333&test4=" .. string.urlEncode("四四四四") .. "&test5=FiveFiveFiveFiveFive&test6=" .. string.rawurlEncode("ろくろくろくろくろくろく"), nil, nil, nil, nil, getTestCb)
                 sys.wait(waitTime)
             end
 
@@ -739,6 +824,27 @@ sys.taskInit(
                     nil,
                     postTestWithXwwwformurlencodedCb
                 )
+                sys.wait(waitTime)
+            end
+
+            -- Https HEAD 请求测试（/）
+            if LuaTaskTestConfig.httpTest.headTest then
+                log.info("HttpTest.headTest", "第" .. count .. "次")
+                http.request("HEAD", serverAddress, nil, nil, nil, nil, headTestCb)
+                sys.wait(waitTime)
+            end
+
+            -- Https PUT 请求测试（/）
+            if LuaTaskTestConfig.httpTest.putTest then
+                log.info("HttpTest.putTest", "第" .. count .. "次")
+                http.request("PUT", serverAddress, nil, nil, "putTest", nil, putTestCb)
+                sys.wait(waitTime)
+            end
+
+            -- Https DELETE 请求测试（/）
+            if LuaTaskTestConfig.httpTest.deleteTest then
+                log.info("HttpTest.deleteTest", "第" .. count .. "次")
+                http.request("DELETE", serverAddress, nil, nil, "deleteTest", nil, deleteTestCb)
                 sys.wait(waitTime)
             end
 
