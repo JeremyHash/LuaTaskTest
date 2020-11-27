@@ -32,15 +32,22 @@ LuaTaskTestConfig = {
     },
     httpTest = {
         getTest                        = false,
+        getWaitTest                    = false,
+        get301Test                     = false,
+        get302Test                     = false,
         getTestWithCA                  = false,
         getTestWithCAAndKey            = false,
         getTestAndSaveToBigFile        = false,
         getTestAndSaveToSmallFile      = false,
         postTest                       = false,
+        postJsonTest                   = false,
         postTestWithUserHead           = false,
         postTestWithOctetStream        = false,
         postTestWithMultipartFormData  = false,
-        postTestWithXwwwformurlencoded = false
+        postTestWithXwwwformurlencoded = false,
+        headTest                       = false,
+        putTest                        = false,
+        deleteTest                     = false
     },
     socketTest = false,
     mqttTest = false,
