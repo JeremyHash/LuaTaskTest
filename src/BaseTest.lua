@@ -63,123 +63,123 @@ local function bitTest()
     -- 0101
     for i = 0, 31 do
         if bit.isset(0xFFFFFFFF, i) == true then
-            log.info("BitTest.isset", "pass")
+            log.info("BitTest.isset", "Success")
         else
-            log.info("BitTest.isset", "fail")
+            log.error("BitTest.isset", "fail")
         end
         if bit.isset(0x00000000, i) == false then
-            log.info("BitTest.isset", "pass")
+            log.info("BitTest.isset", "Success")
         else
-            log.info("BitTest.isset", "fail")
+            log.error("BitTest.isset", "fail")
         end
     end
     
     -- 测试位数是否被置0
     for i = 0, 31 do
         if bit.isclear(0xFFFFFFFF, i) == false then
-            log.info("BitTest.isclear", "pass")
+            log.info("BitTest.isclear", "Success")
         else
-            log.info("BitTest.isclear", "fail")
+            log.error("BitTest.isclear", "fail")
         end
         if bit.isclear(0x00000000, i) == true then
-            log.info("BitTest.isclear", "pass")
+            log.info("BitTest.isclear", "Success")
         else
-            log.info("BitTest.isclear", "fail")
+            log.error("BitTest.isclear", "fail")
         end
     end
     
     --在相应的位数置1
     -- 0000 -> 1111
     if bit.set(0, 0, 1, 2, 3, 4, 5, 6, 7) == 255 then
-        log.info("BitTest.set", "pass")
+        log.info("BitTest.set", "Success")
     else
-        log.info("BitTest.set", "fail")
+        log.error("BitTest.set", "fail")
     end
 
     if bit.set(0, 6, 3, 2, 1, 7, 5, 0, 4) == 255 then
-        log.info("BitTest.set", "pass")
+        log.info("BitTest.set", "Success")
     else
-        log.info("BitTest.set", "fail")
+        log.error("BitTest.set", "fail")
     end
     
     --在相应的位置置0
     -- 0101 -> 0000
     if bit.clear(0xFF, 0, 1, 2, 3, 4, 5, 6, 7) == 0 then
-        log.info("BitTest.clear", "pass")
+        log.info("BitTest.clear", "Success")
     else
-        log.info("BitTest.clear", "fail")
+        log.error("BitTest.clear", "fail")
     end
 
     if bit.clear(0xFF, 6, 3, 2, 1, 7, 5, 0, 4) == 0 then
-        log.info("BitTest.clear", "pass")
+        log.info("BitTest.clear", "Success")
     else
-        log.info("BitTest.clear", "fail")
+        log.error("BitTest.clear", "fail")
     end
     
     --按位取反
     -- 0101 -> 1010
     if bit.bnot(0xFFFFFFFF) == 0 then
-        log.info("BitTest.bnot", "pass")
+        log.info("BitTest.bnot", "Success")
     else
-        log.info("BitTest.bnot", "fail")
+        log.error("BitTest.bnot", "fail")
     end
     if bit.bnot(0x00000000) == 0xFFFFFFFF then
-        log.info("BitTest.bnot", "pass")
+        log.info("BitTest.bnot", "Success")
     else
-        log.info("BitTest.bnot", "fail")
+        log.error("BitTest.bnot", "fail")
     end
     if bit.bnot(0xF0F0F0F0) == 0x0F0F0F0F then
-        log.info("BitTest.bnot", "pass")
+        log.info("BitTest.bnot", "Success")
     else
-        log.info("BitTest.bnot", "fail")
+        log.error("BitTest.bnot", "fail")
     end
     
     --与
     -- 0001 && 0001 -> 0001
     if bit.band(0xAAA, 0xAA0, 0xA00) == 0xA00 then
-        log.info("BitTest.band", "pass")
+        log.info("BitTest.band", "Success")
     else
-        log.info("BitTest.band", "fail")
+        log.error("BitTest.band", "fail")
     end
     
     --或
     -- 0001 | 0010 -> 0011
     if bit.bor(0xA00, 0x0A0, 0x00A) == 0xAAA then
-        log.info("BitTest.bor", "pass")
+        log.info("BitTest.bor", "Success")
     else
-        log.info("BitTest.bor", "fail")
+        log.error("BitTest.bor", "fail")
     end
     
     --异或,相同为0，不同为1
     -- 0001 ⊕ 0010 -> 0011
     if bit.bxor(0x01, 0x02, 0x04, 0x08) == 0x0F then
-        log.info("BitTest.bxor", "pass")
+        log.info("BitTest.bxor", "Success")
     else
-        log.info("BitTest.bxor", "fail")
+        log.error("BitTest.bxor", "fail")
     end
     
     --逻辑左移
     -- 0001 -> 0100
     if bit.lshift(0xFFFFFFFF, 1) == -2 then
-        log.info("BitTest.lshift", "pass")
+        log.info("BitTest.lshift", "Success")
     else
-        log.info("BitTest.lshift", "fail")
+        log.error("BitTest.lshift", "fail")
     end
     
     --逻辑右移，“001”
     -- 0100 -> 0001
     if bit.rshift(0xFFFFFFFF, 1) == 0x7FFFFFFF then
-        log.info("BitTest.rshift", "pass")
+        log.info("BitTest.rshift", "Success")
     else
-        log.info("BitTest.rshift", "fail")
+        log.error("BitTest.rshift", "fail")
     end
     
     --算数右移，左边添加的数与符号有关
     -- 0010 -> 0000
     if bit.arshift(0xFFFFFFFF, 1) == -1 then
-        log.info("BitTest.arshift", "pass")
+        log.info("BitTest.arshift", "Success")
     else
-        log.info("BitTest.arshift", "fail")
+        log.error("BitTest.arshift", "fail")
     end
 end
 
@@ -597,13 +597,13 @@ local function rtosTest()
     if rtos.make_dir(testPath) then
         log.info("RtosTest.MakeDir", "SUCCESS")
     else
-        log.info("RtosTest.MakeDir", "FAIL")
+        log.error("RtosTest.MakeDir", "FAIL")
     end
 
     if rtos.remove_dir(testPath) then
         log.info("RtosTest.RemoveDir", "SUCCESS")
     else
-        log.info("RtosTest.RemoveDir", "FAIL")
+        log.error("RtosTest.RemoveDir", "FAIL")
     end
 
     log.info("RtosTest.Toint64", string.toHex(rtos.toint64("12345678", "little")))
@@ -642,7 +642,7 @@ local function setStorageCb(result)
     if result then
         log.info("PbTest.SetStorageCb", "SUCCESS")
     else
-        log.info("PbTest.SetStorageCb", "FAIL")
+        log.error("PbTest.SetStorageCb", "FAIL")
     end
 end
 
@@ -650,7 +650,7 @@ local function deleteCb(result)
     if result then
         log.info("PbTest.DeleteCb", "SUCCESS")
     else
-        log.info("PbTest.DeleteCb", "FAIL")
+        log.error("PbTest.DeleteCb", "FAIL")
     end
 end
 
@@ -658,7 +658,7 @@ local function writeCb(result)
     if result then
         log.info("PbTest.WriteCb", "SUCCESS")
     else
-        log.info("PbTest.WriteCb", "FAIL")
+        log.error("PbTest.WriteCb", "FAIL")
     end
 end
 
@@ -666,7 +666,7 @@ function readCb(result, name, number)
     if result then
         log.info("PbTest.ReadCb", "SUCCESS", name, number)
     else
-        log.info("PbTest.ReadCb", "FAIL", name, number)
+        log.error("PbTest.ReadCb", "FAIL", name, number)
     end
 end
 

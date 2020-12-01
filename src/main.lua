@@ -35,6 +35,7 @@ LuaTaskTestConfig = {
     },
     socketTest = false,
     mqttTest = false,
+    updateTest = false,
     baseTest = {
         adcTest      = false,
         bitTest      = false,
@@ -130,9 +131,16 @@ end
 -- require "errDump"
 -- errDump.request("udp://ota.airm2m.com:9072")
 
--- require "update"
--- update.request()
--- update.request(nil, "http://117.51.140.119:8000/jeremy.bin")
+if LuaTaskTestConfig.updateTest then
+    sys.taskInit(
+        function()
+            sys.waitUntil("IP_READY_IND")
+            require "update"
+            update.request()
+            -- update.request(nil, "http://117.51.140.119:8000/jeremy.bin")
+        end
+    )
+end
 
 -- lib依赖管理
 require "sys"
@@ -196,7 +204,12 @@ for k, v in pairs(LuaTaskTestConfig.baseTest) do
     end
 end
 
--- require "AudioTest"
+for k, v in pairs(LuaTaskTestConfig.audioTest) do
+    if v then
+        require "AudioTest"
+        break
+    end
+end
 
 for k, v in pairs(LuaTaskTestConfig.gpioTest) do
     if v then
@@ -277,6 +290,9 @@ ntp.timeSync(
 
 -- 死机断言
 ril.request("AT*EXASSERT=1")
+
+-- 开启APTRACE
+ril.request("AT^TRACECTRL=0,1,3")
 
 --启动系统框架
 sys.init(0, 0)
