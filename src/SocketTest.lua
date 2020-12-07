@@ -158,7 +158,7 @@ sys.taskInit(
         log.info("SocketTest","成功访问网络, 异步TcpSocket测试开始")
         tcpClient4 = socket.tcp()
         connectResult,socketId = tcpClient4:connect(ip2, port3)
-        log.info("SocketTest.tcpClient4.connectResult,socketId", connectResult, socketId)
+        log.info("SocketTest.tcpClient4.connectResult, socketId", connectResult, socketId)
         if connectResult then
             sys.publish("AsyncTcpSocketInitComplete")
         else
@@ -177,7 +177,7 @@ sys.taskInit(
         log.info("SocketTest","成功访问网络,异步UdpSocket测试开始")
         udpClient2 = socket.udp()
         connectResult,socketId = udpClient2:connect(ip3, port4)
-        log.info("SocketTest.udpClient2.connectResult,socketId", connectResult, socketId)
+        log.info("SocketTest.udpClient2.connectResult, socketId", connectResult, socketId)
         if connectResult then
             sys.publish("AsyncUdpSocketInitComplete")
         else

@@ -127,7 +127,7 @@ function recordCb1(result, size)
         log.info("AudioTest.RecordTest.GetData", record.getData(0, size))
         rcdoffset, rcdsize, rcdcnt = 0, size, (size-1) / RCD_READ_UNIT + 1
         readRecordContent()
-    end    
+    end
 end
 
 function recordCb2(result, size, tag)
@@ -146,7 +146,7 @@ function recordCb2(result, size, tag)
         sys.timerStart(audiocore.stop,6000)
         
         recordBuf = ""     
-    end  
+    end
 end
 
 -- playFileTestCb回调

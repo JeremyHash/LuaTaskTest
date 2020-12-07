@@ -2,6 +2,7 @@
 -- Author:LuatTest
 -- CreateDate:20201023
 -- UpdateDate:20201023
+-- 这个测试代码需要提前在阿里云平台上创建好产品和设备
 
 module(..., package.seeall)
 
@@ -29,33 +30,41 @@ end
 
 local function publishTestCb(result, para)
     log.info("AliyunTest.publishTestCb", result, para)
-    sys.timerStart(publishTest, 20000)
-    publishCnt = publishCnt + 1
+    if result then
+        log.info("AliyunTest.publishTestCb.result", "publishSuccess")
+        sys.timerStart(publishTest, 30000)
+        publishCnt = publishCnt + 1
+    else
+        log.error("AliyunTest.publishTestCb.result", "publishFail")
+    end
 end
 
 function publishTest()
     if sConnected then
-        --注意：在此处自己去控制payload的内容编码，aLiYun库中不会对payload的内容做任何编码转换
-        aLiYun.publish("/" .. PRODUCT_KEY .. "/" .. getDeviceName() .. "/user/Jeremy", "qos1data" .. publishCnt, 1, publishTestCb, "publishTest_" .. publishCnt)
+        aLiYun.publish("/" .. PRODUCT_KEY .. "/" .. getDeviceName() .. "/user/Jeremy", "qos0data" .. publishCnt, 0, publishTestCb, "publishqos0Test_" .. publishCnt)
+        aLiYun.publish("/" .. PRODUCT_KEY .. "/" .. getDeviceName() .. "/user/Jeremy", "qos1data" .. publishCnt, 1, publishTestCb, "publishqos1Test_" .. publishCnt)
     end
 end
 
 ---数据接收的处理函数
 local function rcvCbFnc(topic, qos, payload)
-    log.info("AliyunTest.rcvCbFnc", topic, qos, payload)
+    log.info("AliyunTest.receive", topic, qos, payload)
 end
 
 --- 连接结果的处理函数
 local function connectCbFnc(result)
-    log.info("AliyunTest.ConnectCbFnc", result)
+    log.info("AliyunTest.ConnectCbFnc.result", result)
     sConnected = result
     if result then
+        log.info("AliyunTest.Connect", "连接SUCCESS")
         --订阅主题，不需要考虑订阅结果，如果订阅失败，aLiYun库中会自动重连
         aLiYun.subscribe({["/" .. PRODUCT_KEY .. "/" .. getDeviceName() .. "/user/get"] = 0, ["/" .. PRODUCT_KEY .. "/" .. getDeviceName() .. "/user/Jeremy"] = 1})
         --注册数据接收的处理函数
         aLiYun.on("receive", rcvCbFnc)
         --PUBLISH消息测试
         publishTest()
+    else
+        log.error("AliyunTest.Connect", "连接FAIL")
     end
 end
 
@@ -65,7 +74,7 @@ local function authCbFnc(result)
     if result then
         log.info("AliyunTest.AuthCbFnc", "SUCCESS")
     else
-        log.info("AliyunTest.AuthCbFnc", "FAIL")
+        log.error("AliyunTest.AuthCbFnc", "FAIL")
     end
 end
 
