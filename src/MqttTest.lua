@@ -38,6 +38,7 @@ local function mqttPubTask(id, client, ip, port, transport, cert)
         log.info("MqttTest.MqttClient" .. id .. ".connect", "开始连接")
         while not client:connect(ip, port, transport, cert) do log.info("MqttTest.MqttClient" .. id, "重新连接") sys.wait(2000) end
         log.info("MqttTest.MqttClient" .. id .. ".connect", "连接SUCCESS")
+        flag = true
         while flag do
             publishTest(id, client, topic1, topic1 .. "PubTest" .. count, 0, 0)
             publishTest(id, client, topic2, topic2 .. "PubTest" .. count, 1, 1)
@@ -62,6 +63,7 @@ local function mqttRecTask(id, client, ip, port, transport)
         
         if client:subscribe({[topic1] = 0, [topic2] = 1, [topic3] = 2}) then
             log.info("MqttTest.MqttClient" .. id .. ".subscribe", "订阅SUCCESS")
+            flag = true
         else
             log.info("MqttTest.MqttClient" .. id .. ".subscribe", "订阅FAIL")
         end

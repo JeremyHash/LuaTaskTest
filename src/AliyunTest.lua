@@ -1,6 +1,6 @@
 -- AliyunTest
 -- Author:LuatTest
--- CreateDate:20201023
+-- CreateDate:20201208
 -- UpdateDate:20201023
 -- 这个测试代码需要提前在阿里云平台上创建好产品和设备
 

@@ -34,7 +34,7 @@ sys.taskInit(
 
         while true do
 
-            log.info("SocketTest", "Socket测试第" .. count .. "次开始")
+            log.info("SocketTest", "同步Socket测试第" .. count .. "次开始")
 
             -- 单向认证Client1
             for i=1, 10 do
@@ -64,8 +64,6 @@ sys.taskInit(
                 sys.wait(waitTime)
             end
             
-            sys.wait(waitTime)
-
             -- 双向认证Client2
             for i=1, 10 do
                 tcpClient2 = socket.tcp(true, {caCert = "ca.crt", clientCert = "client.crt", clientKey = "client.key"})
@@ -93,8 +91,6 @@ sys.taskInit(
                 log.info("SocketTest.tcpClient2.connection", "disconnected")
                 sys.wait(waitTime)
             end
-
-            sys.wait(waitTime)
 
             connectResult, socketId = tcpClient3:connect(ip2, port3)
             log.info("SocketTest.tcpClient3.connectResult,socketId", connectResult, socketId)
@@ -142,7 +138,7 @@ sys.taskInit(
 
             sys.wait(waitTime)
 
-            log.info("SocketTest", "Socket测试第" .. count .. "次结束")
+            log.info("SocketTest", "同步Socket测试第" .. count .. "次结束")
 
             count = count + 1
             
@@ -164,7 +160,7 @@ sys.taskInit(
         else
             log.error("SocketTest.tcpClient4.connect", "FAIL")
         end
-        while tcpClient4:asyncSelect() do 
+        while tcpClient4:asyncSelect() do
         end
         tcpClient4:close()
     end
@@ -183,7 +179,7 @@ sys.taskInit(
         else
             log.error("SocketTest.udpClient2.connect", "FAIL")
         end
-        while udpClient2:asyncSelect() do 
+        while udpClient2:asyncSelect() do
         end
         udpClient2:close()
     end
@@ -195,7 +191,7 @@ sys.taskInit(
         sys.waitUntil("AsyncTcpSocketInitComplete")
         while true do
             tcpClient4:asyncSend(testSendData)
-            log.info("SocketTest.tcpClient4.send", testSendData)
+            log.info("SocketTest.tcpClient4.send", "SUCCESS")
             sys.wait(waitTime)
         end
     end
@@ -220,7 +216,7 @@ sys.taskInit(
         sys.waitUntil("AsyncUdpSocketInitComplete")
         while true do
             udpClient2:asyncSend(testSendData)
-            log.info("SocketTest.udpClient2.send", testSendData)
+            log.info("SocketTest.udpClient2.send", "SUCCESS")
             sys.wait(waitTime)
         end
     end
