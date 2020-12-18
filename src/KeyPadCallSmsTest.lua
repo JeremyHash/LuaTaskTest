@@ -11,7 +11,7 @@ local function keyMsg(msg)
     --msg.key_matrix_row：行
     --msg.key_matrix_col：列
     --msg.pressed：true表示按下，false表示弹起
-    -- log.info("KeyPadTest.msg", msg.key_matrix_row, msg.key_matrix_col, msg.pressed)
+    log.info("KeyPadTest.msg", msg.key_matrix_row, msg.key_matrix_col, msg.pressed)
     local row, col, pressed = msg.key_matrix_row, msg.key_matrix_col, msg.pressed
     if row == 2 and col == 0 and pressed then
         log.info("KeyPadTest", 1)
@@ -152,6 +152,7 @@ local function smsSendCb(result, num, data)
 end
 
 if LuaTaskTestConfig.keyPadCallSmsTest.callTest then
+    log.info("Jeremy", "keypad")
     --注册按键消息处理函数
     rtos.on(rtos.MSG_KEYPAD, keyMsg)
     --初始化键盘阵列

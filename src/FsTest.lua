@@ -64,14 +64,14 @@ getDirContent = function(dirPath, level)
     end
     io.closedir(dirPath)
     for i = 1, #ftb do 
-        if i==#ftb then
+        if i == #ftb then
             log.info(tag, level .. "└─", ftb[i].name, "[" .. ftb[i].size .. " Bytes]")
         else
             log.info(tag, level .. "├─", ftb[i].name, "[" .. ftb[i].size .. " Bytes]")
         end
     end
     for i = 1, #dtb do 
-        if i==#dtb then
+        if i == #dtb then
             log.info(tag, level.."└─", dtb[i].name)
             getDirContent(dtb[i].path, level .. "  ")
         else
@@ -118,14 +118,15 @@ if LuaTaskTestConfig.fsTest.sdCardTest then
 	        local sdCardFreeSize = rtos.get_fs_free_size(1, 1)
 	        log.info("FsTest.SdCard0.FreeSize", sdCardFreeSize .. " KB")
 		
+			log.info("FsTest.getDirContent." .. sdcardPath)
 	        getDirContent(sdcardPath)
 
 			local testPath = sdcardPath .. "/FsTestPath"
 			local mkdirRes = rtos.make_dir(testPath)
-			log.info("FsTest.SdCardTest.MkdirRes", mkdirRes)
 
 			deleteFile(testPath .. "/FsWriteTest1.txt")
-			if mkdirRes == true then
+			if mkdirRes then
+				log.info("FsTest.SdCardTest.MkdirRes", "SUCCESS")
 				while true do
 					writeFileA(testPath .. "/FsWriteTest1.txt", "This is a FsWriteATest\n")
 					readFile(testPath .. "/FsWriteTest1.txt")
@@ -133,6 +134,8 @@ if LuaTaskTestConfig.fsTest.sdCardTest then
 					readFile(testPath .. "/FsWriteTest2.txt")
 					sys.wait(120000)
 				end
+			else
+				log.error("FsTest.SdCardTest.MkdirRes", "FAIL")
 			end
 
 
@@ -146,14 +149,19 @@ end
 if LuaTaskTestConfig.fsTest.insideFlashTest then
 	sys.taskInit(
 		function ()
-	        sys.wait(4000)
+			sys.wait(4000)
+
+			log.info("FsTest.getDirContent./")
+			
+	        getDirContent("/")
+
 			local testPath = "/FsTestPath"
 			local mkdirRes = rtos.make_dir(testPath)
-			log.info("FsTest.FlashTest.MkdirRes", mkdirRes)
 
 			-- deleteFile(testPath .. "/FsWriteTest1.txt")
 			log.info("FsTest.FileExists", io.exists(testPath .. "/FsWriteTest1.txt"))
-			if mkdirRes == true then
+			if mkdirRes then
+				log.info("FsTest.FlashTest.MkdirRes", "SUCCESS")
 				while true do
 					writeFileA(testPath .. "/FsWriteTest1.txt", "This is a FsWriteATest\n")
 					log.info("FsTest.FileExists", io.exists(testPath .. "/FsWriteTest1.txt"))
@@ -185,6 +193,8 @@ if LuaTaskTestConfig.fsTest.insideFlashTest then
 					log.info("FsTest.ReadStream", io.readStream("/FileSeekTest.txt", 3, 5))
 					sys.wait(60000)
 				end
+			else
+				log.error("FsTest.FlashTest.MkdirRes", "FAIL")
 			end
 		end
 	)

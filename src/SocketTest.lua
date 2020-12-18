@@ -10,13 +10,16 @@ local waitTime = 10000
 -- ip1用来测试单双向认证
 -- ip2用来测试tcp
 -- ip3用来测试udp
-local ip1, ip2, ip3 = "36.7.87.100", "115.29.164.59", "erp.openluat.com"
-local port1, port2, port3, port4 = 4433, 4434, 40432, 12414
+local ip1, ip2, ip3 = "36.7.87.100", "wiki.airm2m.com", "erp.openluat.com"
+local port1, port2, port3, port4 = 4433, 4434, 48888, 12414
 
+-- TODO 现在是5KB -> 100KB
 local testSendData = string.rep("SocketTest", 50)
+-- TODO 十六进制数据
 
 local connectResult, socketId, result, data
 local r, s, p
+-- TODO 写清每个client是什么链接
 local tcpClient1, tcpClient2, tcpClient3, tcpClient4, udpClient1, udpClient2
 
 -- 启动socket客户端任务
@@ -36,6 +39,8 @@ sys.taskInit(
 
             log.info("SocketTest", "同步Socket测试第" .. count .. "次开始")
 
+            -- TODO c = socket.tcp(true, {caCert="ca.crt", clientCert="client.crt", clientKey="client.key", clientPassword="123456"})
+
             -- 单向认证Client1
             for i=1, 10 do
                 tcpClient1 = socket.tcp(true, {caCert = "ca.crt"})
@@ -44,6 +49,7 @@ sys.taskInit(
                 if connectResult then
                     if tcpClient1:send("GET / HTTP/1.1\r\nHost: 36.7.87.100\r\nConnection: keep-alive\r\n\r\n") then
                         log.info("SocketTest.tcpClient1.sendResult", "SUCCESS")
+                        -- TODO mt:recv(timeout, msg, msgNoResume)
                         result, data = tcpClient1:recv(5000)
                         if result then
                             log.info("SocketTest.tcpClient1.recv", data)
@@ -98,7 +104,7 @@ sys.taskInit(
                 for i=1, 10 do
                     if tcpClient3:send(testSendData) then
                         log.info("SocketTest.tcpClient3.sendResult", "SUCCESS")
-                        r,s,p = tcpClient3:recv(5000)
+                        r, s, p = tcpClient3:recv(5000)
                         log.info("SocketTest.tcpClient3.result", r)
                         log.info("SocketTest.tcpClient3.recv", s)
                         log.info("SocketTest.tcpClient3.para", p)
@@ -121,7 +127,7 @@ sys.taskInit(
                 for i=1, 10 do
                     if udpClient1:send(testSendData) then
                         log.info("SocketTest.udpClient1.sendResult", "SUCCESS")
-                        r,s,p = udpClient1:recv(5000)
+                        r, s, p = udpClient1:recv(5000)
                         log.info("SocketTest.udpClient1.result", r)
                         log.info("SocketTest.udpClient1.recv", s)
                         log.info("SocketTest.udpClient1.para", p)
@@ -160,6 +166,7 @@ sys.taskInit(
         else
             log.error("SocketTest.tcpClient4.connect", "FAIL")
         end
+        -- TODO 这个api缺少demo说明
         while tcpClient4:asyncSelect() do
         end
         tcpClient4:close()
@@ -236,3 +243,13 @@ sys.taskInit(
 )
 
 sys.timerLoopStart(function() log.info("SocketTest.PrintStatus", socket.printStatus()) end, 30000)
+
+-- TODO mt:setRcvProc(rcvCbFnc)
+-- TODO socket.setTcpResendPara(retryCnt, retryMaxTimeout)
+-- TODO socket.setDnsParsePara(retryCnt, retryTimeoutMulti)
+-- 设置域名解析参数
+-- 注意：0027以及之后的core版本才支持此功能
+
+-- TODO 开一个协程对一个错误ip进行循环连接
+-- TODO 对lua版本最多创建几路SSL连接确认
+-- TODO 一直创建tcpclient 放入table

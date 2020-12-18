@@ -7,6 +7,33 @@ PROJECT = "LuaTaskTest"
 VERSION = "1.0.0"
 PRODUCT_KEY = "LMe0gb26NhPbBZ7t3mSk3dxA8f4ZZmM1"
 
+-- lib依赖管理
+require "sys"
+require "led"
+require "net"
+require "common"
+require "utils"
+require "misc"
+require "ntp"
+require "http"
+require "socket"
+require "mqtt"
+require "audio"
+require "pins"
+require "record"
+require "cc"
+require "sms"
+require "uiWin"
+require "scanCode"
+require "lbsLoc"
+require "wifiScan"
+require "pm"
+require "nvm"
+require "powerKey"
+require "aLiYun"
+require "pb"
+-- require "wdt"
+
 -- 测试配置 设置为true代表开启此项测试
 LuaTaskTestConfig = {
     modType = "8910",
@@ -37,6 +64,7 @@ LuaTaskTestConfig = {
     mqttTest = false,
     updateTest = false,
     baseTest = {
+        -- netTest，sysTest 要单独测试
         adcTest      = false,
         bitTest      = false,
         packTest     = false,
@@ -115,6 +143,9 @@ LOG_LEVEL = log.LOGLEVEL_INFO
 -- require "console"
 -- console.setup(2, 115200)
 
+-- 保持唤醒
+-- pm.wake("LuaTaskTest")
+
 require "netLed"
 
 if LuaTaskTestConfig.modType == "8910" then
@@ -141,39 +172,6 @@ if LuaTaskTestConfig.updateTest then
         end
     )
 end
-
--- lib依赖管理
-require "sys"
-require "led"
-require "net"
-require "common"
-require "utils"
-require "misc"
-require "ntp"
-require "http"
-require "socket"
-require "mqtt"
-require "audio"
-require "pins"
-require "record"
-require "cc"
-require "sms"
-require "uiWin"
-require "scanCode"
-require "lbsLoc"
-require "wifiScan"
-require "pm"
-require "nvm"
-require "powerKey"
-require "aLiYun"
-require "pb"
--- require "wdt"
-
--- 屏幕驱动文件管理
--- require "color_lcd_spi_ILI9341"
--- require "color_lcd_spi_gc9106l"
--- require "color_lcd_spi_st7735"
--- require "color_lcd_spi_st7735S"
 
 for k, v in pairs(LuaTaskTestConfig.aliyunTest) do
     if v then
@@ -263,9 +261,6 @@ for k, v in pairs(LuaTaskTestConfig.i2cAndSpiTest) do
         break
     end
 end
-
--- 保持唤醒
-pm.wake("LuaTaskTest")
 
 sys.taskInit(
             function()

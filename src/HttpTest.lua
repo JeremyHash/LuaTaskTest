@@ -670,7 +670,7 @@ sys.taskInit(
 
             -- Https Get 请求测试（服务端客户端证书验证_双向认证）
             if LuaTaskTestConfig.httpTest.getTestWithCAAndKey then
-                log.info("HttpTest.GetTestWithCAAndKey","第"..count.."次")
+                log.info("HttpTest.GetTestWithCAAndKey","第" .. count .. "次")
                 http.request("GET", "https://36.7.87.100:4434",{caCert="ca.crt",clientCert="client.crt",clientKey="client.key"},nil,nil,nil,GetTestWithCAAndKeyCb)
                 sys.wait(waitTime)
             end

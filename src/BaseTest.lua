@@ -1,7 +1,7 @@
 -- BaseTest
 -- Author:LuatTest
 -- CreateDate:20201013
--- UpdateDate:20201110
+-- UpdateDate:20201216
 
 module(..., package.seeall)
 
@@ -35,15 +35,17 @@ local function adcTest()
     adc.open(ADC3)
     log.info("AdcTest.open", "ADC功能打开")
 
-    adcval, voltval = adc.read(ADC2)
-    log.info("AdcTest.ADC2.read", adcval, voltval)
+    for i = 1, 5 do
+        adcval, voltval = adc.read(ADC2)
+        log.info("AdcTest.ADC2.read", adcval, voltval)
 
-    adcval, voltval = adc.read(ADC3)
-    log.info("AdcTest.ADC3.read", adcval, voltval)
+        adcval, voltval = adc.read(ADC3)
+        log.info("AdcTest.ADC3.read", adcval, voltval)
+    end
 
     adc.close(ADC2)
     adc.close(ADC3)
-    log.info("AdcTest.open", "ADC功能关闭")
+    log.info("AdcTest.close", "ADC功能关闭")
 end
 
 if LuaTaskTestConfig.baseTest.adcTest then
@@ -63,12 +65,12 @@ local function bitTest()
     -- 0101
     for i = 0, 31 do
         if bit.isset(0xFFFFFFFF, i) == true then
-            log.info("BitTest.isset", "Success")
+            log.info("BitTest.isset", "SUCCESS")
         else
             log.error("BitTest.isset", "fail")
         end
         if bit.isset(0x00000000, i) == false then
-            log.info("BitTest.isset", "Success")
+            log.info("BitTest.isset", "SUCCESS")
         else
             log.error("BitTest.isset", "fail")
         end
@@ -77,12 +79,12 @@ local function bitTest()
     -- 测试位数是否被置0
     for i = 0, 31 do
         if bit.isclear(0xFFFFFFFF, i) == false then
-            log.info("BitTest.isclear", "Success")
+            log.info("BitTest.isclear", "SUCCESS")
         else
             log.error("BitTest.isclear", "fail")
         end
         if bit.isclear(0x00000000, i) == true then
-            log.info("BitTest.isclear", "Success")
+            log.info("BitTest.isclear", "SUCCESS")
         else
             log.error("BitTest.isclear", "fail")
         end
@@ -91,13 +93,13 @@ local function bitTest()
     --在相应的位数置1
     -- 0000 -> 1111
     if bit.set(0, 0, 1, 2, 3, 4, 5, 6, 7) == 255 then
-        log.info("BitTest.set", "Success")
+        log.info("BitTest.set", "SUCCESS")
     else
         log.error("BitTest.set", "fail")
     end
 
     if bit.set(0, 6, 3, 2, 1, 7, 5, 0, 4) == 255 then
-        log.info("BitTest.set", "Success")
+        log.info("BitTest.set", "SUCCESS")
     else
         log.error("BitTest.set", "fail")
     end
@@ -105,13 +107,13 @@ local function bitTest()
     --在相应的位置置0
     -- 0101 -> 0000
     if bit.clear(0xFF, 0, 1, 2, 3, 4, 5, 6, 7) == 0 then
-        log.info("BitTest.clear", "Success")
+        log.info("BitTest.clear", "SUCCESS")
     else
         log.error("BitTest.clear", "fail")
     end
 
     if bit.clear(0xFF, 6, 3, 2, 1, 7, 5, 0, 4) == 0 then
-        log.info("BitTest.clear", "Success")
+        log.info("BitTest.clear", "SUCCESS")
     else
         log.error("BitTest.clear", "fail")
     end
@@ -119,17 +121,17 @@ local function bitTest()
     --按位取反
     -- 0101 -> 1010
     if bit.bnot(0xFFFFFFFF) == 0 then
-        log.info("BitTest.bnot", "Success")
+        log.info("BitTest.bnot", "SUCCESS")
     else
         log.error("BitTest.bnot", "fail")
     end
     if bit.bnot(0x00000000) == 0xFFFFFFFF then
-        log.info("BitTest.bnot", "Success")
+        log.info("BitTest.bnot", "SUCCESS")
     else
         log.error("BitTest.bnot", "fail")
     end
     if bit.bnot(0xF0F0F0F0) == 0x0F0F0F0F then
-        log.info("BitTest.bnot", "Success")
+        log.info("BitTest.bnot", "SUCCESS")
     else
         log.error("BitTest.bnot", "fail")
     end
@@ -137,7 +139,7 @@ local function bitTest()
     --与
     -- 0001 && 0001 -> 0001
     if bit.band(0xAAA, 0xAA0, 0xA00) == 0xA00 then
-        log.info("BitTest.band", "Success")
+        log.info("BitTest.band", "SUCCESS")
     else
         log.error("BitTest.band", "fail")
     end
@@ -145,7 +147,7 @@ local function bitTest()
     --或
     -- 0001 | 0010 -> 0011
     if bit.bor(0xA00, 0x0A0, 0x00A) == 0xAAA then
-        log.info("BitTest.bor", "Success")
+        log.info("BitTest.bor", "SUCCESS")
     else
         log.error("BitTest.bor", "fail")
     end
@@ -153,7 +155,7 @@ local function bitTest()
     --异或,相同为0，不同为1
     -- 0001 ⊕ 0010 -> 0011
     if bit.bxor(0x01, 0x02, 0x04, 0x08) == 0x0F then
-        log.info("BitTest.bxor", "Success")
+        log.info("BitTest.bxor", "SUCCESS")
     else
         log.error("BitTest.bxor", "fail")
     end
@@ -161,7 +163,7 @@ local function bitTest()
     --逻辑左移
     -- 0001 -> 0100
     if bit.lshift(0xFFFFFFFF, 1) == -2 then
-        log.info("BitTest.lshift", "Success")
+        log.info("BitTest.lshift", "SUCCESS")
     else
         log.error("BitTest.lshift", "fail")
     end
@@ -169,7 +171,7 @@ local function bitTest()
     --逻辑右移，“001”
     -- 0100 -> 0001
     if bit.rshift(0xFFFFFFFF, 1) == 0x7FFFFFFF then
-        log.info("BitTest.rshift", "Success")
+        log.info("BitTest.rshift", "SUCCESS")
     else
         log.error("BitTest.rshift", "fail")
     end
@@ -177,7 +179,7 @@ local function bitTest()
     --算数右移，左边添加的数与符号有关
     -- 0010 -> 0000
     if bit.arshift(0xFFFFFFFF, 1) == -1 then
-        log.info("BitTest.arshift", "Success")
+        log.info("BitTest.arshift", "SUCCESS")
     else
         log.error("BitTest.arshift", "fail")
     end
@@ -319,9 +321,26 @@ local function miscTest()
     log.info("MiscTest.GetWeek", misc.getWeek())
     -- 获取校准标志
     log.info("MiscTest.GetCalib", misc.getCalib())
-    misc.setSn(string.rep("12345678", 8), function() log.info("MiscTest.SetSnCb", "SUCCESS") end)
-    log.info("MiscTest.GetSn", misc.getSn())
-    log.info("MiscTest.GetSn.len", string.len(misc.getSn()))
+
+    local setSn = string.rep("12345678", 8)
+    misc.setSn(setSn, function() log.info("MiscTest.SetSnCb", "SUCCESS") end)
+
+    local getSn = misc.getSn()
+    log.info("MiscTest.GetSn", getSn)
+    if getSn == setSn then
+        log.info("MiscTest.GetSn", "SUCCESS")
+    else
+        log.error("MiscTest.GetSn", "FAIL")
+    end
+
+    local getSnLen = string.len(getSn)
+    log.info("MiscTest.GetSn.len", getSnLen)
+    if getSnLen == 64 then
+        log.info("MiscTest.GetSn.len", "SUCCESS")
+    else
+        log.error("MiscTest.GetSn.len", "FAIL")
+    end
+
     log.info("MiscTest.GetImei", misc.getImei())
     log.info("MiscTest.GetVbatt", misc.getVbatt())
     log.info("MiscTest.GetMuid", misc.getMuid())
@@ -486,7 +505,7 @@ end
 
 local function longCb()
     log.info("PowerKeyTest", "LongCb")
-    rtos.poweroff()
+    -- rtos.poweroff()
 end
 
 local function shortCb()
@@ -621,8 +640,8 @@ local function mathTest()
     log.info("MathTest.Huge", math.huge)
     log.info("MathTest.Max", math.max(1, 2, 3, 4.15, 5.78))
     log.info("MathTest.Min", math.min(1, 2, 3, 4.15, 5.78))
-    log.info("MathTest.MaxInteger", math.maxinteger)
-    log.info("MathTest.MinInteger", math.mininteger)
+    -- log.info("MathTest.MaxInteger", math.maxinteger)
+    -- log.info("MathTest.MinInteger", math.mininteger)
     log.info("MathTest.Modf", math.modf(1.15))
     log.info("MathTest.Pi", math.pi)
     log.info("MathTest.Sqrt", math.sqrt(9))

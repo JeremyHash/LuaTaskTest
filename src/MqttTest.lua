@@ -6,7 +6,7 @@
 module(..., package.seeall)
 
 local timeout1 = 3000
-local timeout2 = 5000
+local timeout2 = 7000
 
 local result, data
 
