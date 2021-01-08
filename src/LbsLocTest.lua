@@ -199,8 +199,8 @@ local function printGpsInfo()
 end
 
 if LuaTaskTestConfig.lbsLocTest.gpsLocTest then
-    require "gpsZkw"
-    require "agpsZkw"
+    -- require "gpsZkw"
+    -- require "agpsZkw"
     
     log.info("GPSTest", "打开GPS")
     gpsZkw.open(gpsZkw.DEFAULT, {tag = "GPSLocTest"})

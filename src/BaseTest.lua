@@ -513,6 +513,7 @@ local function shortCb()
 end
 
 if LuaTaskTestConfig.baseTest.powerKeyTest then
+    require "powerKey"
     powerKey.setup(3000, longCb, shortCb)
 end
 
@@ -600,7 +601,7 @@ local function jsonTest()
         log.info("JsonTest.decode KEY5", tjsondata["KEY5"]["KEY5_1"], tjsondata["KEY5"]["KEY5_2"])
         log.info("JsonTest.decode KEY6", tjsondata["KEY6"][1], tjsondata["KEY6"][2], tjsondata["KEY6"][3])
     else
-        log.info("JsonTest.decode error", errinfo)
+        log.error("JsonTest.decode error", errinfo)
     end
 end
 

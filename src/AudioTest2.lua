@@ -35,16 +35,17 @@ local function consumer()
     sys.taskInit(
         function()
             while true do
-
                 while #tBuffer == 0 do
 		    		if not producing then
-                        while audiocore.streamremain() ~= 0 do
-                            sys.wait(20)	
-                        end
-                    end
+		    			while audiocore.streamremain() ~= 0 do
+		    				sys.wait(20)	
+		    			end
+		    			streamPlaying = false
+		    			audiocore.stop() --添加audiocore.stop()接口，否则再次播放会播放不出来
+		    			log.warn("AudioTest.AudioStreamTest", "AudioStreamPlay Over")
+		    		end
                     sys.waitUntil("DATA_STREAM_IND")
-		    	end
-                   
+                end
 		    	streamPlaying = true
                 local data = table.remove(tBuffer, 1)
                 --log.info("testAudioStream.consumer remove",data:len())
@@ -60,10 +61,10 @@ local function consumer()
     )
 end
 
+
 local function producer(streamType)
     sys.taskInit(
         function()
-            curplaylen = 0;
             while true do
                 tStreamType = streamType
 		    	while streamPlaying do
@@ -87,31 +88,15 @@ local function producer(streamType)
                     local data = fileHandle:read(streamType == audiocore.SPX and 1200 or 1024)
                     if not data then 
 		    			fileHandle:close() 
-		    			--producing = false 
-                        --return 
-                        while audiocore.streamremain() ~= 0 do
-                            sys.wait(20)	
-                        end
-                        sys.wait(1000)
-                        audiocore.stop() --添加audiocore.stop()接口，否则再次播放会播放不出来
-                        log.warn("AudioTest.AudioStreamTest", "AudioStreamPlay Over")
-                        return 
+		    			producing = false 
+		    			return 
 		    		end
-                    --table.insert(tBuffer, data)
-		    		--producing = true
-                    --if #tBuffer == 1 then
-                    --    sys.publish("DATA_STREAM_IND")
-                    --end
-                    --log.info("testAudioStream.producer",data:len())
-                    local data_len = string.len(data)
-                    local curr_len = 1
-                    while true do
-                        curr_len = curr_len + audiocore.streamplay(tStreamType,string.sub(data,curr_len,-1))
-                        if curr_len>=data_len then
-                            break
-                        end
-                        sys.wait(10)
+                    table.insert(tBuffer, data)
+		    		producing = true
+                    if #tBuffer == 1 then
+                        sys.publish("DATA_STREAM_IND")
                     end
+                    --log.info("testAudioStream.producer",data:len())
                     sys.wait(10)
                 end  
             end
@@ -159,7 +144,7 @@ function recordCb2(result, size, tag)
         --此处并没有将录音数据全部播放完整
         log.info("AudioTest.RecordTest.SPX.StreamPlay.AcceptLen", audiocore.streamplay(audiocore.SPX, recordBuf))
         
-        sys.timerStart(audiocore.stop,6000)
+        sys.timerStart(audiocore.stop, 6000)
         
         recordBuf = ""     
     end
@@ -275,7 +260,7 @@ sys.taskInit(
         local isTTSVersion = rtos.get_version():upper():find("TTS")
 
         while true do
-            if LuaTaskTestConfig.audioTest.audioPlayTest == false then
+            if LuaTaskTestConfig.audioTest.audioPlayTest == true then
             
                 -- 播放音频文件
                 log.info("AudioTest.AudioPlayTest.Vol", vol)
@@ -368,4 +353,3 @@ sys.taskInit(
             end
         end
 end)
-

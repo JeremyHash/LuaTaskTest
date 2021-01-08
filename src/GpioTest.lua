@@ -39,7 +39,7 @@ local x = 2
 
 pmd.ldoset(x, pmd.LDO_VLCD) -- GPIO 0、1、2、3、4
 
--- pmd.ldoset(x,pmd.LDO_VMMC) -- GPIO 24、25、26、27、28
+pmd.ldoset(x,pmd.LDO_VMMC) -- GPIO 24、25、26、27、28
 
 local modType = LuaTaskTestConfig.modType
 

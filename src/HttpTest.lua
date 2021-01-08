@@ -1,7 +1,7 @@
 -- HttpTest
 -- Author:LuatTest
 -- CreateDate:20200716
--- UpdateDate:20201028
+-- UpdateDate:20201229
 
 module(..., package.seeall)
 
@@ -49,7 +49,7 @@ local function postTestWithMultipartFormData(url, cert, params, timeout, cbFnc, 
         timeout,
         cbFnc,
         rcvFileName
-        )    
+    )    
 end
 
 -- x-www-form-urlencoded转换函数
@@ -661,21 +661,21 @@ sys.taskInit(
                 sys.wait(waitTime)
             end
             
-            -- Https Get 请求测试（服务端证书验证_单向认证）
+            -- Https Get 请求测试(服务端证书验证_单向认证)
             if LuaTaskTestConfig.httpTest.getTestWithCA then
                 log.info("HttpTest.GetTestWithCA", "第" .. count .. "次")
                 http.request("GET", "https://www.baidu.com", {caCert = "ca.cer"}, nil, nil, nil, getTestWithCACb)
                 sys.wait(waitTime)
             end
 
-            -- Https Get 请求测试（服务端客户端证书验证_双向认证）
+            -- Https Get 请求测试(服务端客户端证书验证_双向认证)
             if LuaTaskTestConfig.httpTest.getTestWithCAAndKey then
                 log.info("HttpTest.GetTestWithCAAndKey","第" .. count .. "次")
                 http.request("GET", "https://36.7.87.100:4434",{caCert="ca.crt",clientCert="client.crt",clientKey="client.key"},nil,nil,nil,GetTestWithCAAndKeyCb)
                 sys.wait(waitTime)
             end
 
-            -- Https Get 请求测试（保存结果到文件,文件较大）
+            -- Http Get 请求测试(保存结果到文件,文件较大)
             if LuaTaskTestConfig.httpTest.getTestAndSaveToBigFile then
                 log.info("创建文件前可用空间 " .. rtos.get_fs_free_size() .. " Bytes")
                 if rtos.make_dir("/Jeremy") then
@@ -688,7 +688,7 @@ sys.taskInit(
                 sys.wait(waitTime)
             end
 
-            -- Https Get 请求测试（保存结果到文件,文件较小）
+            -- Http Get 请求测试(保存结果到文件,文件较小)
             if LuaTaskTestConfig.httpTest.getTestAndSaveToSmallFile then
                 log.info("创建文件前可用空间 " .. rtos.get_fs_free_size() .. " Bytes")
                 if rtos.make_dir("/Jeremy") then
@@ -701,14 +701,14 @@ sys.taskInit(
                 sys.wait(waitTime)
             end
 
-            -- Https Post 请求测试(/)
+            -- Http Post 请求测试(/)
             if LuaTaskTestConfig.httpTest.postTest then
                 log.info("HttpTest.PostTest", "第" .. count .. "次")
                 http.request("POST", serverAddress .. "/", nil, nil, "PostTest", nil, postTestCb)
                 sys.wait(waitTime)
             end
 
-            -- Https Post 请求测试(TestJson)
+            -- Http Post 请求测试(TestJson)
             if LuaTaskTestConfig.httpTest.postJsonTest then
                 log.info("HttpTest.PostJsonTest", "第" .. count .. "次")
                 local testJson = {
@@ -733,7 +733,7 @@ sys.taskInit(
                 sys.wait(waitTime)
             end
 
-            -- Https Post 请求测试（自定义Head）
+            -- Http Post 请求测试(自定义Head)
             if LuaTaskTestConfig.httpTest.postTestWithUserHead then
                 log.info("HttpTest.PostTestWithUserHead", "第" .. count .. "次")
                 http.request(
@@ -754,7 +754,7 @@ sys.taskInit(
                 sys.wait(waitTime)
             end
 
-            -- Https Post 请求测试（octet-stream）
+            -- Http Post 请求测试(octet-stream)
             if LuaTaskTestConfig.httpTest.postTestWithOctetStream then
                 log.info("HttpTest.PostTestWithOctetStream", "第" .. count .. "次")
                 http.request(
@@ -777,7 +777,7 @@ sys.taskInit(
                 sys.wait(waitTime)
             end
 
-            -- Https Post 请求测试（postTestWithFormData）
+            -- Http Post 请求测试(postTestWithFormData)
             if LuaTaskTestConfig.httpTest.postTestWithMultipartFormData then
                 log.info("HttpTest.PostTestWithMultipartFormData", "第" .. count .. "次")
                 postTestWithMultipartFormData(
@@ -802,7 +802,7 @@ sys.taskInit(
                 sys.wait(waitTime)
             end
 
-            -- Https Post 请求测试（withxwwwformurlencoded）
+            -- Http Post 请求测试(withxwwwformurlencoded)
             if LuaTaskTestConfig.httpTest.postTestWithXwwwformurlencoded then
                 log.info("HttpTest.PostTestWithXwwwformurlencoded", "第" .. count .. "次")
                 http.request(
@@ -827,21 +827,21 @@ sys.taskInit(
                 sys.wait(waitTime)
             end
 
-            -- Https HEAD 请求测试（/）
+            -- Http HEAD 请求测试(/)
             if LuaTaskTestConfig.httpTest.headTest then
                 log.info("HttpTest.headTest", "第" .. count .. "次")
                 http.request("HEAD", serverAddress, nil, nil, nil, nil, headTestCb)
                 sys.wait(waitTime)
             end
 
-            -- Https PUT 请求测试（/）
+            -- Http PUT 请求测试(/)
             if LuaTaskTestConfig.httpTest.putTest then
                 log.info("HttpTest.putTest", "第" .. count .. "次")
                 http.request("PUT", serverAddress, nil, nil, "putTest", nil, putTestCb)
                 sys.wait(waitTime)
             end
 
-            -- Https DELETE 请求测试（/）
+            -- Http DELETE 请求测试(/)
             if LuaTaskTestConfig.httpTest.deleteTest then
                 log.info("HttpTest.deleteTest", "第" .. count .. "次")
                 http.request("DELETE", serverAddress, nil, nil, "deleteTest", nil, deleteTestCb)

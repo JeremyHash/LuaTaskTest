@@ -1,27 +1,29 @@
 -- MqttTest
 -- Author:LuatTest
 -- CreateDate:20200724
--- UpdateDate:20201028
+-- UpdateDate:20210107
 
 module(..., package.seeall)
 
 local timeout1 = 3000
-local timeout2 = 7000
+local timeout2 = 10000
 
 local result, data
 
 local flag = true
 
-local count = 1
+local count1 = 1
+local count3 = 1
+local count4 = 1
 
-local ip1 = "wiki.airm2m.com"
-local port1 = 41883
-local port2 = 48883
+local ip1 = "airtest.openluat.com"
+local port1 = 1883
+local port2 = 8883
 
 local function publishTest(id, client, topic, pubData, qos, retain)
     if client:publish(topic, pubData, qos, retain) then
         log.info("MqttTest.MqttClient" .. id .. ".publish." .. topic, "发布SUCCESS")
-        log.info("MqttTest.MqttClient" .. id .. ".publish." .. "pubData", pubData)
+        -- log.info("MqttTest.MqttClient" .. id .. ".publish." .. "pubData", pubData)
     else
         log.info("MqttTest.MqttClient" .. id .. ".publish." .. topic, "发布FAIL")
         flag = false
@@ -29,20 +31,20 @@ local function publishTest(id, client, topic, pubData, qos, retain)
     sys.wait(timeout1)
 end
 
-local function mqttPubTask(id, client, ip, port, transport, cert)
+local function mqttPubTask(id, client, ip, port, transport, cert, count)
     local testImei = misc.getImei()
     local topic1 = "topic1-" .. testImei
     local topic2 = "topic2-" .. testImei
     local topic3 = "合宙测试-" .. testImei
     while true do
         log.info("MqttTest.MqttClient" .. id .. ".connect", "开始连接")
-        while not client:connect(ip, port, transport, cert) do log.info("MqttTest.MqttClient" .. id, "重新连接") sys.wait(2000) end
+        while not client:connect(ip, port, transport, cert) do log.info("MqttTest.MqttClient" .. id, "连接失败，重新连接") sys.wait(2000) end
         log.info("MqttTest.MqttClient" .. id .. ".connect", "连接SUCCESS")
         flag = true
         while flag do
-            publishTest(id, client, topic1, topic1 .. "PubTest" .. count, 0, 0)
-            publishTest(id, client, topic2, topic2 .. "PubTest" .. count, 1, 1)
-            publishTest(id, client, topic3, topic3 .. "PubTest" .. count, 2, 0)
+            publishTest(id, client, topic1, "MqttClient" .. id .. "PubTest" .. count, 0, 0)
+            publishTest(id, client, topic2, "MqttClient" .. id .. "PubTest" .. count, 1, 1)
+            publishTest(id, client, topic3, "MqttClient" .. id .. "PubTest" .. count, 2, 0)
             count = count + 1
         end
         log.info("MqttTest.MqttClient" .. id .. ".connect", "连接异常，开始断开连接")
@@ -58,7 +60,7 @@ local function mqttRecTask(id, client, ip, port, transport)
     local topic3 = "合宙测试-" .. testImei
     while true do
         log.info("MqttTest.MqttClient" .. id .. ".connect", "开始连接")
-        while not client:connect(ip, port, transport, cert) do log.info("MqttTest.MqttClient" .. id, "重新连接") sys.wait(2000) end
+        while not client:connect(ip, port, transport, cert) do log.info("MqttTest.MqttClient" .. id, "连接失败，重新连接") sys.wait(2000) end
         log.info("MqttTest.MqttClient" .. id .. ".connect", "连接SUCCESS")
         
         if client:subscribe({[topic1] = 0, [topic2] = 1, [topic3] = 2}) then
@@ -66,7 +68,33 @@ local function mqttRecTask(id, client, ip, port, transport)
             flag = true
         else
             log.info("MqttTest.MqttClient" .. id .. ".subscribe", "订阅FAIL")
+            flag = false
         end
+
+        -- if client:subscribe(topic1, 0) then
+        --     log.info("MqttTest.MqttClient" .. id .. ".subscribe", "订阅SUCCESS")
+        --     flag = true
+        -- else
+        --     log.info("MqttTest.MqttClient" .. id .. ".subscribe", "订阅FAIL")
+        --     flag = false
+        -- end
+
+        -- if client:subscribe(topic2, 1) then
+        --     log.info("MqttTest.MqttClient" .. id .. ".subscribe", "订阅SUCCESS")
+        --     flag = true
+        -- else
+        --     log.info("MqttTest.MqttClient" .. id .. ".subscribe", "订阅FAIL")
+        --     flag = false
+        -- end
+
+        -- if client:subscribe(topic3, 2) then
+        --     log.info("MqttTest.MqttClient" .. id .. ".subscribe", "订阅SUCCESS")
+        --     flag = true
+        -- else
+        --     log.info("MqttTest.MqttClient" .. id .. ".subscribe", "订阅FAIL")
+        --     flag = false
+        -- end
+
         while flag do
             result, data = client:receive(timeout2)
             if result then
@@ -92,7 +120,7 @@ sys.taskInit(
         sys.waitUntil("IP_READY_IND")
         log.info("MqttTest","成功访问网络, MqttPublish测试开始")
         local mqttClient1 = mqtt.client("client1-" .. misc.getImei(), 60, "user", "password")
-        mqttPubTask(1, mqttClient1, ip1, port1, "tcp")
+        mqttPubTask(1, mqttClient1, ip1, port1, "tcp", nil, count1)
     end
 )
 
@@ -105,20 +133,20 @@ sys.taskInit(
     end
 )
 
--- sys.taskInit(
---     function()
---         sys.waitUntil("IP_READY_IND")
---         log.info("MqttTest","SUCCESS访问网络, MqttSsl1Publish测试开始")
---         local mqttClient3 = mqtt.client("单向认证客户端-" .. randomNum1 .. randomNum2, 60, "user", "password")
---         mqttPubTask(3,mqttClient3,ip1,port2,"tcp_ssl",{["caCert"] = "cacert.pem"},5)
---     end
--- )
+sys.taskInit(
+    function()
+        sys.waitUntil("IP_READY_IND")
+        log.info("MqttTest","SUCCESS访问网络, MqttSSL单向认证Publish测试开始")
+        local mqttClient3 = mqtt.client("单向认证客户端-" .. misc.getImei(), 60, "user", "password")
+        mqttPubTask(3, mqttClient3, ip1, port2, "tcp_ssl", {["caCert"] = "cacert.pem"}, count3)
+    end
+)
 
--- sys.taskInit(
---     function()
---         sys.waitUntil("IP_READY_IND")
---         log.info("MqttTest","SUCCESS访问网络, MqttSSL双向认证Publish测试开始")
---         local mqttClient4 = mqtt.client("双向认证客户端-" .. misc.getImei(), 60, "user", "password")
---         mqttPubTask(4, mqttClient4, ip1, port2, "tcp_ssl", {["caCert"] = "cacert.pem", ["clientCert"] = "client-cert.pem", ["clientKey"] = "client-key.pem"}, 5)
---     end
--- )
+sys.taskInit(
+    function()
+        sys.waitUntil("IP_READY_IND")
+        log.info("MqttTest","SUCCESS访问网络, MqttSSL双向认证Publish测试开始")
+        local mqttClient4 = mqtt.client("双向认证客户端-" .. misc.getImei(), 60, "user", "password")
+        mqttPubTask(4, mqttClient4, ip1, port2, "tcp_ssl", {["caCert"] = "cacert.pem", ["clientCert"] = "client-cert.pem", ["clientKey"] = "client-key.pem"}, count4)
+    end
+)

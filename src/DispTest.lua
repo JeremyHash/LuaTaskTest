@@ -10,7 +10,7 @@ local waitTime2 = 5000
 
 -- 屏幕驱动文件管理
 -- require "color_lcd_spi_ILI9341"
-require "color_lcd_spi_gc9106l"
+-- require "color_lcd_spi_gc9106l"
 -- require "color_lcd_spi_st7735"
 -- require "color_lcd_spi_st7735S"
 
@@ -635,7 +635,7 @@ sys.taskInit(function()
             --打开摄像头预览
             disp.camerapreview(0, 0, 0, 0, WIDTH, HEIGHT)
             --设置照片的宽和高像素并且开始拍照
-            disp.cameracapture(WIDTH, HEIGHT)
+            disp.cameracapture(WIDTH, HEIGHT, 101)
             --设置照片保存路径
             disp.camerasavephoto("/testCamera.jpg")
             log.info("DispTest.PhotoSize", io.fileSize("/testCamera.jpg"))

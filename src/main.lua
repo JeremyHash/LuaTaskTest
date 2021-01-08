@@ -7,6 +7,9 @@ PROJECT = "LuaTaskTest"
 VERSION = "1.0.0"
 PRODUCT_KEY = "LMe0gb26NhPbBZ7t3mSk3dxA8f4ZZmM1"
 
+require "log"
+LOG_LEVEL = log.LOGLEVEL_INFO
+
 -- lib依赖管理
 require "sys"
 require "led"
@@ -18,18 +21,17 @@ require "ntp"
 require "http"
 require "socket"
 require "mqtt"
-require "audio"
+-- require "audio"
 require "pins"
-require "record"
-require "cc"
+-- require "record"
+-- require "cc"
 require "sms"
-require "uiWin"
-require "scanCode"
+-- require "uiWin"
+-- require "scanCode"
 require "lbsLoc"
-require "wifiScan"
+-- require "wifiScan"
 require "pm"
 require "nvm"
-require "powerKey"
 require "aLiYun"
 require "pb"
 -- require "wdt"
@@ -60,18 +62,25 @@ LuaTaskTestConfig = {
         putTest                        = false,
         deleteTest                     = false
     },
-    socketTest = false,
+    socketTest = {
+        syncTcpTest  = false,
+        syncUdpTest  = true,
+        asyncTcpTest = false,
+        asyncUdpTest = false,
+        errorIPTest  = false
+    },
     mqttTest = false,
     updateTest = false,
     baseTest = {
         -- netTest，sysTest 要单独测试
+        netTest      = false,
+        sysTest      = false,
         adcTest      = false,
         bitTest      = false,
         packTest     = false,
         stringTest   = false,
         commonTest   = false,
         miscTest     = false,
-        netTest      = false,
         ntpTest      = false,
         nvmTest      = false,
         tableTest    = false,
@@ -79,7 +88,6 @@ LuaTaskTestConfig = {
         powerKeyTest = false,
         rilTest      = false,
         simTest      = false,
-        sysTest      = false,
         jsonTest     = false,
         rtosTest     = false,
         mathTest     = false,
@@ -137,14 +145,19 @@ LuaTaskTestConfig = {
     }
 }
 
-require "log"
-LOG_LEVEL = log.LOGLEVEL_INFO
-
 -- require "console"
--- console.setup(2, 115200)
+-- console.setup(1, 115200)
 
 -- 保持唤醒
 -- pm.wake("LuaTaskTest")
+
+-- sys.taskInit(
+--     function()
+--         ril.regUrc("RING", function ()
+--             ril.request("ATA")
+--         end)
+--     end
+-- )
 
 require "netLed"
 
@@ -167,8 +180,8 @@ if LuaTaskTestConfig.updateTest then
         function()
             sys.waitUntil("IP_READY_IND")
             require "update"
-            update.request()
-            -- update.request(nil, "http://117.51.140.119:8000/jeremy.bin")
+            -- update.request()
+            update.request(nil, "http://wiki.airm2m.com:48000/jeremy.bin")
         end
     )
 end
@@ -287,7 +300,7 @@ ntp.timeSync(
 ril.request("AT*EXASSERT=1")
 
 -- 开启APTRACE
-ril.request("AT^TRACECTRL=0,1,3")
+ril.request("AT^TRACECTRL=0,1,1")
 
 --启动系统框架
 sys.init(0, 0)

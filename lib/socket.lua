@@ -271,6 +271,9 @@ end
 
 --- 发送数据
 -- @string data 数据
+--              此处传入的数据长度和剩余可用内存有关，只要内存够用，可以随便传入数据
+--              虽然说此处的数据长度没有特别限制，但是调用core中的socket发送接口时，每次最多发送11200字节的数据
+--              例如此处传入的data长度是112000字节，则在这个send接口中，会循环10次，每次发送11200字节的数据
 -- @number[opt=120] timeout 可选参数，发送超时时间，单位秒
 -- @return result true - 成功，false - 失败
 -- @usage  c = socket.tcp(); c:connect(); c:send("12345678");
@@ -462,7 +465,7 @@ rtos.on(rtos.MSG_SOCK_RECV_IND, function(msg)
     
     -- local s = socketcore.sock_recv(msg.socket_index, msg.recv_len)
     -- log.debug("socket.recv", "total " .. msg.recv_len .. " bytes", "first " .. 30 .. " bytes", s:sub(1, 30))
-    log.trace("socket.recv", msg.recv_len, sockets[msg.socket_index].rcvProcFnc)
+    log.debug("socket.recv", msg.recv_len, sockets[msg.socket_index].rcvProcFnc)
     if sockets[msg.socket_index].rcvProcFnc then
         sockets[msg.socket_index].rcvProcFnc(socketcore.sock_recv, msg.socket_index, msg.recv_len)
     else
@@ -470,7 +473,7 @@ rtos.on(rtos.MSG_SOCK_RECV_IND, function(msg)
             coroutine.resume(sockets[msg.socket_index].co, true, socketcore.sock_recv(msg.socket_index, msg.recv_len))
         else -- 数据进缓冲区，缓冲区溢出采用覆盖模式
             if #sockets[msg.socket_index].input > INDEX_MAX then
-                log.trace("socket recv", "out of stack", "block")
+                log.error("socket recv", "out of stack", "block")
                 -- sockets[msg.socket_index].input = {}
                 sockets[msg.socket_index].isBlock = true
                 sockets[msg.socket_index].msg = msg
