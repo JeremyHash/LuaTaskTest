@@ -21,15 +21,15 @@ require "ntp"
 require "http"
 require "socket"
 require "mqtt"
--- require "audio"
+require "audio"
 require "pins"
--- require "record"
--- require "cc"
+require "record"
+require "cc"
 require "sms"
--- require "uiWin"
--- require "scanCode"
+require "uiWin"
+require "scanCode"
 require "lbsLoc"
--- require "wifiScan"
+require "wifiScan"
 require "pm"
 require "nvm"
 require "aLiYun"
@@ -64,7 +64,7 @@ LuaTaskTestConfig = {
     },
     socketTest = {
         syncTcpTest  = false,
-        syncUdpTest  = true,
+        syncUdpTest  = false,
         asyncTcpTest = false,
         asyncUdpTest = false,
         errorIPTest  = false
@@ -179,9 +179,10 @@ if LuaTaskTestConfig.updateTest then
     sys.taskInit(
         function()
             sys.waitUntil("IP_READY_IND")
+            log.info("UpdateTest","成功访问网络, FOTA升级测试开始，当前版本 : " .. rtos.get_version() .. " VERSION : " .. VERSION)
             require "update"
-            -- update.request()
-            update.request(nil, "http://wiki.airm2m.com:48000/jeremy.bin")
+            update.request()
+            -- update.request(nil, "http://wiki.airm2m.com:48000/jeremy.bin")
         end
     )
 end
@@ -200,8 +201,11 @@ for k, v in pairs(LuaTaskTestConfig.httpTest) do
     end
 end
 
-if LuaTaskTestConfig.socketTest then
-    require "SocketTest"
+for k, v in pairs(LuaTaskTestConfig.socketTest) do
+    if v then
+        require "SocketTest"
+        break
+    end
 end
 
 if LuaTaskTestConfig.mqttTest then

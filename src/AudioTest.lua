@@ -275,8 +275,7 @@ sys.taskInit(
         local isTTSVersion = rtos.get_version():upper():find("TTS")
 
         while true do
-            if LuaTaskTestConfig.audioTest.audioPlayTest == false then
-            
+            if LuaTaskTestConfig.audioTest.audioPlayTest then
                 -- 播放音频文件
                 log.info("AudioTest.AudioPlayTest.Vol", vol)
                 log.info("AudioTest.AudioPlayTest.PlayFileTest", "第" .. count .. "次")
@@ -308,8 +307,6 @@ sys.taskInit(
                     audio.play(TTS, "TTS", ttsStr, vol, playTtsTestCb)
                 end
 
-                
-            
                 -- 播放冲突1
                 log.info("AudioTest.AudioPlayTest.PlayConflictTest1", "第" .. count .. "次")
                 -- 循环播放来电铃声

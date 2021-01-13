@@ -5,8 +5,6 @@
 
 module(..., package.seeall)
 
-local waitTime = 30000
-
 --multipart/form-data封装函数
 local function postTestWithMultipartFormData(url, cert, params, timeout, cbFnc, rcvFileName)
     local boundary, body, k, v, kk, vv = "--------------------------" .. os.time() .. rtos.tick(), {}
@@ -65,32 +63,33 @@ end
 
 -- getTest回调
 local function getTestCb(result, prompt, head, body)
+    local tag = "HttpTest.GetTestCb"
     if result then
-        log.info("HttpTest.GetTestCb.result", "SUCCESS")
-        log.info("HttpTest.GetTestCb.prompt", "Http状态码:", prompt)
+        log.info(tag .. ".result", "SUCCESS")
+        log.info(tag .. ".prompt", "Http状态码:", prompt)
         if head then
-            log.info("HttpTest.GetTestCb.Head", "遍历响应头")
+            log.info(tag .. ".Head", "遍历响应头")
             for k, v in pairs(head) do
-                log.info("HttpTest.GetTestCb.Head", k .. " : " .. v)
+                log.info(tag .. ".Head", k .. " : " .. v)
             end
         else
-            log.error("HttpTest.GetTestCb.Head", "读取响应头FAIL")
+            log.error(tag .. ".Head", "读取响应头FAIL")
         end
 
         if body then
-            log.info("HttpTest.GetTestCb.Body", body)
-            log.info("HttpTest.GetTestCb.BodyLen", body:len())
+            log.info(tag .. ".Body", body)
+            log.info(tag .. ".BodyLen", body:len())
             if body == "getTestSuccess" then
-                log.info("HttpTest.GetTestCb", "getTestSuccess")
+                log.info(tag, "getTestSuccess")
             else
-                log.error("HttpTest.GetTestCb", "getTestFail")
+                log.error(tag, "getTestFail")
             end
         else
-            log.error("HttpTest.GetTestCb.Body", "读取响应体FAIL")
+            log.error(tag .. ".Body", "读取响应体FAIL")
         end
     else
-        log.error("HttpTest.GetTestCb.result", "FAIL")
-        log.error("HttpTest.GetTestCb.prompt", prompt)
+        log.error(tag .. ".result", "FAIL")
+        log.error(tag .. ".prompt", prompt)
     end
 end
 
@@ -185,66 +184,69 @@ end
 
 -- getTestWithCA回调
 local function getTestWithCACb(result, prompt, head, body)
+    local tag = "HttpTest.GetTestWithCACb"
     if result then
-        log.info("HttpTest.GetTestWithCACb.result", "SUCCESS")
-        log.info("HttpTest.GetTestWithCACb.prompt", "Http状态码:", prompt)
+        log.info(tag .. ".result", "SUCCESS")
+        log.info(tag .. ".prompt", "Http状态码:", prompt)
         if head then
-            log.info("HttpTest.GetTestWithCACb.Head", "遍历响应头")
+            log.info(tag .. ".Head", "遍历响应头")
             for k, v in pairs(head) do
-                log.info("HttpTest.GetTestWithCACb.Head", k .. " : " .. v)
+                log.info(tag .. ".Head", k .. " : " .. v)
             end
         else
-            log.error("HttpTest.GetTestWithCACb.Head", "读取响应头FAIL")
+            log.error(tag .. ".Head", "读取响应头FAIL")
         end
 
         if body then
-            log.info("HttpTest.GetTestWithCACb.Body", body)
-            log.info("HttpTest.GetTestWithCACb.BodyLen", body:len())
+            log.info(tag .. ".Body", body)
+            log.info(tag .. ".BodyLen", body:len())
         else
-            log.error("HttpTest.GetTestWithCACb.Body", "读取响应体FAIL")
+            log.error(tag .. ".Body", "读取响应体FAIL")
         end
     else
-        log.error("HttpTest.GetTestWithCACb.result", "FAIL")
-        log.error("HttpTest.GetTestWithCACb.prompt", prompt)
+        log.error(tag .. ".result", "FAIL")
+        log.error(tag .. ".prompt", prompt)
     end
 end
 
 -- getTestWithCAAndKey回调
 local function GetTestWithCAAndKeyCb(result, prompt, head, body)
+    local tag = "HttpTest.GetTestWithCAAndKeyCb"
     if result then
-        log.info("HttpTest.GetTestWithCAAndKeyCb.result", "SUCCESS")
-        log.info("HttpTest.GetTestWithCAAndKeyCb.prompt", "Http状态码:", prompt)
+        log.info(tag .. ".result", "SUCCESS")
+        log.info(tag .. ".prompt", "Http状态码:", prompt)
         if head then
-            log.info("HttpTest.GetTestWithCAAndKeyCb.Head", "遍历响应头")
+            log.info(tag .. ".Head", "遍历响应头")
             for k, v in pairs(head) do
-                log.info("HttpTest.GetTestWithCAAndKeyCb.Head", k .. " : " .. v)
+                log.info(tag .. ".Head", k .. " : " .. v)
             end
         else
-            log.error("HttpTest.GetTestWithCAAndKeyCb.Head", "读取响应头FAIL")
+            log.error(tag .. ".Head", "读取响应头FAIL")
         end
 
         if body then
-            log.info("HttpTest.GetTestWithCAAndKeyCb.Body", body)
-            log.info("HttpTest.GetTestWithCAAndKeyCb.BodyLen", body:len())
+            log.info(tag .. ".Body", body)
+            log.info(tag .. ".BodyLen", body:len())
         else
-            log.error("HttpTest.GetTestWithCAAndKeyCb.Body", "读取响应体FAIL")
+            log.error(tag .. ".Body", "读取响应体FAIL")
         end
     else
-        log.error("HttpTest.GetTestWithCAAndKeyCb.result", "FAIL")
-        log.error("HttpTest.GetTestWithCAAndKeyCb.prompt", prompt)
+        log.error(tag .. ".result", "FAIL")
+        log.error(tag .. ".prompt", prompt)
     end
 end
 
 -- 处理大文件回调
 local function getTestAndSaveToBigFileCb(result, prompt, head, filePath)
+    local tag = "HttpTest.GetTestAndSaveToBigFileCb"
     local MD5Header, fileSize
     if result then
-        log.info("HttpTest.GetTestAndSaveToBigFileCb.result", "SUCCESS")
-        log.info("HttpTest.GetTestAndSaveToBigFileCb.prompt", "Http状态码:", prompt)
+        log.info(tag .. ".result", "SUCCESS")
+        log.info(tag .. ".prompt", "Http状态码:", prompt)
         if head then
-            log.info("HttpTest.GetTestAndSaveToBigFileCb.Head", "遍历响应头")
+            log.info(tag .. ".Head", "遍历响应头")
             for k, v in pairs(head) do
-                log.info("HttpTest.GetTestAndSaveToBigFileCb.Head", k .. " : " .. v)
+                log.info(tag .. ".Head", k .. " : " .. v)
                 if k == "MD5" then
                     MD5Header = v
                 end
@@ -254,56 +256,57 @@ local function getTestAndSaveToBigFileCb(result, prompt, head, filePath)
             end
         end
         if filePath then
-            log.info("HttpTest.GetTestAndSaveToBigFileCb.filePath", filePath)
+            log.info(tag .. ".filePath", filePath)
             local size = io.fileSize(filePath)
-            log.info("HttpTest.GetTestAndSaveToBigFileCb.fileSize", size)
+            log.info(tag .. ".fileSize", size)
 
             if size <= 4096 then
-                log.info("HttpTest.GetTestAndSaveToBigFileCb.fileContent", io.readFile(filePath))
+                log.info(tag .. ".fileContent", io.readFile(filePath))
             else
-	    		log.info("HttpTest.GetTestAndSaveToBigFileCb.fileContent", filePath .. "文件过大")
+	    		log.info(tag .. ".fileContent", filePath .. "文件过大")
             end
 
             if size == tonumber(fileSize) then
-                log.info("HttpTest.GetTestAndSaveToBigFileCb.fileSize", "fileSize验证SUCCESS")
+                log.info(tag .. ".fileSize", "fileSize验证SUCCESS")
                 local calMD5 = crypto.md5(filePath, "file")
-                log.info("HttpTest.GetTestAndSaveToBigFileCb.CalMD5", calMD5)
+                log.info(tag .. ".CalMD5", calMD5)
 
                 if MD5Header == calMD5 then
-                    log.info("HttpTest.GetTestAndSaveToBigFileCb.CalMD5", "MD5校验SUCCESS")
+                    log.info(tag .. ".CalMD5", "MD5校验SUCCESS")
                 else
-                    log.error("HttpTest.GetTestAndSaveToBigFileCb.CalMD5", "MD5校验FAIL")
+                    log.error(tag .. ".CalMD5", "MD5校验FAIL")
                 end
             else
-                log.error("HttpTest.GetTestAndSaveToBigFileCb.fileSize", "fileSize验证FAIL")
+                log.error(tag .. ".fileSize", "fileSize验证FAIL")
             end
 
             log.info("保存大文件后可用空间 " .. rtos.get_fs_free_size() .. " Bytes")
             -- os.remove(filePath)
             local remove_dir_res = rtos.remove_dir("/Jeremy")
             if remove_dir_res then
-                log.info("HttpTest.GetTestAndSaveToBigFileCb.fileDelete", filePath .. "删除SUCCESS")
+                log.info(tag .. ".fileDelete", filePath .. "删除SUCCESS")
                 log.info("删除大文件SUCCESS后可用空间 " .. rtos.get_fs_free_size() .. " Bytes")
             else
-                log.error("HttpTest.GetTestAndSaveToBigFileCb.fileDelete", filePath.."删除FAIL")
+                log.error(tag .. ".fileDelete", filePath.."删除FAIL")
                 log.info("删除大文件FAIL后可用空间 " .. rtos.get_fs_free_size() .. " Bytes")
             end
         end
     else
-        log.error("HttpTest.GetTestAndSaveToBigFileCb.result", "FAIL")
+        log.error(tag .. ".result", "FAIL")
     end
 end
 
 -- 处理小文件回调
 local function getTestAndSaveToSmallFileCb(result, prompt, head, filePath)
+    local tag = "HttpTest.getTestAndSaveToSmallFileCb"
     local MD5Header, fileSize
     if result then
-        log.info("HttpTest.getTestAndSaveToSmallFileCb.result", "SUCCESS")
-        log.info("HttpTest.getTestAndSaveToSmallFileCb.prompt", "Http状态码:", prompt)
+        log.info(tag .. ".result", "SUCCESS")
+        log.info(tag .. ".prompt", "Http状态码:", prompt)
         if head then
-            log.info("HttpTest.getTestAndSaveToSmallFileCb.Head","遍历响应头")
+            log.info(tag .. ".Head","遍历响应头")
             for k, v in pairs(head) do
-                log.info("HttpTest.getTestAndSaveToSmallFileCb.Head", k .. " : " .. v)
+                log.info(tag .. ".Head", k .. " : " .. v)
                 if k == "MD5" then
                     MD5Header = v
                 end
@@ -313,74 +316,75 @@ local function getTestAndSaveToSmallFileCb(result, prompt, head, filePath)
             end
         end
         if filePath then
-            log.info("HttpTest.getTestAndSaveToSmallFileCb.filePath", filePath)
+            log.info(tag .. ".filePath", filePath)
             local size = io.fileSize(filePath)
-            log.info("HttpTest.getTestAndSaveToSmallFileCb.fileSize", size)
+            log.info(tag .. ".fileSize", size)
 
             if size <= 4096 then
-                log.info("HttpTest.getTestAndSaveToSmallFileCb.fileContent", io.readFile(filePath))
+                log.info(tag .. ".fileContent", io.readFile(filePath))
             else
-	    		log.info("HttpTest.getTestAndSaveToSmallFileCb.fileContent", filePath .. "文件过大")
+	    		log.info(tag .. ".fileContent", filePath .. "文件过大")
             end
 
             if size == tonumber(fileSize) then
-                log.info("HttpTest.getTestAndSaveToSmallFileCb.fileSize", "fileSize验证SUCCESS")
+                log.info(tag .. ".fileSize", "fileSize验证SUCCESS")
                 local calMD5 = crypto.md5(filePath, "file")
-                log.info("HttpTest.getTestAndSaveToSmallFileCb.CalMD5", calMD5)
+                log.info(tag .. ".CalMD5", calMD5)
 
                 if MD5Header == calMD5 then
-                    log.info("HttpTest.getTestAndSaveToSmallFileCb.CalMD5", "MD5校验SUCCESS")
+                    log.info(tag .. ".CalMD5", "MD5校验SUCCESS")
                 else
-                    log.error("HttpTest.getTestAndSaveToSmallFileCb.CalMD5", "MD5校验FAIL")
+                    log.error(tag .. ".CalMD5", "MD5校验FAIL")
                 end
             else
-                log.error("HttpTest.getTestAndSaveToSmallFileCb.fileSize", "fileSize验证FAIL")
+                log.error(tag .. ".fileSize", "fileSize验证FAIL")
             end
 
             log.info("保存小文件后可用空间 " .. rtos.get_fs_free_size() .. " Bytes")
             -- os.remove(filePath)
             local remove_dir_res = rtos.remove_dir("/Jeremy")
             if remove_dir_res then
-                log.info("HttpTest.getTestAndSaveToSmallFileCb.fileDelete", filePath .. "删除SUCCESS")
+                log.info(tag .. ".fileDelete", filePath .. "删除SUCCESS")
                 log.info("删除小文件SUCCESS后可用空间 " .. rtos.get_fs_free_size() .. " Bytes")
             else
-                log.error("HttpTest.getTestAndSaveToSmallFileCb.fileDelete", filePath.."删除FAIL")
+                log.error(tag .. ".fileDelete", filePath.."删除FAIL")
                 log.info("删除小文件FAIL后可用空间 " .. rtos.get_fs_free_size() .. " Bytes")
             end
         end
     else
-        log.error("HttpTest.getTestAndSaveToSmallFileCb.result", "FAIL")
+        log.error(tag .. ".result", "FAIL")
     end
 end
 
 -- postTest回调
 local function postTestCb(result, prompt, head, body)
+    local tag = "HttpTest.postTestCb"
     if result then
-        log.info("HttpTest.postTestCb.result", "SUCCESS")
-        log.info("HttpTest.postTestCb.prompt", "Http状态码:", prompt)
+        log.info(tag .. ".result", "SUCCESS")
+        log.info(tag .. ".prompt", "Http状态码:", prompt)
         if head then
-            log.info("HttpTest.postTestCb.Head", "遍历响应头")
+            log.info(tag .. ".Head", "遍历响应头")
             for k, v in pairs(head) do
-                log.info("HttpTest.postTestCb.Head", k .. " : " .. v)
+                log.info(tag .. ".Head", k .. " : " .. v)
             end
         else
-            log.error("HttpTest.postTestCb.Head", "读取响应头FAIL")
+            log.error(tag .. ".Head", "读取响应头FAIL")
         end
 
         if body then
-            log.info("HttpTest.postTestCb.Body", body)
-            log.info("HttpTest.postTestCb.BodyLen", body:len())
+            log.info(tag .. ".Body", body)
+            log.info(tag .. ".BodyLen", body:len())
             if body == "postTestSuccess" then
-                log.info("HttpTest.postTestCb", "postTestSuccess")
+                log.info(tag, "postTestSuccess")
             else
-                log.error("HttpTest.postTestCb", "postTestFail")
+                log.error(tag, "postTestFail")
             end
         else
-            log.error("HttpTest.postTestCb.Body", "读取响应体FAIL")
+            log.error(tag .. ".Body", "读取响应体FAIL")
         end
     else
-        log.error("HttpTest.postTestCb.result", "FAIL")
-        log.error("HttpTest.postTestCb.prompt", prompt)
+        log.error(tag .. ".result", "FAIL")
+        log.error(tag .. ".prompt", prompt)
     end
 end
 
@@ -418,94 +422,97 @@ end
 
 -- postTestWithUserHeadCb回调
 local function postTestWithUserHeadCb(result,prompt,head,body)
+    local tag = "HttpTest.postJsonTestCb"
     if result then
-        log.info("HttpTest.postTestWithUserHeadCb.result", "SUCCESS")
-        log.info("HttpTest.postTestWithUserHeadCb.prompt", "Http状态码:", prompt)
+        log.info(tag .. ".result", "SUCCESS")
+        log.info(tag .. ".prompt", "Http状态码:", prompt)
         if head then
-            log.info("HttpTest.postTestWithUserHeadCb.Head", "遍历响应头")
+            log.info(tag .. ".Head", "遍历响应头")
             for k, v in pairs(head) do
-                log.info("HttpTest.postTestWithUserHeadCb.Head", k .. " : " .. v)
+                log.info(tag .. ".Head", k .. " : " .. v)
             end
         else
-            log.error("HttpTest.postTestWithUserHeadCb.Head", "读取响应头FAIL")
+            log.error(tag .. ".Head", "读取响应头FAIL")
         end
 
         if body then
-            log.info("HttpTest.postTestWithUserHeadCb.Body", body)
-            log.info("HttpTest.postTestWithUserHeadCb.BodyLen", body:len())
+            log.info(tag .. ".Body", body)
+            log.info(tag .. ".BodyLen", body:len())
             if body == "PostTestWithUserHeadPass" then
-                log.info("HttpTest.postTestWithUserHeadCb", "PostTestWithUserHeadSuccess")
+                log.info(tag, "PostTestWithUserHeadSuccess")
             else
-                log.error("HttpTest.postTestWithUserHeadCb", "PostTestWithUserHeadFail")
+                log.error(tag, "PostTestWithUserHeadFail")
             end
         else
-            log.error("HttpTest.postTestWithUserHeadCb.Body", "读取响应体FAIL")
+            log.error(tag .. ".Body", "读取响应体FAIL")
         end
     else
-        log.error("HttpTest.postTestWithUserHeadCb.result", "FAIL")
-        log.error("HttpTest.postTestWithUserHeadCb.prompt", prompt)
+        log.error(tag .. ".result", "FAIL")
+        log.error(tag .. ".prompt", prompt)
     end
 end
 
 -- postTestWithOctetStreamCb回调
 local function postTestWithOctetStreamCb(result, prompt, head, body)
+    local tag = "HttpTest.postTestWithOctetStreamCb"
     if result then
-        log.info("HttpTest.postTestWithOctetStreamCb.result", "SUCCESS")
-        log.info("HttpTest.postTestWithOctetStreamCb.prompt", "Http状态码:", prompt)
+        log.info(tag .. ".result", "SUCCESS")
+        log.info(tag .. ".prompt", "Http状态码:", prompt)
         if head then
-            log.info("HttpTest.postTestWithOctetStreamCb.Head", "遍历响应头")
+            log.info(tag .. ".Head", "遍历响应头")
             for k, v in pairs(head) do
-                log.info("HttpTest.postTestWithOctetStreamCb.Head", k .. " : " .. v)
+                log.info(tag .. ".Head", k .. " : " .. v)
             end
         else
-            log.error("HttpTest.postTestWithOctetStreamCb.Head", "读取响应头FAIL")
+            log.error(tag .. ".Head", "读取响应头FAIL")
         end
 
         if body then
-            log.info("HttpTest.postTestWithOctetStreamCb.Body", body)
-            log.info("HttpTest.postTestWithOctetStreamCb.BodyLen", body:len())
+            log.info(tag .. ".Body", body)
+            log.info(tag .. ".BodyLen", body:len())
             if body == "PostTestWithOctetStreamSuccess" then
-                log.info("HttpTest.postTestWithOctetStreamCb", "postTestWithOctetStreamSuccess")
+                log.info(tag, "postTestWithOctetStreamSuccess")
             else
-                log.error("HttpTest.postTestWithOctetStreamCb", "postTestWithOctetStreamFail")
+                log.error(tag, "postTestWithOctetStreamFail")
             end
         else
-            log.error("HttpTest.postTestWithOctetStreamCb.Body", "读取响应体FAIL")
+            log.error(tag .. ".Body", "读取响应体FAIL")
         end
     else
-        log.error("HttpTest.postTestWithOctetStreamCb.result", "FAIL")
-        log.error("HttpTest.postTestWithOctetStreamCb.prompt", prompt)
+        log.error(tag .. ".result", "FAIL")
+        log.error(tag .. ".prompt", prompt)
     end
 end
 
 -- postTestWithMultipartFormDataCb回调
 local function postTestWithMultipartFormDataCb(result, prompt, head, body)
+    local tag = "HttpTest.postTestWithMultipartFormDataCb"
     if result then
-        log.info("HttpTest.postTestWithMultipartFormDataCb.result", "SUCCESS")
-        log.info("HttpTest.postTestWithMultipartFormDataCb.prompt", "Http状态码:", prompt)
+        log.info(tag .. ".result", "SUCCESS")
+        log.info(tag .. ".prompt", "Http状态码:", prompt)
         if head then
-            log.info("HttpTest.postTestWithMultipartFormDataCb.Head", "遍历响应头")
+            log.info(tag .. ".Head", "遍历响应头")
             for k, v in pairs(head) do
-                log.info("HttpTest.postTestWithMultipartFormDataCb.Head", k .. " : " .. v)
+                log.info(tag .. ".Head", k .. " : " .. v)
             end
         else
-            log.error("HttpTest.postTestWithMultipartFormDataCb.Head", "读取响应头FAIL")
+            log.error(tag .. ".Head", "读取响应头FAIL")
         end
 
         if body then
-            log.info("HttpTest.postTestWithMultipartFormDataCb.Body", body)
-            log.info("HttpTest.postTestWithMultipartFormDataCb.BodyLen", body:len())
+            log.info(tag .. ".Body", body)
+            log.info(tag .. ".BodyLen", body:len())
             if body == "postTestWithMultipartFormDataSuccess" then
-                log.info("HttpTest.postTestWithMultipartFormDataCb", "postTestWithMultipartFormDataSuccess")
+                log.info(tag, "postTestWithMultipartFormDataSuccess")
             else
-                log.error("HttpTest.postTestWithMultipartFormDataCb", "postTestWithMultipartFormDataFail")
+                log.error(tag, "postTestWithMultipartFormDataFail")
             end
         else
-            log.error("HttpTest.postTestWithMultipartFormDataCb.Body", "读取响应体FAIL")
+            log.error(tag .. ".Body", "读取响应体FAIL")
         end
     else
-        log.error("HttpTest.postTestWithMultipartFormDataCb.result", "FAIL")
-        log.error("HttpTest.postTestWithMultipartFormDataCb.prompt", prompt)
+        log.error(tag .. ".result", "FAIL")
+        log.error(tag .. ".prompt", prompt)
     end
 end
 
@@ -629,9 +636,11 @@ sys.taskInit(
     function()
         sys.waitUntil("IP_READY_IND")
         log.info("HttpTest","成功访问网络, Http测试开始")
-        local serverAddress = "wiki.airm2m.com:48080"
+        local serverAddress = "airtest.openluat.com:2900"
         local count = 1
         local testCookie = string.rep("1234567890asdfghjklp", 50)
+        local waitTime = 30000
+
         while true do
             -- Http GET 请求测试
             if LuaTaskTestConfig.httpTest.getTest then
@@ -669,11 +678,11 @@ sys.taskInit(
             end
 
             -- Https Get 请求测试(服务端客户端证书验证_双向认证)
-            if LuaTaskTestConfig.httpTest.getTestWithCAAndKey then
-                log.info("HttpTest.GetTestWithCAAndKey","第" .. count .. "次")
-                http.request("GET", "https://36.7.87.100:4434",{caCert="ca.crt",clientCert="client.crt",clientKey="client.key"},nil,nil,nil,GetTestWithCAAndKeyCb)
-                sys.wait(waitTime)
-            end
+            -- if LuaTaskTestConfig.httpTest.getTestWithCAAndKey then
+            --     log.info("HttpTest.GetTestWithCAAndKey","第" .. count .. "次")
+            --     http.request("GET", "https://36.7.87.100:4434",{caCert="ca.crt",clientCert="client.crt",clientKey="client.key"},nil,nil,nil,GetTestWithCAAndKeyCb)
+            --     sys.wait(waitTime)
+            -- end
 
             -- Http Get 请求测试(保存结果到文件,文件较大)
             if LuaTaskTestConfig.httpTest.getTestAndSaveToBigFile then

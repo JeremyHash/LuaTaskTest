@@ -9,13 +9,13 @@ local waitTime = 10000
 
 -- ip1 -> TCPSSL单双向认证,TCP回环以及大文件下载,UDP回环以及大文件下载
 -- ip2 -> 错误ip模块表现
-local ip1, ip2 = "hashjeremy.top", "hhhhhh.zzz"
+local ip1, ip2 = "airtest.openluat.com", "hhhhhh.zzz"
 
 -- port1 -> TCPSSL单向认证
 -- port2 -> TCPSSL双向认证
 -- port3 -> TCP回环以及大文件下载
 -- port4 -> UDP回环以及大文件下载
-local port1, port2, port3, port4 = 4433, 4434, 2901, 2902
+local port1, port2, port3, port4 = 2903, 2903, 2901, 2902
 
 -- 10KB 数据
 local testSendData1 = string.rep("SocketTest", 1000)
@@ -86,32 +86,32 @@ sys.taskInit(
                 -- end
 
                 -- 双向认证Client2
-                -- for i=1, 10 do
-                --     tcpClient2 = socket.tcp(true, {caCert = "ca.crt", clientCert = "client.crt", clientKey = "client.key"})
-                --     connectResult, socketId = tcpClient2:connect(ip1, port2)
-                --     log.info("SocketTest.tcpClient2.connectResult, socketId", connectResult, socketId)
-                --     if connectResult then
-                --         if tcpClient2:send("GET / HTTP/1.1\r\nHost: 36.7.87.100\r\nConnection: keep-alive\r\n\r\n") then
-                --             log.info("SocketTest.tcpClient2.sendResult", "SUCCESS")
-                --             result, data = tcpClient2:recv(5000)
-                --             if result then
-                --                 log.info("SocketTest.tcpClient2.recv", data)
-                --             end
-                --             result, data = tcpClient2:recv(5000)
-                --             if result then
-                --                 log.info("SocketTest.tcpClient2.recv", data)
-                --             end
-                --         else
-                --             log.error("SocketTest.tcpClient2.sendResult", "FAIL")
-                --         end
-                --     else
-                --         log.error("SocketTest.tcpClient2.connect","FAIL")
-                --     end
-                --     log.info("SocketTest.tcpClient2.connection", "disconnecting")
-                --     tcpClient2:close()
-                --     log.info("SocketTest.tcpClient2.connection", "disconnected")
-                --     sys.wait(waitTime)
-                -- end
+                for i=1, 10 do
+                    tcpClient2 = socket.tcp(true, {caCert = "ca.crt", clientCert = "client.crt", clientKey = "client.key"})
+                    connectResult, socketId = tcpClient2:connect(ip1, port2)
+                    log.info("SocketTest.tcpClient2.connectResult, socketId", connectResult, socketId)
+                    if connectResult then
+                        if tcpClient2:send(testSendData2) then
+                            log.info("SocketTest.tcpClient2.sendResult", "SUCCESS")
+                            result, data = tcpClient2:recv(5000)
+                            if result then
+                                log.info("SocketTest.tcpClient2.recv", data)
+                            end
+                            result, data = tcpClient2:recv(5000)
+                            if result then
+                                log.info("SocketTest.tcpClient2.recv", data)
+                            end
+                        else
+                            log.error("SocketTest.tcpClient2.sendResult", "FAIL")
+                        end
+                    else
+                        log.error("SocketTest.tcpClient2.connect","FAIL")
+                    end
+                    log.info("SocketTest.tcpClient2.connection", "disconnecting")
+                    tcpClient2:close()
+                    log.info("SocketTest.tcpClient2.connection", "disconnected")
+                    sys.wait(waitTime)
+                end
 
                 connectResult, socketId = tcpClient3:connect(ip1, port3)
                 log.info("SocketTest.tcpClient3.connectResult,socketId", connectResult, socketId)
@@ -125,7 +125,7 @@ sys.taskInit(
                                 if result then
                                     recvLen = recvLen + #data
                                     log.info("SocketTest.tcpClient3.result", result)
-                                    log.info("SocketTest.tcpClient3.recv", #data, data:sub(1, 30))
+                                    -- log.info("SocketTest.tcpClient3.recv", #data, data:sub(1, 30))
                                     log.info("SocketTest.tcpClient3.para", para)
                                 else
                                     log.error("SocketTest.tcpClient3.recv", "接收完毕")
@@ -169,9 +169,9 @@ sys.taskInit(
                                         flag = false
                                     else
                                         recvLen = recvLen + #data
-                                        log.info("SocketTest.udpClient1.result", result)
-                                        log.info("SocketTest.udpClient1.recv", #data, data:sub(1, 30))
-                                        log.info("SocketTest.udpClient1.para", para)
+                                        -- log.info("SocketTest.udpClient1.result", result)
+                                        -- log.info("SocketTest.udpClient1.recv", #data, data:sub(1, 30))
+                                        -- log.info("SocketTest.udpClient1.para", para)
                                         fmd5Obj:update(data)  
                                     end
                                 else
@@ -217,7 +217,7 @@ if LuaTaskTestConfig.socketTest.asyncTcpTest then
             sys.waitUntil("IP_READY_IND")
             log.info("SocketTest","成功访问网络, 异步TcpSocket测试开始")
             tcpClient4 = socket.tcp()
-            connectResult,socketId = tcpClient4:connect(ip2, port3)
+            connectResult,socketId = tcpClient4:connect(ip1, port3)
             log.info("SocketTest.tcpClient4.connectResult, socketId", connectResult, socketId)
             if connectResult then
                 sys.publish("AsyncTcpSocketInitComplete")
@@ -280,7 +280,7 @@ if LuaTaskTestConfig.socketTest.asyncTcpTest then
             sys.waitUntil("IP_READY_IND")
             log.info("SocketTest","成功访问网络,异步UdpSocket测试开始")
             udpClient2 = socket.udp()
-            connectResult,socketId = udpClient2:connect(ip3, port4)
+            connectResult,socketId = udpClient2:connect(ip1, port4)
             log.info("SocketTest.udpClient2.connectResult, socketId", connectResult, socketId)
             if connectResult then
                 sys.publish("AsyncUdpSocketInitComplete")
