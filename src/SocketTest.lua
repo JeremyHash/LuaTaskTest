@@ -93,14 +93,20 @@ sys.taskInit(
                     if connectResult then
                         if tcpClient2:send(testSendData2) then
                             log.info("SocketTest.tcpClient2.sendResult", "SUCCESS")
-                            result, data = tcpClient2:recv(5000)
-                            if result then
-                                log.info("SocketTest.tcpClient2.recv", data)
+                            local recvLen = 0
+                            while true do
+                                result, data, para = tcpClient2:recv(5000)
+                                if result then
+                                    recvLen = recvLen + #data
+                                    log.info("SocketTest.tcpClient2.result", result)
+                                    -- log.info("SocketTest.tcpClient3.recv", #data, data:sub(1, 30))
+                                    -- log.info("SocketTest.tcpClient2.para", para)
+                                else
+                                    log.error("SocketTest.tcpClient2.recv", "接收完毕")
+                                    break
+                                end
                             end
-                            result, data = tcpClient2:recv(5000)
-                            if result then
-                                log.info("SocketTest.tcpClient2.recv", data)
-                            end
+                            log.info("SocketTest.tcpClient2.RecvLen", recvLen)
                         else
                             log.error("SocketTest.tcpClient2.sendResult", "FAIL")
                         end
@@ -126,7 +132,7 @@ sys.taskInit(
                                     recvLen = recvLen + #data
                                     log.info("SocketTest.tcpClient3.result", result)
                                     -- log.info("SocketTest.tcpClient3.recv", #data, data:sub(1, 30))
-                                    log.info("SocketTest.tcpClient3.para", para)
+                                    -- log.info("SocketTest.tcpClient3.para", para)
                                 else
                                     log.error("SocketTest.tcpClient3.recv", "接收完毕")
                                     break
@@ -273,7 +279,7 @@ if LuaTaskTestConfig.socketTest.asyncTcpTest then
 
 end
 
-if LuaTaskTestConfig.socketTest.asyncTcpTest then
+if LuaTaskTestConfig.socketTest.asyncUdpTest then
     -- 异步UDP客户端创建
     sys.taskInit(
         function()
