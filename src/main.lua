@@ -35,6 +35,7 @@ require "nvm"
 require "aLiYun"
 require "pb"
 -- require "wdt"
+require "wifiScan"
 
 -- 测试配置 设置为true代表开启此项测试
 LuaTaskTestConfig = {
@@ -142,6 +143,11 @@ LuaTaskTestConfig = {
     i2cAndSpiTest = {
         I2CTest = false,
         SPITest = false
+    },
+    bluetoothTest = {
+        masterTest    = false,
+        slaveTest     = false,
+        btWifiTdmTest = false
     }
 }
 
@@ -275,6 +281,13 @@ end
 for k, v in pairs(LuaTaskTestConfig.i2cAndSpiTest) do
     if v then
         require "I2CAndSPITest"
+        break
+    end
+end
+
+for k, v in pairs(LuaTaskTestConfig.bluetoothTest) do
+    if v then
+        require "BluetoothTest"
         break
     end
 end
