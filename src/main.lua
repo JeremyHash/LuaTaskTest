@@ -70,7 +70,7 @@ LuaTaskTestConfig = {
         asyncUdpTest = false,
         errorIPTest  = false
     },
-    mqttTest = false,
+    mqttTest = true,
     updateTest = false,
     baseTest = {
         -- netTest，sysTest 要单独测试
@@ -187,8 +187,8 @@ if LuaTaskTestConfig.updateTest then
             sys.waitUntil("IP_READY_IND")
             log.info("UpdateTest","成功访问网络, FOTA升级测试开始，当前版本 : " .. rtos.get_version() .. " VERSION : " .. VERSION)
             require "update"
-            update.request()
-            -- update.request(nil, "http://wiki.airm2m.com:48000/jeremy.bin")
+            -- update.request()
+            update.request(nil, "http://wiki.airm2m.com:48000/fota.bin")
         end
     )
 end
