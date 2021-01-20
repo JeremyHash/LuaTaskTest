@@ -1,13 +1,15 @@
 -- LbsLocTest
 -- Author:LuatTest
 -- CreateDate:20201013
--- UpdateDate:20201106
+-- UpdateDate:20210119
 
 module(..., package.seeall)
 
-local postCellLocInfoAddress = "http://wiki.airm2m.com:48080/postCellLocInfo"
-local postWiFiLocInfoAddress = "http://wiki.airm2m.com:48080/postWiFiLocInfo"
-local postGPSLocInfoAddress = "http://wiki.airm2m.com:48080/postGPSLocInfo"
+local serverAddr = "http://airtest.openluat.com:2900"
+
+local postCellLocInfoAddress = serverAddr .. "/postCellLocInfo"
+local postWiFiLocInfoAddress = serverAddr .. "/postWiFiLocInfo"
+local postGPSLocInfoAddress = serverAddr .. "/postGPSLocInfo"
 
 local cellLattmp, cellLngtmp = 0, 0
 local wifiLattmp, wifiLngtmp = 0, 0
@@ -63,16 +65,6 @@ function getCellLocCb(result, lat, lng, addr)
     else
         log.info("CellLocTest.getLocCb", "FAIL")
     end
-end
-
-if LuaTaskTestConfig.lbsLocTest.cellLocTest then
-    sys.timerLoopStart(
-        function()
-            log.info("CellLocTest", "开始基站定位")
-            lbsLoc.request(getCellLocCb)
-        end,
-        loopTime
-    )
 end
 
 local function getWiFiLocCb(result, lat, lng, addr)
@@ -142,10 +134,6 @@ local function wifiLocTest()
     )
 end
 
-if LuaTaskTestConfig.lbsLocTest.wifiLocTest then
-    sys.timerLoopStart(wifiLocTest, loopTime)
-end
-
 local function sendGPSInfoToServer(lat, lng)
     gpsLattmp = lat
     gpsLngtmp = lng
@@ -189,7 +177,9 @@ local function printGpsInfo()
         local tLocation = gpsZkw.getLocation()
         local lat = tLocation.lat
         local lng = tLocation.lng
-        log.info("GPSLocTest.GPSInfo", lat, lng)
+        log.info("GPSLocTest.LocInfo", lat, lng)
+        local UTCTime = gpsZkw.getUtcTime()
+        log.info("GPSLocTest.UTCTime", string.format("%d-%d-%d %d:%d:%d", UTCTime.year, UTCTime.month, UTCTime.day, UTCTime.hour, UTCTime.min, UTCTime.sec))
         if lat == gpsLattmp and lng == gpsLngtmp then
             log.info("GPSLocTest", "GPS定位信息未发生改变，本次定位结果不上传服务器")
         else
@@ -198,12 +188,27 @@ local function printGpsInfo()
     end
 end
 
+if LuaTaskTestConfig.lbsLocTest.cellLocTest then
+    sys.timerLoopStart(
+        function()
+            log.info("CellLocTest", "开始基站定位")
+            lbsLoc.request(getCellLocCb)
+        end,
+        loopTime
+    )
+end
+
+if LuaTaskTestConfig.lbsLocTest.wifiLocTest then
+    sys.timerLoopStart(wifiLocTest, loopTime)
+end
+
 if LuaTaskTestConfig.lbsLocTest.gpsLocTest then
-    -- require "gpsZkw"
-    -- require "agpsZkw"
+    require "gpsZkw"
+    require "agpsZkw"
     
     log.info("GPSTest", "打开GPS")
     gpsZkw.open(gpsZkw.DEFAULT, {tag = "GPSLocTest"})
+    gpsZkw.setParseItem(true, nil, nil)
 
-    sys.timerLoopStart(printGpsInfo, 5000)
+    sys.timerLoopStart(printGpsInfo, 1000)
 end

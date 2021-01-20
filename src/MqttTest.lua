@@ -48,7 +48,7 @@ local function mqttPubTask(id, ip, port, transport, cert, count)
         log.info("MqttTest.MqttClient" .. id .. ".connect", "开始连接")
         -- TODO 第五个参数timeout 没有传 看 doc 没有相应的描述
         while not client:connect(ip, port, transport, cert) do 
-            log.info("MqttTest.MqttClient" .. id, "连接失败，重新连接")
+            log.info("MqttTest.MqttClient" .. id, "连接FAIL，重新连接")
             client:disconnect()
             client = mqtt.client("client" .. id .. "-" .. misc.getImei(), 60)
             sys.wait(2000)
@@ -78,7 +78,7 @@ local function mqttRecTask(id, ip, port, transport, cert, count, msg)
         client = mqtt.client("client" .. id .. "-" .. misc.getImei(), 60)
         log.info("MqttTest.MqttClient" .. id .. ".connect", "开始连接")
         while not client:connect(ip, port, transport, cert) do
-            log.info("MqttTest.MqttClient" .. id, "连接失败，重新连接")
+            log.info("MqttTest.MqttClient" .. id, "连接FAIL，重新连接")
             client:disconnect()
             client = mqtt.client("client" .. id .. "-" .. misc.getImei(), 60)
             sys.wait(2000)
@@ -181,16 +181,16 @@ sys.taskInit(
     end
 )
 
-sys.taskInit(
-    function()
-        sys.waitUntil("IP_READY_IND")
-        mqttRecTask(5, ip1, port2, "tcp_ssl", {["caCert"] = "cacert.pem"}, count5, "RECEIVE_INTER")
-    end
-)
+-- sys.taskInit(
+--     function()
+--         sys.waitUntil("IP_READY_IND")
+--         mqttRecTask(5, ip1, port2, "tcp_ssl", {["caCert"] = "cacert.pem"}, count5, "RECEIVE_INTER")
+--     end
+-- )
 
-sys.timerLoopStart(
-    function ()
-       sys.publish("RECEIVE_INTER", "1234")
-    end,
-    1000
-)
+-- sys.timerLoopStart(
+--     function ()
+--        sys.publish("RECEIVE_INTER", "1234")
+--     end,
+--     1000
+-- )

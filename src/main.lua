@@ -69,7 +69,7 @@ LuaTaskTestConfig = {
         asyncUdpTest = false,
         errorIPTest  = false
     },
-    mqttTest = true,
+    mqttTest = false,
     updateTest = false,
     baseTest = {
         -- netTest，sysTest 要单独测试
@@ -122,7 +122,7 @@ LuaTaskTestConfig = {
     lbsLocTest = {
         cellLocTest = false,
         wifiLocTest = false,
-        gpsLocTest  = false
+        gpsLocTest  = true
     },
     uartTransferTest  = false,
     cryptoTest = {
@@ -287,7 +287,7 @@ sys.taskInit(
                     log.info("RAMUSEAGE", collectgarbage("count") .. " KB")
                     local timeTable = misc.getClock()
                     log.info("TIME", string.format("%d-%d-%d %d:%d:%d", timeTable.year, timeTable.month, timeTable.day, timeTable.hour, timeTable.min, timeTable.sec))
-                    sys.wait(30000)
+                    sys.wait(1000)
                 end
             end
 )

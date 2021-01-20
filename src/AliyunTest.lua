@@ -6,14 +6,10 @@
 
 module(..., package.seeall)
 
-local PRODUCT_KEY = "a1K4TWp6E6z"
-local PRODUCE_SECRET = "oqBAqpeFwQTKyn4M"
+require "OneDeviceOneSecret"
 
--- 华南1（深圳）
--- local PRODUCT_KEY = "g3gcIkacF8m"
--- local PRODUCE_SECRET = "IKCJfcbhASow1YhT"
-
-
+local PRODUCT_KEY = OneDeviceOneSecret.AliyunInfo["PRODUCT_KEY"]
+local PRODUCE_SECRET
 
 --阿里云客户端是否处于连接状态
 local sConnected
@@ -23,20 +19,15 @@ local publishCnt = 1
 local publishCntTmp = 0
 
 local function getDeviceName()
-    -- return "866714049394322"
-    return "866714044920188"
 
-    -- 华南1（深圳）
-    -- return "aliyuntest"
+    return OneDeviceOneSecret.AliyunInfo["DEVICE_NAME"]
+
 end
 
 local function getDeviceSecret()
-    -- return misc.getSn()
-    -- return "a044c473cdb320c9b698a3592af0e762"
-    return "fb99c094aebacbf0018688ea5e364e35"
 
-    -- 华南1（深圳）
-    -- return "a614044f458820fee9d970a7b882344b"
+    return OneDeviceOneSecret.AliyunInfo["DEVICE_SECRET"]
+
 end
 
 local function setDeviceSecret(s)
@@ -143,12 +134,12 @@ sys.taskInit(
             --aLiYun.setMqtt(0)
 
             -- TODO 测试过程中禁用设备观察情况
-            aLiYun.setErrHandle(
-                function ()
-                    sys.restart("ALIYUN_TASK_INACTIVE")
-                end,
-                300
-            )
+            -- aLiYun.setErrHandle(
+            --     function ()
+            --         sys.restart("ALIYUN_TASK_INACTIVE")
+            --     end,
+            --     300
+            -- )
 
             -- 一机一密
             aLiYun.setup(PRODUCT_KEY, nil, getDeviceName, getDeviceSecret)
