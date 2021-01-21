@@ -123,7 +123,7 @@ LuaTaskTestConfig = {
     lbsLocTest = {
         cellLocTest = false,
         wifiLocTest = false,
-        gpsLocTest  = true
+        gpsLocTest  = false
     },
     uartTransferTest  = false,
     cryptoTest = {
@@ -300,7 +300,7 @@ sys.taskInit(
                     log.info("RAMUSEAGE", collectgarbage("count") .. " KB")
                     local timeTable = misc.getClock()
                     log.info("TIME", string.format("%d-%d-%d %d:%d:%d", timeTable.year, timeTable.month, timeTable.day, timeTable.hour, timeTable.min, timeTable.sec))
-                    sys.wait(1000)
+                    sys.wait(30000)
                 end
             end
 )

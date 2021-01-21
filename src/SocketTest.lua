@@ -37,24 +37,27 @@ local tcpClient1, tcpClient2, tcpClient3, tcpClient4, tcpClient5, udpClient1, ud
 -- 启动socket客户端任务
 sys.taskInit(
     function ()
-        sys.waitUntil("IP_READY_IND")
-        log.info("SocketTest", "成功访问网络, 同步Socket测试开始")
-        local count = 1
 
-        -- tcp client
-        tcpClient3 = socket.tcp()
+        if LuaTaskTestConfig.socketTest.syncTcpTest or LuaTaskTestConfig.socketTest.syncUdpTest then
 
-        -- udp client
-        udpClient1 = socket.udp()
+            sys.waitUntil("IP_READY_IND")
+            log.info("SocketTest", "成功访问网络, 同步Socket测试开始")
+            local count = 1
 
-        while true do
+            -- tcp client
+            tcpClient3 = socket.tcp()
 
-            log.info("SocketTest", "同步Socket测试第" .. count .. "次开始")
+            -- udp client
+            udpClient1 = socket.udp()
 
-            -- TODO 带密码的TCPSSL测试
-            -- c = socket.tcp(true, {caCert="ca.crt", clientCert="client.crt", clientKey="client.key", clientPassword="123456"})
+            while true do
 
-            if LuaTaskTestConfig.socketTest.syncTcpTest then
+                log.info("SocketTest", "同步Socket测试第" .. count .. "次开始")
+
+                -- TODO 带密码的TCPSSL测试
+                -- c = socket.tcp(true, {caCert="ca.crt", clientCert="client.crt", clientKey="client.key", clientPassword="123456"})
+
+                if LuaTaskTestConfig.socketTest.syncTcpTest then
                 -- 单向认证Client1
                 -- for i=1, 10 do
                 --     tcpClient1 = socket.tcp(true, {caCert = "hashjeremy.crt"})
@@ -151,9 +154,9 @@ sys.taskInit(
                 tcpClient3:close()
 
                 sys.wait(waitTime)
-            end
+                end
 
-            if LuaTaskTestConfig.socketTest.syncUdpTest then
+                if LuaTaskTestConfig.socketTest.syncUdpTest then
                 connectResult,socketId = udpClient1:connect(ip1, port4)
                 log.info("SocketTest.udpClient1.connectResult, socketId", connectResult, socketId)
                 if connectResult then
@@ -205,11 +208,13 @@ sys.taskInit(
                 udpClient1:close()
 
                 sys.wait(waitTime)
+                end
+
+                log.info("SocketTest", "同步Socket测试第" .. count .. "次结束")
+
+                count = count + 1
+
             end
-
-            log.info("SocketTest", "同步Socket测试第" .. count .. "次结束")
-
-            count = count + 1
             
         end
 
