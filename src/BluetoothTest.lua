@@ -14,8 +14,10 @@ local function init1()
     log.info("bt", "init")
     rtos.on(rtos.MSG_BLUETOOTH, function(msg)
         if msg.event == btcore.MSG_OPEN_CNF then
+            log.info("蓝牙打开SUCCESS")
             sys.publish("BT_OPEN", msg.result) --蓝牙打开成功
         elseif msg.event == btcore.MSG_BLE_CONNECT_CNF then
+            log.info("蓝牙连接SUCCESS")
             sys.publish("BT_CONNECT_IND", {["handle"] = msg.handle, ["result"] = msg.result}) --蓝牙连接成功
         elseif msg.event == btcore.MSG_BLE_DISCONNECT_CNF then
             log.info("蓝牙断开连接SUCCESS") --蓝牙断开连接
@@ -45,8 +47,11 @@ local function init2()
     log.info("bt", "init")
     rtos.on(rtos.MSG_BLUETOOTH, function(msg)
         if msg.event == btcore.MSG_OPEN_CNF then
+            log.info("蓝牙打开SUCCESS")
             sys.publish("BT_OPEN", msg.result) --蓝牙打开成功
         elseif msg.event == btcore.MSG_BLE_CONNECT_IND then
+            log.info("蓝牙连接SUCCESS")
+            log.info("蓝牙mac地址", btcore.getaddr())
             sys.publish("BT_CONNECT_IND", {["handle"] = msg.handle, ["result"] = msg.result}) --蓝牙连接成功
 		elseif msg.event == btcore.MSG_BLE_DISCONNECT_IND then
             log.info("蓝牙断开连接SUCCESS") --蓝牙断开连接
@@ -165,8 +170,8 @@ local function data_trans1()
     
     log.info("bt.send", "Hello I'm Luat BLE")
     while true do
-        local data = "123456"
-        btcore.send(data,0xfee1, bt_connect.handle) --发送数据(数据 对应特征uuid 连接句柄)
+        local data = "12345678901234567890123456789012345678901234567890"
+        btcore.send(data, 0xfee1, bt_connect.handle) --发送数据(数据 对应特征uuid 连接句柄)
 		_, bt_recv = sys.waitUntil("BT_DATA_IND") --等待接收到数据
         local data = ""
         local len = 0
@@ -210,9 +215,9 @@ local function advertising()
     service(0xfee0, struct)--添加服务16bit uuid   自定义服务
     local advertising = btcore.advertising(1)-- 打开广播
     if advertising == 0 then
-        log.info("打开广播SUCCESS")
+        log.info("广播打开SUCCESS")
     else
-        log.error("打开广播FAIL")
+        log.error("广播打开FAIL")
     end
 end
 
@@ -220,13 +225,8 @@ end
 local function data_trans2()
     advertising()
     _, bt_connect = sys.waitUntil("BT_CONNECT_IND") --等待连接成功
-    local addr = btcore.getaddr()
-    log.info("bt.connect_addr", addr)
     if bt_connect.result ~= 0 then
-        log.error("蓝牙连接FAIL")  
         return false 
-    else
-        log.info("蓝牙连接SUCCESS")   
     end
     --链接成功
     log.info("bt.connect_handle2",bt_connect.handle) --连接句柄

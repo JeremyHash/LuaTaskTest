@@ -424,6 +424,7 @@ local function on_response(msg)
         return
     end
     log.info("socket:on_response:", msg.socket_index, t[msg.id], msg.result)
+    log.info("id,状态,长度",msg.socket_index,msg.result,msg.send_len)
     if type(socketcore.sock_destroy) == "function" then
         if (msg.id == rtos.MSG_SOCK_CONN_CNF and msg.result ~= 0) or msg.id == rtos.MSG_SOCK_CLOSE_CNF then
             socketcore.sock_destroy(msg.socket_index)
