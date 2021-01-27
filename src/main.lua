@@ -10,33 +10,6 @@ PRODUCT_KEY = "LMe0gb26NhPbBZ7t3mSk3dxA8f4ZZmM1"
 require "log"
 LOG_LEVEL = log.LOGLEVEL_INFO
 
--- lib依赖管理
-require "sys"
-require "led"
-require "net"
-require "common"
-require "utils"
-require "misc"
-require "ntp"
-require "http"
-require "socket"
-require "mqtt"
-require "audio"
-require "pins"
-require "record"
-require "cc"
-require "sms"
-require "uiWin"
-require "scanCode"
-require "lbsLoc"
-require "wifiScan"
-require "pm"
-require "nvm"
-require "aLiYun"
-require "pb"
--- require "wdt"
-require "wifiScan"
-
 -- 测试配置 设置为true代表开启此项测试
 LuaTaskTestConfig = {
     modType = "8910",
@@ -66,8 +39,7 @@ LuaTaskTestConfig = {
     socketTest = {
         syncTcpTest  = false,
         syncUdpTest  = false,
-        asyncTcpTest = false,
-        asyncUdpTest = false,
+        asyncTest    = true,
         errorIPTest  = false
     },
     mqttTest = false,
@@ -151,8 +123,37 @@ LuaTaskTestConfig = {
     }
 }
 
+-- lib依赖管理
+require "sys"
+require "led"
+require "net"
+require "common"
+require "utils"
+require "misc"
+require "ntp"
+require "http"
+require "socket"
+require "mqtt"
+require "pins"
+require "cc"
+require "sms"
+require "lbsLoc"
+require "pm"
+require "nvm"
+require "aLiYun"
+require "pb"
+-- require "wdt"
+
+if LuaTaskTestConfig.modType == "8910" then
+    -- require "wifiScan"
+    -- require "scanCode"
+    -- require "uiWin"
+    -- require "audio"
+    -- require "record"
+end
+
 -- require "console"
--- console.setup(1, 115200)
+-- console.setup(2, 115200)
 
 -- 保持唤醒
 -- pm.wake("LuaTaskTest")

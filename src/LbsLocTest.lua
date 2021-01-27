@@ -202,40 +202,40 @@ if LuaTaskTestConfig.lbsLocTest.wifiLocTest then
     sys.timerLoopStart(wifiLocTest, loopTime)
 end
 
--- local function read()
---     local uartData = ""
---     while true do        
---         uartData = uart.read(2, "*l")
+local function read()
+    local uartData = ""
+    while true do        
+        uartData = uart.read(2, "*l")
 	
---         if not uartData or string.len(uartData) == 0 then 
--- 			break 
---         end
+        if not uartData or string.len(uartData) == 0 then 
+			break 
+        end
         
---         log.info("GPSNMEADATA", uartData)
--- 	end
--- end
+        log.info("GPSNMEADATA", uartData)
+	end
+end
 
 if LuaTaskTestConfig.lbsLocTest.gpsLocTest then
-    -- sys.taskInit(
-    --     function ()
-    --         sys.wait(5000)
-    --         pmd.ldoset(15, pmd.LDO_VMMC)
-    --         uart.setup(2, 9600, 8, uart.PAR_NONE, uart.STOP_1)
-    --         uart.write(2, "$PCAS01,5*19")
-    --         uart.close(2)
+    sys.taskInit(
+        function ()
+            sys.wait(5000)
+            pmd.ldoset(15, pmd.LDO_VMMC)
+            -- uart.setup(2, 115200, 8, uart.PAR_NONE, uart.STOP_1)
+            -- uart.write(2, "$PCAS01,1*1D")
+            -- uart.close(2)
 
-    --         uart.setup(2, 115200, 8, uart.PAR_NONE, uart.STOP_1)
-    --         uart.on(2, "receive", read)
-    --     end
-    -- )
+            uart.setup(2, 9600, 8, uart.PAR_NONE, uart.STOP_1)
+            uart.on(2, "receive", read)
+        end
+    )
     
-    require "gpsZkw"
-    require "agpsZkw"
+    -- require "gpsZkw"
+    -- require "agpsZkw"
     
-    log.info("GPSTest", "打开GPS")
-    -- gpsZkw.setUart(2, 115200, 8, uart.PAR_NONE, uart.STOP_1)
-    gpsZkw.open(gpsZkw.DEFAULT, {tag = "GPSLocTest"})
-    gpsZkw.setParseItem(true, nil, nil)
+    -- log.info("GPSTest", "打开GPS")
+    -- -- gpsZkw.setUart(2, 115200, 8, uart.PAR_NONE, uart.STOP_1)
+    -- gpsZkw.open(gpsZkw.DEFAULT, {tag = "GPSLocTest"})
+    -- gpsZkw.setParseItem(true, nil, nil)
 
-    sys.timerLoopStart(printGpsInfo, 5000)
+    -- sys.timerLoopStart(printGpsInfo, 5000)
 end

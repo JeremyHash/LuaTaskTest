@@ -51,7 +51,10 @@ getDirContent = function(dirPath, level)
     local dtb = {}
     level = level or "    "
     local tag = " "
-    if not io.opendir(dirPath) then return end
+	if not io.opendir(dirPath) then
+		log.error("FsTest.getDirContent", "无法打开目标文件夹")
+		return
+	end
     while true do
         local fType, fName, fSize = io.readdir()
         if fType == 32 then
