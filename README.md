@@ -4,12 +4,13 @@
 合宙LuaTask 自动化测试工具
 #### 软件架构
  + Lua V5.1
- + LuaTask V2.3.5
+ + LuaTask V2.3.7
 #### 功能模块
  + aliyunTest       
  + httpTest         
  + socketTest       
- + mqttTest         
+ + mqttTest   
+ + updateTest      
  + baseTest         
  + audioTest        
  + gpioTest         
@@ -20,6 +21,7 @@
  + uartTransferTest 
  + cryptoTest       
  + i2cAndSpiTest    
+ + bluetoothTest
 #### 使用说明
  + 测试单元的开关控制查看src/main.lua
 ```
@@ -49,16 +51,24 @@ LuaTaskTestConfig = {
         putTest                        = false,
         deleteTest                     = false
     },
-    socketTest = false,
+    socketTest = {
+        syncTcpTest  = false,
+        syncUdpTest  = false,
+        asyncTest    = true,
+        errorIPTest  = false
+    },
     mqttTest = false,
+    updateTest = false,
     baseTest = {
+        -- netTest，sysTest 要单独测试
+        netTest      = false,
+        sysTest      = false,
         adcTest      = false,
         bitTest      = false,
         packTest     = false,
         stringTest   = false,
         commonTest   = false,
         miscTest     = false,
-        netTest      = false,
         ntpTest      = false,
         nvmTest      = false,
         tableTest    = false,
@@ -66,7 +76,6 @@ LuaTaskTestConfig = {
         powerKeyTest = false,
         rilTest      = false,
         simTest      = false,
-        sysTest      = false,
         jsonTest     = false,
         rtosTest     = false,
         mathTest     = false,
@@ -121,6 +130,11 @@ LuaTaskTestConfig = {
     i2cAndSpiTest = {
         I2CTest = false,
         SPITest = false
+    },
+    bluetoothTest = {
+        masterTest    = false,
+        slaveTest     = false,
+        btWifiTdmTest = false
     }
 }
 ```
