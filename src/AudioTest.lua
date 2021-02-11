@@ -11,65 +11,58 @@ local waitTime2 = 1000
 --音频播放优先级，数值越大，优先级越高
 local PWRON, CALL, SMS, TTS, REC = 4, 3, 2, 1, 0
 
-local tStreamType
-local producing = false
-local streamPlaying = false
-
 --每次读取的录音文件长度
 local RCD_READ_UNIT = 1024
 
 local recordBuf = ""
 
+local tAudioFile =
+{
+    -- [audiocore.WAV] = "tip.wav",
+    [audiocore.AMR] = "tip.amr",
+    [audiocore.SPX] = "record.spx",
+    [audiocore.PCM] = "alarm_door.pcm",
+    [audiocore.MP3] = "sms.mp3"
+}
+
 -- TODO 需要模拟数据从网络侧获得、串口获得
 local function audioStreamPlayTest(streamType)
     sys.taskInit(
         function()
+		    log.info("AudioTest.AudioStreamTest", "AudioStreamPlay Start", tAudioFile[streamType])
+            
+            local fileHandle = io.open("/lua/" .. tAudioFile[streamType], "rb")
+            if not fileHandle then
+                log.error("AudioTest.AudioStreamTest", "Open file fail")
+                return
+            end
             while true do
-		    	while streamPlaying do
-		    		sys.wait(200)   
-		    	end
-		    	log.info("AudioTest.AudioStreamTest", "AudioStreamPlay Start", streamType)
-                local tAudioFile =
-                {
-                    -- [audiocore.WAV] = "tip.wav",
-                    [audiocore.AMR] = "tip.amr",
-                    [audiocore.SPX] = "record.spx",
-                    [audiocore.PCM] = "alarm_door.pcm",
-                    [audiocore.MP3] = "sms.mp3"
-                }
-                local fileHandle = io.open("/lua/" .. tAudioFile[streamType], "rb")
-                if not fileHandle then
-                    log.error("AudioTest.AudioStreamTest", "Open file fail")
+                -- TODO 为什么SPX 是读取 1200
+                local data = fileHandle:read(streamType == audiocore.SPX and 1200 or 1024)
+                if not data then 
+                    fileHandle:close()
+                    while audiocore.streamremain() ~= 0 do
+                        sys.wait(20)	
+                    end
+                    sys.wait(1000)
+                    audiocore.stop()
+                    log.info("AudioTest.AudioStreamTest", "AudioStreamPlay Over")
                     return
                 end
-
+                local data_len = string.len(data)
+                local curr_len = 1
                 while true do
-                    -- TODO 为什么SPX 是读取 1200
-                    local data = fileHandle:read(streamType == audiocore.SPX and 1200 or 1024)
-                    if not data then 
-                        fileHandle:close()
-                        local streamRemainLen = audiocore.streamremain()
-                        while streamRemainLen ~= 0 do
-                            sys.wait(20)	
-                        end
-                        sys.wait(1000)
-                        --添加audiocore.stop()接口，否则再次播放会播放不出来
+                    curr_len = curr_len + audiocore.streamplay(streamType, string.sub(data, curr_len, -1))
+                    if curr_len >= data_len then
+                        break
+                    elseif curr_len == 0 then
+                        log.error("AudioTest.AudioStreamTest", "AudioStreamPlay Error", tAudioFile[streamType])
                         audiocore.stop()
-                        log.info("AudioTest.AudioStreamTest", "AudioStreamPlay Over")
                         return
                     end
-
-                    local data_len = string.len(data)
-                    local curr_len = 1
-                    while true do
-                        curr_len = curr_len + audiocore.streamplay(streamType, string.sub(data, curr_len, -1))
-                        if curr_len >= data_len then
-                            break
-                        end
-                        sys.wait(10)
-                    end
-
-                end  
+                    sys.wait(10)
+                end
+                sys.wait(10)
             end
         end
     )
@@ -255,9 +248,9 @@ sys.taskInit(
                 audioStreamPlayTest(audiocore.SPX)
                 sys.wait(30000)
 
-                log.info("AudioTest.AudioStreamTest.PCMFilePlayTest", "Start")
-                audioStreamPlayTest(audiocore.PCM)
-                sys.wait(30000)
+                -- log.info("AudioTest.AudioStreamTest.PCMFilePlayTest", "Start")
+                -- audioStreamPlayTest(audiocore.PCM)
+                -- sys.wait(30000)
 
                 log.info("AudioTest.AudioStreamTest.MP3FilePlayTest", "Start")
                 audioStreamPlayTest(audiocore.MP3)

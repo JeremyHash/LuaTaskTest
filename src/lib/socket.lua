@@ -529,3 +529,21 @@ end
 
 --setDnsParsePara(4,4)
 --setTcpResendPara(1,16)
+
+-- sys.timerLoopStart(
+--     function ()
+--         log.info("SocketTest.sockets", #sockets)
+--     end,
+--     500
+-- )
+
+-- sys.taskInit(
+--     function()
+--         while true do
+--             if #sockets >= 10 then
+--                 log.info("SocketTest.sockets", #sockets)
+--             end
+--             sys.wait(5)
+--         end
+--     end
+-- )

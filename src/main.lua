@@ -18,31 +18,30 @@ LuaTaskTestConfig = {
         aliyunOtaTest  = false
     },
     httpTest = {
-        getTest                        = false,
-        getWaitTest                    = false,
-        get301Test                     = false,
-        get302Test                     = false,
-        getTestWithCA                  = false,
-        getTestWithCAAndKey            = false,
-        getTestAndSaveToBigFile        = false,
-        getTestAndSaveToSmallFile      = false,
-        postTest                       = false,
-        postJsonTest                   = false,
-        postTestWithUserHead           = false,
-        postTestWithOctetStream        = false,
-        postTestWithMultipartFormData  = false,
-        postTestWithXwwwformurlencoded = false,
-        headTest                       = false,
-        putTest                        = false,
-        deleteTest                     = false
+        getTest                        = true,
+        getWaitTest                    = true,
+        get301Test                     = true,
+        get302Test                     = true,
+        getTestWithCA                  = true,
+        getTestWithCAAndKey            = true,
+        getTestAndSaveToBigFile        = true,
+        getTestAndSaveToSmallFile      = true,
+        postTest                       = true,
+        postJsonTest                   = true,
+        postTestWithUserHead           = true,
+        postTestWithOctetStream        = true,
+        postTestWithMultipartFormData  = true,
+        postTestWithXwwwformurlencoded = true,
+        headTest                       = true,
+        putTest                        = true,
+        deleteTest                     = true
     },
     socketTest = {
-        syncTcpTest  = false,
-        syncUdpTest  = false,
+        syncTcpTest  = true,
+        syncUdpTest  = true,
         asyncTest    = true,
-        errorIPTest  = false
     },
-    mqttTest = false,
+    mqttTest = true,
     updateTest = false,
     baseTest = {
         -- netTest，sysTest 要单独测试
@@ -145,11 +144,11 @@ require "pb"
 -- require "wdt"
 
 if LuaTaskTestConfig.modType == "8910" then
-    -- require "wifiScan"
-    -- require "scanCode"
-    -- require "uiWin"
-    -- require "audio"
-    -- require "record"
+    require "wifiScan"
+    require "scanCode"
+    require "uiWin"
+    require "audio"
+    require "record"
 end
 
 -- require "console"
@@ -158,13 +157,9 @@ end
 -- 保持唤醒
 -- pm.wake("LuaTaskTest")
 
--- sys.taskInit(
---     function()
---         ril.regUrc("RING", function ()
---             ril.request("ATA")
---         end)
---     end
--- )
+-- ril.regUrc("RING", function ()
+--     ril.request("ATA")
+-- end)
 
 require "netLed"
 
@@ -308,7 +303,7 @@ sys.taskInit(
 
 -- 自动校准时间
 ntp.timeSync(
-            1, 
+            nil, 
             function()
                 log.info("ntp.timeSync", "AutoTimeSync is Done !")
             end

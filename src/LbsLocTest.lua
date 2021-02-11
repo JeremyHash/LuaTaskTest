@@ -5,7 +5,7 @@
 
 module(..., package.seeall)
 
-local serverAddr = "http://airtest.openluat.com:2900"
+local serverAddr = "http://114.55.242.59:2900"
 
 local postCellLocInfoAddress = serverAddr .. "/postCellLocInfo"
 local postWiFiLocInfoAddress = serverAddr .. "/postWiFiLocInfo"

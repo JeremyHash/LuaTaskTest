@@ -5,8 +5,8 @@
 
 module(..., package.seeall)
 
-local timeout1 = 3000
-local timeout2 = 10000
+local timeout1 = 10000
+local timeout2 = 20000
 
 local result, data
 
@@ -18,7 +18,7 @@ local count3 = 1
 local count4 = 1
 local count5 = 1
 
-local ip1 = "airtest.openluat.com"
+local ip1 = "114.55.242.59"
 -- 普通MQTT端口
 local port1 = 1883
 -- 单双向认证的MQTT端口
@@ -153,12 +153,12 @@ end
 
 
 -- TODO mqtt的用户名和密码认证方式
-sys.taskInit(
-    function()
-        sys.waitUntil("IP_READY_IND")
-        mqttPubTask(1, ip1, port1, "tcp", nil, count1)
-    end
-)
+-- sys.taskInit(
+--     function()
+--         sys.waitUntil("IP_READY_IND")
+--         mqttPubTask(1, ip1, port1, "tcp", nil, count1)
+--     end
+-- )
 
 sys.taskInit(
     function()
@@ -167,12 +167,12 @@ sys.taskInit(
     end
 )
 
-sys.taskInit(
-    function()
-        sys.waitUntil("IP_READY_IND")
-        mqttPubTask(3, ip1, port2, "tcp_ssl", {["caCert"] = "cacert.pem"}, count3)
-    end
-)
+-- sys.taskInit(
+--     function()
+--         sys.waitUntil("IP_READY_IND")
+--         mqttPubTask(3, ip1, port2, "tcp_ssl", {["caCert"] = "cacert.pem"}, count3)
+--     end
+-- )
 
 sys.taskInit(
     function()
