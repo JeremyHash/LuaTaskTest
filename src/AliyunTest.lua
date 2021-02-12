@@ -90,17 +90,17 @@ local function receiveCb(topic, qos, payload)
     end
 end
 
---- 连接结果的处理函数
+-- 连接结果的处理函数
 local function connectCb(result)
     log.info("AliyunTest.connectCb.result", result)
     sConnected = result
     if result then
         log.info("AliyunTest.connectCb", "SUCCESS")
-        --订阅主题，不需要考虑订阅结果，如果订阅失败，aLiYun库中会自动重连
+        -- 订阅主题，不需要考虑订阅结果，如果订阅失败，aLiYun库中会自动重连
         aLiYun.subscribe({["/" .. PRODUCT_KEY .. "/" .. getDeviceName() .. "/user/get"] = 0, ["/" .. PRODUCT_KEY .. "/" .. getDeviceName() .. "/user/Jeremy"] = 1})
-        --注册数据接收的处理函数
+        -- 注册数据接收的处理函数
         aLiYun.on("receive", receiveCb)
-        --PUBLISH消息测试
+        -- PUBLISH消息测试
         publishTest()
     else
         log.error("AliyunTest.connectCb", "FAIL")
