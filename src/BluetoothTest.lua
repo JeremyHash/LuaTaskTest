@@ -170,8 +170,8 @@ local function data_trans1()
     
     log.info("bt.send", "Hello I'm Luat BLE")
     while true do
-        local data = "12345678901234567890123456789012345678901234567890"
-        btcore.send(data, 0xfee1, bt_connect.handle) --发送数据(数据 对应特征uuid 连接句柄)
+        local data = string.rep("1234567890", 24)
+        btcore.send(data.."1234", 0xfee1, bt_connect.handle) --发送数据(数据 对应特征uuid 连接句柄)
 		_, bt_recv = sys.waitUntil("BT_DATA_IND") --等待接收到数据
         local data = ""
         local len = 0
@@ -208,11 +208,16 @@ end
 
 -- 从
 local function advertising()
-    local struct = {{0xfee1, 0x08},{0xfee2, 0x10, {0x2902}}}--{特征uuid,特征属性,描述}
-    btcore.setname("Luat_Air724UG**")-- 设置广播名称
-    btcore.setadvdata(string.fromHex("02010604ff010203"))-- 设置广播数据 根据蓝牙广播包协议
-    btcore.setscanrspdata(string.fromHex("04ff010203"))-- 设置响应数据 根据蓝牙广播包协议
-    service(0xfee0, struct)--添加服务16bit uuid   自定义服务
+    if LuaTaskTestConfig.bluetoothTest.beaconTest then
+        btcore.setbeacondata("AB8190D5D11E4941ACC442F30510B408",10107,50179) --beacon设置  (uuid,major,minor)
+    else
+        local struct = {{0xfee1, 0x08},{0xfee2, 0x10, {0x2902}}}--{特征uuid,特征属性,描述}
+        btcore.setname("Luat_Air724UG**")-- 设置广播名称
+        btcore.setadvdata(string.fromHex("02010604ff010203"))-- 设置广播数据 根据蓝牙广播包协议
+        local data = string.rep("01020304050607", 4)
+        btcore.setscanrspdata(string.fromHex("1eff01"..data))-- 设置响应数据 根据蓝牙广播包协议
+        service(0xfee0, struct)--添加服务16bit uuid   自定义服务
+    end
     local advertising = btcore.advertising(1)-- 打开广播
     if advertising == 0 then
         log.info("广播打开SUCCESS")
@@ -263,6 +268,7 @@ end
 
 ble_test1 = {init1, poweron, scan, data_trans1}
 ble_test2 = {init2, poweron, data_trans2}
+ble_test3 = {init2, poweron, advertising}
 
 if LuaTaskTestConfig.bluetoothTest.masterTest then
     sys.taskInit(function()
@@ -277,6 +283,15 @@ if LuaTaskTestConfig.bluetoothTest.slaveTest then
     sys.taskInit(function()
         sys.wait(timeout)
         for _, f in ipairs(ble_test2) do
+            f()
+        end
+    end)
+end
+
+if LuaTaskTestConfig.bluetoothTest.beaconTest then
+    sys.taskInit(function()
+        sys.wait(timeout)
+        for _, f in ipairs(ble_test3) do
             f()
         end
     end)

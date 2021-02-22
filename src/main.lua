@@ -119,6 +119,7 @@ LuaTaskTestConfig = {
     bluetoothTest = {
         masterTest    = false,
         slaveTest     = false,
+        beaconTest    = false,
         btWifiTdmTest = false
     }
 }

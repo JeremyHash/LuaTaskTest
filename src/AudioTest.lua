@@ -156,6 +156,22 @@ local function playStopCb(result)
     end
 end
 
+local function headsetCB(msg)  
+    if msg.type == 1 then
+        log.info("音频通道切换为耳机SUCCESS")
+        audiocore.setchannel(1, 0)
+    elseif msg.type == 2 then
+        log.info("音频通道切换为喇叭SUCCESS")
+        audiocore.setchannel(2, 0)
+    else
+        log.info("你可能不小心碰到耳机了")
+    end
+end  
+--注册core上报的rtos.MSG_AUDIO消息的处理函数  
+rtos.on(rtos.MSG_HEADSET,headsetCB)  
+
+audiocore.headsetinit(0)  
+
 sys.taskInit(
     function()
         local vol = 1
@@ -164,6 +180,9 @@ sys.taskInit(
         local ttsStr = "上海合宙通信科技有限公司欢迎您"
         sys.wait(1000)
         audiocore.setchannel(2, 0)
+
+        -- 耳机插拔，音频通道自动切换
+        -- audiocore.headsetinit(1)
 
         local isTTSVersion = rtos.get_version():upper():find("TTS")
 
