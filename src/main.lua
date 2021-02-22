@@ -1,7 +1,7 @@
 -- LuaTaskTest
 -- Author:LuatTest
 -- CreateDate:20200716
--- UpdateDate:20201112
+-- UpdateDate:20210212
 
 PROJECT = "LuaTaskTest"
 VERSION = "1.0.0"
@@ -18,30 +18,30 @@ LuaTaskTestConfig = {
         aliyunOtaTest  = false
     },
     httpTest = {
-        getTest                        = true,
-        getWaitTest                    = true,
-        get301Test                     = true,
-        get302Test                     = true,
-        getTestWithCA                  = true,
-        getTestWithCAAndKey            = true,
-        getTestAndSaveToBigFile        = true,
-        getTestAndSaveToSmallFile      = true,
-        postTest                       = true,
-        postJsonTest                   = true,
-        postTestWithUserHead           = true,
-        postTestWithOctetStream        = true,
-        postTestWithMultipartFormData  = true,
-        postTestWithXwwwformurlencoded = true,
-        headTest                       = true,
-        putTest                        = true,
-        deleteTest                     = true
+        getTest                        = false,
+        getWaitTest                    = false,
+        get301Test                     = false,
+        get302Test                     = false,
+        getTestWithCA                  = false,
+        getTestWithCAAndKey            = false,
+        getTestAndSaveToBigFile        = false,
+        getTestAndSaveToSmallFile      = false,
+        postTest                       = false,
+        postJsonTest                   = false,
+        postTestWithUserHead           = false,
+        postTestWithOctetStream        = false,
+        postTestWithMultipartFormData  = false,
+        postTestWithXwwwformurlencoded = false,
+        headTest                       = false,
+        putTest                        = false,
+        deleteTest                     = false
     },
     socketTest = {
-        syncTcpTest  = true,
-        syncUdpTest  = true,
-        asyncTest    = true,
+        syncTcpTest  = false,
+        syncUdpTest  = false,
+        asyncTest    = false,
     },
-    mqttTest = true,
+    mqttTest = false,
     updateTest = false,
     baseTest = {
         -- netTest，sysTest 要单独测试
@@ -166,7 +166,7 @@ require "netLed"
 if LuaTaskTestConfig.modType == "8910" then
     -- 8910
     pmd.ldoset(2, pmd.LDO_VLCD)
-    netLed.setup(true, pio.P0_1, pio.P0_4)
+    netLed.setup(true, 1, 4)
 elseif LuaTaskTestConfig.modType == "1802" or LuaTaskTestConfig.modType == "1802S" then
     -- 1802/1802S
     netLed.setup(true, 64, 65)

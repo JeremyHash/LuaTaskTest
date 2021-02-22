@@ -2,6 +2,7 @@
 -- Author:LuatTest
 -- CreateDate:20201208
 -- UpdateDate:20210106
+
 -- 这个测试代码需要提前在阿里云平台上创建好产品和设备
 
 module(..., package.seeall)
@@ -9,7 +10,7 @@ module(..., package.seeall)
 require "OneDeviceOneSecret"
 
 local PRODUCT_KEY = OneDeviceOneSecret.AliyunInfo["PRODUCT_KEY"]
-local PRODUCE_SECRET
+local PRODUCT_SECRET
 
 --阿里云客户端是否处于连接状态
 local sConnected
@@ -90,17 +91,17 @@ local function receiveCb(topic, qos, payload)
     end
 end
 
---- 连接结果的处理函数
+-- 连接结果的处理函数
 local function connectCb(result)
     log.info("AliyunTest.connectCb.result", result)
     sConnected = result
     if result then
         log.info("AliyunTest.connectCb", "SUCCESS")
-        --订阅主题，不需要考虑订阅结果，如果订阅失败，aLiYun库中会自动重连
+        -- 订阅主题，不需要考虑订阅结果，如果订阅失败，aLiYun库中会自动重连
         aLiYun.subscribe({["/" .. PRODUCT_KEY .. "/" .. getDeviceName() .. "/user/get"] = 0, ["/" .. PRODUCT_KEY .. "/" .. getDeviceName() .. "/user/Jeremy"] = 1})
-        --注册数据接收的处理函数
+        -- 注册数据接收的处理函数
         aLiYun.on("receive", receiveCb)
-        --PUBLISH消息测试
+        -- PUBLISH消息测试
         publishTest()
     else
         log.error("AliyunTest.connectCb", "FAIL")
@@ -130,8 +131,8 @@ sys.taskInit(
             -- 华南1（深圳）
             -- aLiYun.setRegion("cn-shenzhen")
 
-            --setMqtt接口不是必须的，aLiYun.lua中有这个接口设置的参数默认值，如果默认值满足不了需求，参考下面注释掉的代码，去设置参数
-            --aLiYun.setMqtt(0)
+            -- setMqtt接口不是必须的，aLiYun.lua中有这个接口设置的参数默认值，如果默认值满足不了需求，参考下面注释掉的代码，去设置参数
+            -- aLiYun.setMqtt(0)
 
             -- TODO 测试过程中禁用设备观察情况
             -- aLiYun.setErrHandle(
