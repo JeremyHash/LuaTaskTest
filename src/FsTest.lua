@@ -85,25 +85,6 @@ getDirContent = function(dirPath, level)
     end
 end
 
--- local getDirContent
-
--- getDirContent =  function (dirPath)
---     if io.opendir(dirPath) then
---         while true do
---             local fType, fName, fSize = io.readdir()
---             if fType == 32 then
---                 log.info("FsTest.SdCard0.File", fName, fSize)               
---             elseif fType == 16 then
---                 log.info("FsTest.SdCard0.Directory", fName, fSize)
---                 getDirContent(dirPath .. "/" .. fName)
---             elseif fType == nil then
---                 break
---             end
---         end
---         io.closedir(dirPath)
---     end
--- end
-
 -- SD卡读写测试
 if LuaTaskTestConfig.fsTest.sdCardTest then
 	sys.taskInit(

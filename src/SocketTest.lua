@@ -9,7 +9,7 @@ local waitTime = 20000
 
 -- ip1 -> TCPSSL单双向认证,TCP回环以及大文件下载,UDP回环以及大文件下载
 -- ip2 -> 错误ip模块表现
-local ip1, ip2 = "airtest.openluat.com", "hhhhhh.zzz"
+local ip1, ip2 = "114.55.242.59", "hhhhhh.zzz"
 
 -- port1 -> TCPSSL双向认证
 -- port2 -> TCP回环以及大文件下载
@@ -71,7 +71,7 @@ sys.taskInit(
                                     end
                                 end
                                 log.info(tag1 .. ".recvLen", recvLen)
-                                if recvLen == 10000 then
+                                if recvLen == 1000 then
                                     log.info(tag1 .. ".recvLen.check", "接收数据长度正确SUCCESS")
                                 else
                                     log.error(tag1 .. ".recvLen.check", "接收数据长度有误FAIL")
@@ -112,9 +112,9 @@ sys.taskInit(
                                 log.info(tag2 .. ".RecvLen", recvLen)
                                 local calcMD5 = fmd5Obj:hexdigest()
                                 if calcMD5 == "976CD4BFCA34702FE94BE41434397095" then
-                                    log.info(tag1 .. ".recvLen.MD5check", "SUCCESS")
+                                    log.info(tag2 .. ".recvLen.MD5check", "SUCCESS")
                                 else
-                                    log.error(tag1 .. ".recvLen.MD5check", "FAIL")
+                                    log.error(tag2 .. ".recvLen.MD5check", "FAIL")
                                 end
                             else
                                 log.error(tag2 .. ".sendResult", "FAIL")
@@ -207,15 +207,9 @@ if LuaTaskTestConfig.socketTest.asyncTest then
             log.info(tag3 .. ".connectResult, socketId", connectResult, socketId)
             if connectResult then
                 sys.publish("AsyncTcpSocketInitComplete")
-                -- tcpClient3:setRcvProc(
-                --     function(readFnc, socketIndex, rcvDataLen)
-                --         log.info(tag3 .. ".readFnc", readFnc(socketIndex, rcvDataLen))
-                --     end
-                -- )
             else
                 log.error(tag3 .. ".connect", "FAIL")
             end
-            -- TODO 这个api缺少demo说明 可以写一篇文章分析一下
             while tcpClient3:asyncSelect() do
             end
             tcpClient3:close()
@@ -252,6 +246,7 @@ if LuaTaskTestConfig.socketTest.asyncTest then
                     log.error(tag4 .. ".connect", "FAIL")
                     udpClient2:close()
                 end
+                sys.wait(5000)
             end
         end
     )
@@ -288,21 +283,6 @@ sys.timerLoopStart(
     end,
     60000
 )
-
-if LuaTaskTestConfig.socketTest.errorIPTest then
-    sys.taskInit(
-        function ()
-            sys.waitUntil("IP_READY_IND")
-            tcpClient4 = socket.tcp()
-            while not tcpClient4:connect(ip2, port1) do
-                log.info("SocketTest.错误IP连接测试", "SUCCESS")
-                sys.wait(60000)
-            end 
-        end
-    )
-end
-
-
 
 -- TODO mt:setRcvProc(rcvCbFnc) (BUG)
 -- TODO socket.setTcpResendPara(retryCnt, retryMaxTimeout)

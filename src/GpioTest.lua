@@ -35,11 +35,11 @@ local x = 2
 
 -- pmd.ldoset(x,pmd.VLDO6)
 
--- pmd.ldoset(x,pmd.LDO_VSIM1) -- GPIO 29、30、31
+pmd.ldoset(x, pmd.LDO_VSIM1) -- GPIO 29、30、31
 
-pmd.ldoset(x, pmd.LDO_VLCD) -- GPIO 0、1、2、3、4
+-- pmd.ldoset(x, pmd.LDO_VLCD) -- GPIO 0、1、2、3、4
 
-pmd.ldoset(x,pmd.LDO_VMMC) -- GPIO 24、25、26、27、28
+-- pmd.ldoset(x,pmd.LDO_VMMC) -- GPIO 24、25、26、27、28
 
 local modType = LuaTaskTestConfig.modType
 
@@ -82,6 +82,9 @@ if LuaTaskTestConfig.gpioTest.gpioIntTest then
         getGpio26Fnc = pins.setup(26, gpioIntFnc, pio.PULLDOWN)
         getGpio27Fnc = pins.setup(27, gpioIntFnc, pio.PULLDOWN)
         getGpio28Fnc = pins.setup(28, gpioIntFnc, pio.PULLDOWN)
+        getGpio26Fnc = pins.setup(29, gpioIntFnc, pio.PULLDOWN)
+        getGpio27Fnc = pins.setup(30, gpioIntFnc, pio.PULLDOWN)
+        getGpio28Fnc = pins.setup(31, gpioIntFnc, pio.PULLDOWN)
     elseif modType == "1802" or modType == "1802S" then
         getGpio10Fnc = pins.setup(10, gpioIntFnc, pio.PULLDOWN)
         getGpio11Fnc = pins.setup(11, gpioIntFnc, pio.PULLDOWN)
@@ -130,7 +133,7 @@ if LuaTaskTestConfig.gpioTest.gpioOutTest then
             local value = 0
             while true do
 
-                sys.wait(2000)
+                sys.wait(1000)
                 if modType == "8910" then
                     pins.setup(0, value)
                     pins.setup(1, value)
@@ -159,6 +162,9 @@ if LuaTaskTestConfig.gpioTest.gpioOutTest then
                     pins.setup(26, value)
                     pins.setup(27, value)
                     pins.setup(28, value)
+                    pins.setup(29, value)
+                    pins.setup(30, value)
+                    pins.setup(31, value)
                 elseif modType == "1802" or modType == "1802S" then
                     pins.setup(10, value)
                     pins.setup(11, value)

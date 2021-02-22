@@ -18,7 +18,7 @@ VDDIO-----------电源
 LCD_RST---------复位
 ]]
 
-module(...,package.seeall)
+module(..., package.seeall)
 
 --[[
 函数名：init
@@ -139,5 +139,5 @@ local function init()
 end
 
 --控制SPI引脚的电压域
-pmd.ldoset(15,pmd.LDO_VLCD)
+pmd.ldoset(15, pmd.LDO_VLCD)
 init()

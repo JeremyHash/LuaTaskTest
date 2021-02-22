@@ -1,7 +1,7 @@
 -- LuaTaskTest
 -- Author:LuatTest
 -- CreateDate:20200716
--- UpdateDate:20201112
+-- UpdateDate:20210212
 
 PROJECT = "LuaTaskTest"
 VERSION = "1.0.0"
@@ -39,8 +39,7 @@ LuaTaskTestConfig = {
     socketTest = {
         syncTcpTest  = false,
         syncUdpTest  = false,
-        asyncTest    = true,
-        errorIPTest  = false
+        asyncTest    = false,
     },
     mqttTest = false,
     updateTest = false,
@@ -146,11 +145,11 @@ require "pb"
 -- require "wdt"
 
 if LuaTaskTestConfig.modType == "8910" then
-    -- require "wifiScan"
-    -- require "scanCode"
-    -- require "uiWin"
-    -- require "audio"
-    -- require "record"
+    require "wifiScan"
+    require "scanCode"
+    require "uiWin"
+    require "audio"
+    require "record"
 end
 
 -- require "console"
@@ -159,20 +158,16 @@ end
 -- 保持唤醒
 -- pm.wake("LuaTaskTest")
 
--- sys.taskInit(
---     function()
---         ril.regUrc("RING", function ()
---             ril.request("ATA")
---         end)
---     end
--- )
+-- ril.regUrc("RING", function ()
+--     ril.request("ATA")
+-- end)
 
 require "netLed"
 
 if LuaTaskTestConfig.modType == "8910" then
     -- 8910
     pmd.ldoset(2, pmd.LDO_VLCD)
-    netLed.setup(true, pio.P0_1, pio.P0_4)
+    netLed.setup(true, 1, 4)
 elseif LuaTaskTestConfig.modType == "1802" or LuaTaskTestConfig.modType == "1802S" then
     -- 1802/1802S
     netLed.setup(true, 64, 65)
@@ -309,7 +304,7 @@ sys.taskInit(
 
 -- 自动校准时间
 ntp.timeSync(
-            1, 
+            nil, 
             function()
                 log.info("ntp.timeSync", "AutoTimeSync is Done !")
             end

@@ -636,7 +636,7 @@ sys.taskInit(
     function()
         sys.waitUntil("IP_READY_IND")
         log.info("HttpTest","成功访问网络, Http测试开始")
-        local serverAddress = "airtest.openluat.com:2900"
+        local serverAddress = "114.55.242.59:2900"
         local count = 1
         local testCookie = string.rep("1234567890asdfghjklp", 50)
         local waitTime = 30000
