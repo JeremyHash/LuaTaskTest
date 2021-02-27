@@ -1,7 +1,7 @@
 -- LuaTaskTest
 -- Author:LuatTest
 -- CreateDate:20200716
--- UpdateDate:20210212
+-- UpdateDate:20210223
 
 PROJECT = "LuaTaskTest"
 VERSION = "1.0.0"
@@ -13,6 +13,7 @@ LOG_LEVEL = log.LOGLEVEL_INFO
 -- 测试配置 设置为true代表开启此项测试
 LuaTaskTestConfig = {
     modType = "8910",
+    netLed  = false,
     aliyunTest = {
         aliyunMqttTest = false,
         aliyunOtaTest  = false
@@ -41,7 +42,7 @@ LuaTaskTestConfig = {
         syncUdpTest  = false,
         asyncTest    = false,
     },
-    mqttTest = false,
+    mqttTest   = false,
     updateTest = false,
     baseTest = {
         -- netTest，sysTest 要单独测试
@@ -71,7 +72,7 @@ LuaTaskTestConfig = {
         recordTest        = false
     },
     gpioTest = {
-        gpioIntTest = false,
+        gpioIntTest = true,
         gpioOutTest = false,
         ledTest     = false
     },
@@ -162,18 +163,16 @@ end
 --     ril.request("ATA")
 -- end)
 
-require "netLed"
-
-if LuaTaskTestConfig.modType == "8910" then
+if LuaTaskTestConfig.modType == "8910" and LuaTaskTestConfig.netLed then
+    require "netLed"
     -- 8910
     pmd.ldoset(2, pmd.LDO_VLCD)
     netLed.setup(true, 1, 4)
-elseif LuaTaskTestConfig.modType == "1802" or LuaTaskTestConfig.modType == "1802S" then
+elseif LuaTaskTestConfig.modType == "1802S" and LuaTaskTestConfig.netLed then
+    require "netLed"
     -- 1802/1802S
     netLed.setup(true, 64, 65)
 end
-
--- netLed.updateBlinkTime("GPRS", 500, 500)
 
 -- require "errDump"
 -- errDump.request("udp://ota.airm2m.com:9072")
@@ -292,7 +291,9 @@ end
 sys.taskInit(
             function()
                 while true do
-                    log.info("VERSION", rtos.get_version(), VERSION)
+                    log.info("CORE_VERSION", rtos.get_version())
+                    log.info("USER_SCRIPT_VERSION", VERSION)
+                    log.info("LIB_VERSION", sys.SCRIPT_LIB_VER)
 				    log.info("FSFREESIZE", rtos.get_fs_free_size() .. " Bytes")
                     log.info("RAMUSEAGE", collectgarbage("count") .. " KB")
                     local timeTable = misc.getClock()

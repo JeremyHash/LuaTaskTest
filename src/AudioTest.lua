@@ -1,7 +1,7 @@
 -- AudioTest
 -- Author:LuatTest
 -- CreateDate:20200717
--- UpdateDate:20201023
+-- UpdateDate:20210222
 
 module(..., package.seeall)
 
@@ -145,21 +145,23 @@ local function playStopCb(result)
     end
 end
 
-local function headsetCB(msg)  
+local function headsetCb(msg)  
     if msg.type == 1 then
-        log.info("音频通道切换为耳机SUCCESS")
+        log.info("音频通道切换为耳机")
         audiocore.setchannel(1, 0)
     elseif msg.type == 2 then
-        log.info("音频通道切换为喇叭SUCCESS")
+        log.info("音频通道切换为喇叭")
         audiocore.setchannel(2, 0)
-    else
-        log.info("你可能不小心碰到耳机了")
+    elseif msg.type == 3 then
+        log.info("耳机按键按下")
+    elseif msg.type == 4 then
+        log.info("耳机按键弹起")
     end
 end  
 --注册core上报的rtos.MSG_AUDIO消息的处理函数  
-rtos.on(rtos.MSG_HEADSET,headsetCB)  
+-- rtos.on(rtos.MSG_HEADSET, headsetCb)
 
-audiocore.headsetinit(0)  
+-- audiocore.headsetinit(0)
 
 sys.taskInit(
     function()

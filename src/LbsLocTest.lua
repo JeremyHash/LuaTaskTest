@@ -1,7 +1,7 @@
 -- LbsLocTest
 -- Author:LuatTest
 -- CreateDate:20201013
--- UpdateDate:20210119
+-- UpdateDate:20210223
 
 module(..., package.seeall)
 
@@ -15,7 +15,7 @@ local cellLattmp, cellLngtmp = 0, 0
 local wifiLattmp, wifiLngtmp = 0, 0
 local gpsLattmp, gpsLngtmp = "", ""
 
-local loopTime = 20000
+local loopTime = 30000
 
 function getCellLocCb(result, lat, lng, addr)
     log.info("CellLocTest.getCellLocCb.result", result)

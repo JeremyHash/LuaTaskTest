@@ -1,7 +1,7 @@
 -- BaseTest
 -- Author:LuatTest
 -- CreateDate:20201013
--- UpdateDate:20201216
+-- UpdateDate:20210223
 
 module(..., package.seeall)
 
@@ -626,7 +626,10 @@ local function rtosTest()
         log.error("RtosTest.RemoveDir", "FAIL")
     end
 
-    log.info("RtosTest.Toint64", string.toHex(rtos.toint64("12345678", "little")))
+    log.info("RtosTest.Toint64.little", string.toHex(rtos.toint64("12345678", "little")))
+
+    log.info("RtosTest.Toint64.big", string.toHex(rtos.toint64("12345678", "big")))
+
 end
 
 if LuaTaskTestConfig.baseTest.rtosTest then

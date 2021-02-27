@@ -17,7 +17,7 @@ local databits = 8
 -- 透传服务器配置
 local tcpClient
 local ip = "wiki.airm2m.com"
-local port = 23333
+local port = 48888
 local lenofrdata = 0
 local lenofsdata = 0
 
