@@ -116,7 +116,6 @@ if LuaTaskTestConfig.fsTest.sdCardTest then
 					readFile(testPath .. "/FsWriteTest1.txt")
 					writeFileW(testPath .. "/FsWriteTest2.txt", "This is a FsWriteWTest\n")
 					readFile(testPath .. "/FsWriteTest2.txt")
-					audio.play(1, "FILE", "/sdcard0/alarm_door.pcm", 4)
 					sys.wait(120000)
 				end
 			else

@@ -16,6 +16,12 @@ local RCD_READ_UNIT = 1024
 
 local recordBuf = ""
 
+local playVol = 0
+local micVol = 0
+local count = 1
+local speed = 4
+local ttsStr = "上海合宙通信科技有限公司欢迎您"
+
 local tAudioFile =
 {
     -- [audiocore.WAV] = "tip.wav",
@@ -38,7 +44,7 @@ local function audioStreamPlayTest(streamType)
             end
             while true do
                 local data = fileHandle:read(streamType == audiocore.SPX and 1200 or 1024)
-                if not data then 
+                if not data then
                     fileHandle:close()
                     while audiocore.streamremain() ~= 0 do
                         sys.wait(20)	
@@ -87,7 +93,7 @@ function recordCb1(result, size)
         log.info("AudioTest.RecordTest.filePath", record.getFilePath())
         --播放录音内容
         log.info("AudioTest.RecordTest", "开始播放录音")
-        audio.play(REC, "FILE", record.getFilePath(), 7, recordPlayCb)
+        audio.play(REC, "FILE", record.getFilePath(), playVol, recordPlayCb)
     else
         log.info("AudioTest.RecordTest.RecordCb", "录制失败FAIL")
     end
@@ -100,8 +106,8 @@ function recordCb2(result, size, tag)
         recordBuf = recordBuf .. s
     else
         log.info("AudioTest.RecordTest.SPX.StreamPlay.TotalLen", recordBuf:len())
-        --audiocore.streamplay返回接收的buffer长度
-        --此处并没有将录音数据全部播放完整
+        -- audiocore.streamplay返回接收的buffer长度
+        -- 此处并没有将录音数据全部播放完整
         log.info("AudioTest.RecordTest.SPX.StreamPlay", "开始流录音播放")
         log.info("AudioTest.RecordTest.SPX.StreamPlay.AcceptLen", audiocore.streamplay(audiocore.SPX, recordBuf))
         
@@ -113,7 +119,7 @@ function recordCb2(result, size, tag)
             6000
         )
         
-        recordBuf = ""     
+        recordBuf = ""
     end
 end
 
@@ -145,7 +151,7 @@ local function playStopCb(result)
     end
 end
 
-local function headsetCb(msg)  
+local function headsetCb(msg)
     if msg.type == 1 then
         log.info("音频通道切换为耳机")
         audiocore.setchannel(1, 0)
@@ -158,18 +164,14 @@ local function headsetCb(msg)
         log.info("耳机按键弹起")
     end
 end  
---注册core上报的rtos.MSG_AUDIO消息的处理函数  
+--注册core上报的rtos.MSG_AUDIO消息的处理函数
 -- rtos.on(rtos.MSG_HEADSET, headsetCb)
 
 -- audiocore.headsetinit(0)
 
 sys.taskInit(
     function()
-        local playVol = 0
-        local micVol = 0
-        local count = 1
-        local speed = 4
-        local ttsStr = "上海合宙通信科技有限公司欢迎您"
+        
         sys.wait(1000)
         audiocore.setchannel(2, 0)
 
@@ -245,14 +247,14 @@ sys.taskInit(
                 -- 播放来电铃声
                 log.info("AudioTest.AudioPlayTest.PlayConflictTest2", "优先级: ", CALL)
                 audio.play(CALL, "FILE", "/lua/sms.mp3", playVol, audioPlayTestCb, true)
-                sys.wait(waitTime1)  
+                sys.wait(waitTime1)
                 --5秒钟后，尝试循环播放新短信铃声，但是优先级不够，不会播放
                 log.info("AudioTest.AudioPlayTest.PlayConflictTest2", "优先级较低的短信铃声不能播放")
                 log.info("AudioTest.AudioPlayTest.PlayConflictTest2", "优先级: ", SMS)
                 audio.play(SMS, "FILE", "/lua/sms.mp3", playVol, audioPlayTestCb)
                 sys.wait(waitTime1)
                 audio.stop(playStopCb)
-                sys.wait(waitTime1)  
+                sys.wait(waitTime1)
             
             end
 
@@ -293,7 +295,7 @@ sys.taskInit(
                 sys.wait(30000)
             end
 
-            audio.setVolume(playVol)
+            -- audio.setVolume(playVol)
 
             local getPlayVol = audio.getVolume()
 

@@ -1,7 +1,7 @@
 -- LuaTaskTest
 -- Author:LuatTest
 -- CreateDate:20200716
--- UpdateDate:20210223
+-- UpdateDate:20210316
 
 PROJECT = "LuaTaskTest"
 VERSION = "1.0.0"
@@ -71,8 +71,9 @@ LuaTaskTestConfig = {
         audioStreamTest   = false,
         recordTest        = false
     },
+    usbAudioTest = false,
     gpioTest = {
-        gpioIntTest = true,
+        gpioIntTest = false,
         gpioOutTest = false,
         ledTest     = false
     },
@@ -98,6 +99,8 @@ LuaTaskTestConfig = {
         gpsLocTest  = false
     },
     uartTransferTest  = false,
+    RS485Test         = false,
+    uartTest          = false,
     cryptoTest = {
         base64Test     = false,
         hmacMd5Test    = false,
@@ -137,7 +140,7 @@ require "socket"
 require "mqtt"
 require "pins"
 require "cc"
-require "sms"
+-- require "sms"
 require "lbsLoc"
 require "pm"
 require "nvm"
@@ -153,11 +156,11 @@ if LuaTaskTestConfig.modType == "8910" then
     require "record"
 end
 
--- require "console"
--- console.setup(2, 115200)
+require "console"
+console.setup(uart.USB, 115200)
 
 -- 保持唤醒
--- pm.wake("LuaTaskTest")
+pm.wake("LuaTaskTest")
 
 -- ril.regUrc("RING", function ()
 --     ril.request("ATA")
@@ -228,6 +231,10 @@ for k, v in pairs(LuaTaskTestConfig.audioTest) do
     end
 end
 
+if LuaTaskTestConfig.usbAudioTest then
+    require "USBAudioTest"
+end
+
 for k, v in pairs(LuaTaskTestConfig.gpioTest) do
     if v then
         require "GpioTest"
@@ -267,6 +274,14 @@ if LuaTaskTestConfig.uartTransferTest then
     require "UartTransferTest"
 end
 
+if LuaTaskTestConfig.RS485Test then
+    require "RS485Test"
+end
+
+if LuaTaskTestConfig.uartTest then
+    require "UartTest"
+end
+
 for k, v in pairs(LuaTaskTestConfig.cryptoTest) do
     if v then
         require "CryptoTest"
@@ -294,7 +309,7 @@ sys.taskInit(
                     log.info("CORE_VERSION", rtos.get_version())
                     log.info("USER_SCRIPT_VERSION", VERSION)
                     log.info("LIB_VERSION", sys.SCRIPT_LIB_VER)
-				    log.info("FSFREESIZE", rtos.get_fs_free_size() .. " Bytes")
+                    log.info("FSFREESIZE", rtos.get_fs_free_size() .. " Bytes")
                     log.info("RAMUSEAGE", collectgarbage("count") .. " KB")
                     local timeTable = misc.getClock()
                     log.info("TIME", string.format("%d-%d-%d %d:%d:%d", timeTable.year, timeTable.month, timeTable.day, timeTable.hour, timeTable.min, timeTable.sec))

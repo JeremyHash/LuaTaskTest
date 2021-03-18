@@ -5,8 +5,8 @@
 
 module(..., package.seeall)
 
-local i2cid = 0
-local i2cslaveaddr = 0xa3
+local i2cid = 2
+local i2cslaveaddr = 0x70
 
 local function getI2CData()
     log.info("I2CTest.getI2CData", string.toHex(i2c.read(i2cid, 0x08, 1)))

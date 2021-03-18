@@ -11,7 +11,7 @@ local waitTime2 = 5000
 -- 屏幕驱动文件管理
 -- require "color_lcd_spi_ILI9341"
 -- require "color_lcd_spi_gc9106l"
-require "color_lcd_spi_st7735"
+-- require "color_lcd_spi_st7735"
 -- require "color_lcd_spi_st7735S"
 
 local gc0310_sdr =
@@ -575,9 +575,9 @@ function scanCodeCb(result, codeType, codeStr)
             disp.puttext(common.utf8ToGb2312("扫描成功"), 0, 5)
             disp.puttext(common.utf8ToGb2312("类型: ") .. codeType, 0, 35)
             log.info("DispTest.ScanCodeCb.CodeStr", codeStr:toHex())
-            disp.puttext(common.utf8ToGb2312("结果: ") .. codeStr, 0, 65)                
+            disp.puttext(common.utf8ToGb2312("结果: ") .. codeStr, 0, 65)
         else
-            disp.puttext(common.utf8ToGb2312("扫描失败"), 0, 5)                
+            disp.puttext(common.utf8ToGb2312("扫描失败"), 0, 5)
         end
         disp.update()
     end

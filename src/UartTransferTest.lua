@@ -23,7 +23,7 @@ local lenofsdata = 0
 
 local function read()
     local uartData = ""
-    while true do        
+    while true do
         uartData = uart.read(uartId, "*l")
 	
         if not uartData or string.len(uartData) == 0 then 

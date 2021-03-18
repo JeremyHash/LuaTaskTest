@@ -424,7 +424,6 @@ local function on_response(msg)
         return
     end
     log.info("socket:on_response:", msg.socket_index, t[msg.id], msg.result)
-    log.info("id,状态,长度",msg.socket_index,msg.result,msg.send_len)
     if type(socketcore.sock_destroy) == "function" then
         if (msg.id == rtos.MSG_SOCK_CONN_CNF and msg.result ~= 0) or msg.id == rtos.MSG_SOCK_CLOSE_CNF then
             socketcore.sock_destroy(msg.socket_index)
@@ -527,23 +526,9 @@ function printStatus()
     end
 end
 
+function setLowPower(tm)
+    ril.request("AT*RTIME="..tm)
+end
+
 --setDnsParsePara(4,4)
 --setTcpResendPara(1,16)
-
--- sys.timerLoopStart(
---     function ()
---         log.info("SocketTest.sockets", #sockets)
---     end,
---     500
--- )
-
--- sys.taskInit(
---     function()
---         while true do
---             if #sockets >= 10 then
---                 log.info("SocketTest.sockets", #sockets)
---             end
---             sys.wait(5)
---         end
---     end
--- )

@@ -7,11 +7,11 @@ module(..., package.seeall)
 
 --[[
 有些GPIO需要打开对应的ldo电压域才能正常工作，电压域和对应的GPIO关系如下
-pmd.ldoset(x,pmd.LDO_VSIM1) -- GPIO 29、30、31
+pmd.ldoset(x, pmd.LDO_VSIM1) -- GPIO 29、30、31
 
-pmd.ldoset(x,pmd.LDO_VLCD) -- GPIO 0、1、2、3、4
+pmd.ldoset(x, pmd.LDO_VLCD) -- GPIO 0、1、2、3、4
 
-pmd.ldoset(x,pmd.LDO_VMMC) -- GPIO 24、25、26、27、28
+pmd.ldoset(x, pmd.LDO_VMMC) -- GPIO 24、25、26、27、28
 x=0时：关闭LDO
 x=1时：LDO输出1.716V
 x=2时：LDO输出1.828V
@@ -33,13 +33,13 @@ x=15时：LDO输出3.177V
 
 local x = 2
 
--- pmd.ldoset(x,pmd.VLDO6)
+-- pmd.ldoset(x, pmd.VLDO6)
 
 pmd.ldoset(x, pmd.LDO_VSIM1) -- GPIO 29、30、31
 
 pmd.ldoset(x, pmd.LDO_VLCD) -- GPIO 0、1、2、3、4
 
-pmd.ldoset(x,pmd.LDO_VMMC) -- GPIO 24、25、26、27、28
+pmd.ldoset(x, pmd.LDO_VMMC) -- GPIO 24、25、26、27、28
 
 local modType = LuaTaskTestConfig.modType
 
@@ -53,7 +53,7 @@ function gpioIntFnc(msg)
     end
 end
 
-local UP_DOWN_STATUS = pio.PULLUP
+local UP_DOWN_STATUS = pio.PULLDOWN
 
 if LuaTaskTestConfig.gpioTest.gpioIntTest then
     if modType == "8910" then
@@ -69,7 +69,7 @@ if LuaTaskTestConfig.gpioTest.gpioIntTest then
         getGpio10Fnc = pins.setup(10, gpioIntFnc, UP_DOWN_STATUS)
         getGpio11Fnc = pins.setup(11, gpioIntFnc, UP_DOWN_STATUS)
         getGpio12Fnc = pins.setup(12, gpioIntFnc, UP_DOWN_STATUS)
-        getGpio13Fnc = pins.setup(13, nil, UP_DOWN_STATUS)
+        getGpio13Fnc = pins.setup(13, gpioIntFnc, UP_DOWN_STATUS)
         getGpio14Fnc = pins.setup(14, gpioIntFnc, UP_DOWN_STATUS)
         getGpio15Fnc = pins.setup(15, gpioIntFnc, UP_DOWN_STATUS)
         getGpio17Fnc = pins.setup(17, gpioIntFnc, UP_DOWN_STATUS)
@@ -217,13 +217,101 @@ if LuaTaskTestConfig.gpioTest.gpioOutTest then
     )   
 end
 
--- local function ledTest()
---     local gpio1 = pins.setup(1)
---     led.blinkPwm(gpio1, 500, 500)
---     local gpio4 = pins.setup(4)
---     led.blinkPwm(gpio4, 100, 500)
--- end
+local function led_shut()
+    local x = 0
+    gpio19(x)
+    gpio18(x)
+    gpio13(x)
+    gpio9(x)
+    gpio12(x)
+    gpio10(x)
+    gpio11(x)
+    gpio23(x)
+end
 
--- if LuaTaskTestConfig.gpioTest.ledTest then
---     ledTest()
--- end
+local function led_blink(time)
+
+    local x = 1
+    for i = 1, time do
+        gpio19(x)
+        gpio18(x)
+        gpio13(x)
+        gpio9(x)
+        gpio12(x)
+        gpio10(x)
+        gpio11(x)
+        gpio23(x)
+        sys.wait(1000)
+        led_shut()
+    end
+end
+
+local function led_single_switch(gpio, time)
+    gpio(1)
+    sys.wait(time)
+    gpio(0)
+end
+
+local function led_liushui(time)
+    local lightTime = 1000
+    for i = 1, time do
+        led_single_switch(gpio19, lightTime)
+        led_single_switch(gpio18, lightTime)
+        led_single_switch(gpio13, lightTime)
+        led_single_switch(gpio9, lightTime)
+        led_single_switch(gpio12, lightTime)
+        led_single_switch(gpio10, lightTime)
+        led_single_switch(gpio11, lightTime)
+        led_single_switch(gpio23, lightTime)
+    end
+
+end
+
+local function led_leijia(time)
+    local waitTime = 1000
+    for i = 1, time do
+        sys.wait(waitTime)
+        gpio23(1)
+        sys.wait(waitTime)
+        gpio11(1)
+        sys.wait(waitTime)
+        gpio10(1)
+        sys.wait(waitTime)
+        gpio12(1)
+        sys.wait(waitTime)
+        gpio9(1)
+        sys.wait(waitTime)
+        gpio13(1)
+        sys.wait(waitTime)
+        gpio18(1)
+        sys.wait(waitTime)
+        gpio19(1)
+        sys.wait(waitTime)
+        led_shut()
+    end
+    
+end
+
+
+if LuaTaskTestConfig.gpioTest.ledTest then
+    gpio19 = pins.setup(19)
+    gpio18 = pins.setup(18)
+    gpio13 = pins.setup(13)
+    gpio9 = pins.setup(9)
+    gpio12 = pins.setup(12)
+    gpio10 = pins.setup(10)
+    gpio11 = pins.setup(11)
+    gpio23 = pins.setup(23)
+
+    
+    sys.taskInit(
+        function ()
+            while true do
+                led_blink(1)
+                led_leijia(1)
+                led_liushui(1)
+            end
+        end
+    )
+
+end

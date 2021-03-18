@@ -7,49 +7,48 @@ module(..., package.seeall)
 
 local loopTime = 30000
 
--- ADC测量精度(10bit，电压测量范围为0到1.85V，分辨率为1850/1024=1.8MV，测量精度误差为20MV)
-local function adcTest()
-
-    local ADC2, ADC3
-
-    if LuaTaskTestConfig.modType == "8910" then
-        -- 8910
-        ADC2 = 2
-        ADC3 = 3
-    elseif LuaTaskTestConfig.modType == "1802" then 
-        -- 1802
-        ADC2 = 0
-        ADC3 = 1
-    elseif LuaTaskTestConfig.modType == "1802S" then
-        -- 1802S
-        ADC2 = 0
-        ADC3 = 1
-    end
-
-    -- 读取adc
-    -- adcval为number类型，表示adc的原始值，无效值为0xFFFF
-    -- voltval为number类型，表示转换后的电压值，单位为毫伏，无效值为0xFFFF
-    local adcval, voltval
-
-    adc.open(ADC2)
-    adc.open(ADC3)
-    log.info("AdcTest.open", "ADC功能打开")
-
-    for i = 1, 5 do
-        adcval, voltval = adc.read(ADC2)
-        log.info("AdcTest.ADC2.read", adcval, voltval)
-
-        adcval, voltval = adc.read(ADC3)
-        log.info("AdcTest.ADC3.read", adcval, voltval)
-    end
-
-    adc.close(ADC2)
-    adc.close(ADC3)
-    log.info("AdcTest.close", "ADC功能关闭")
-end
-
 if LuaTaskTestConfig.baseTest.adcTest then
-    sys.timerLoopStart(adcTest, loopTime)
+    sys.taskInit(
+        function ()
+            local ADC2, ADC3
+
+            if LuaTaskTestConfig.modType == "8910" then
+                -- 8910
+                ADC2 = 2
+                ADC3 = 3
+            elseif LuaTaskTestConfig.modType == "1802" then 
+                -- 1802
+                ADC2 = 0
+                ADC3 = 1
+            elseif LuaTaskTestConfig.modType == "1802S" then
+                -- 1802S
+                ADC2 = 0
+                ADC3 = 1
+            end
+        
+            -- 读取adc
+            -- adcval为number类型，表示adc的原始值，无效值为0xFFFF
+            -- voltval为number类型，表示转换后的电压值，单位为毫伏，无效值为0xFFFF
+            local adcval, voltval
+        
+            while true do
+                sys.wait(2000)
+                adc.open(ADC2)
+                adc.open(ADC3)
+                log.info("AdcTest.open", "ADC打开")
+                
+                adcval, voltval = adc.read(ADC2)
+                log.info("AdcTest.ADC2.read", adcval, voltval)
+            
+                adcval, voltval = adc.read(ADC3)
+                log.info("AdcTest.ADC3.read", adcval, voltval)
+            
+                adc.close(ADC2)
+                adc.close(ADC3)
+                log.info("AdcTest.close", "ADC关闭")
+            end
+        end
+    )
 end
 
 -- BitTest

@@ -411,7 +411,7 @@ end
 -- 获取麦克音量等级
 -- @return number vol，麦克音量等级
 -- @usage audio.getMicVolume()
-function getMicVolume(vol)
+function getMicVolume()
     return sMicVolume
 end
 
