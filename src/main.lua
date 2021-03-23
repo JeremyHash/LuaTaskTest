@@ -1,7 +1,7 @@
 -- LuaTaskTest
 -- Author:LuatTest
 -- CreateDate:20200716
--- UpdateDate:20210316
+-- UpdateDate:20210319
 
 PROJECT = "LuaTaskTest"
 VERSION = "1.0.0"
@@ -13,7 +13,7 @@ LOG_LEVEL = log.LOGLEVEL_INFO
 -- 测试配置 设置为true代表开启此项测试
 LuaTaskTestConfig = {
     modType = "8910",
-    netLed  = false,
+    netLed  = true,
     aliyunTest = {
         aliyunMqttTest = false,
         aliyunOtaTest  = false
@@ -82,8 +82,9 @@ LuaTaskTestConfig = {
 	    insideFlashTest = false
     },
     keyPadCallSmsTest = {
-        callTest = false,
-        smsTest  = false
+        keypadTest = false,
+        callTest   = false,
+        smsTest    = false
     },
     dispTest = {
         logoTest        = false,
@@ -100,7 +101,6 @@ LuaTaskTestConfig = {
     },
     uartTransferTest  = false,
     RS485Test         = false,
-    uartTest          = false,
     cryptoTest = {
         base64Test     = false,
         hmacMd5Test    = false,
@@ -120,10 +120,9 @@ LuaTaskTestConfig = {
         SPITest = false
     },
     bluetoothTest = {
-        masterTest    = false,
+        masterTest    = true,
         slaveTest     = false,
-        beaconTest    = false,
-        btWifiTdmTest = false
+        beaconTest    = false
     }
 }
 
@@ -140,7 +139,7 @@ require "socket"
 require "mqtt"
 require "pins"
 require "cc"
--- require "sms"
+require "sms"
 require "lbsLoc"
 require "pm"
 require "nvm"
@@ -156,15 +155,16 @@ if LuaTaskTestConfig.modType == "8910" then
     require "record"
 end
 
-require "console"
-console.setup(uart.USB, 115200)
+-- require "console"
+-- console.setup(1, 115200)
 
 -- 保持唤醒
-pm.wake("LuaTaskTest")
+-- pm.wake("LuaTaskTest")
 
--- ril.regUrc("RING", function ()
---     ril.request("ATA")
--- end)
+ril.regUrc("RING", function ()
+    -- audio.play(1, "TTS", "电话", 3)
+    ril.request("ATA")
+end)
 
 if LuaTaskTestConfig.modType == "8910" and LuaTaskTestConfig.netLed then
     require "netLed"
@@ -186,8 +186,8 @@ if LuaTaskTestConfig.updateTest then
             sys.waitUntil("IP_READY_IND")
             log.info("UpdateTest","成功访问网络, FOTA升级测试开始，当前版本 : " .. rtos.get_version() .. " VERSION : " .. VERSION)
             require "update"
-            -- update.request()
-            update.request(nil, "http://wiki.airm2m.com:48000/fota.bin")
+            update.request()
+            -- update.request(nil, "http://wiki.airm2m.com:48000/fota.bin")
         end
     )
 end
@@ -276,10 +276,6 @@ end
 
 if LuaTaskTestConfig.RS485Test then
     require "RS485Test"
-end
-
-if LuaTaskTestConfig.uartTest then
-    require "UartTest"
 end
 
 for k, v in pairs(LuaTaskTestConfig.cryptoTest) do

@@ -1,7 +1,7 @@
 -- UartTransferTest
 -- Author:LuatTest
 -- CreateDate:20200920
--- UpdateDate:20200925
+-- UpdateDate:20210319
 
 module(..., package.seeall)
 
@@ -36,6 +36,9 @@ local function read()
 	end
 end
 
+-- UART相关的测试必须要防止模块休眠，不然会有串口收发数据的问题
+pm.wake("LuaTaskTest.UartTransferTest")
+
 uart.setup(uartId, baud, databits, uart.PAR_NONE, uart.STOP_1)
 uart.on(uartId, "receive", read)
 
@@ -44,7 +47,7 @@ sys.taskInit(
         sys.waitUntil("IP_READY_IND")
         log.info("UartTransferTest","成功访问网络, UartTransferTest测试开始")
         tcpClient = socket.tcp()
-        connectResult, socketId = tcpClient:connect(ip, port)
+        local connectResult, socketId = tcpClient:connect(ip, port)
         log.info("UartTransferTest.tcpClient.connectResult, socketId", connectResult, socketId)
         if connectResult then
             sys.publish("AsyncTcpSocketInitComplete")

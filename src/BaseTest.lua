@@ -53,25 +53,30 @@ end
 
 -- BitTest
 local function bitTest()
-    --参数是位数，作用是1向左移动两位
+    -- 左移运算
     -- 0001 -> 0100 
     for i = 0, 31 do
-        log.info("BitTest.bit", bit.bit(i))
+        local res = bit.bit(i)
+        if res == 2 ^ i then
+            log.info("BitTest.bit", "SUCCESS")
+        else
+            log.info("BitTest.bit", "FAIL")
+        end
     end
     
     -- 测试位数是否被置1
-    --第一个参数是是测试数字，第二个是测试位置。从右向左数0到7。是1返回true，否则返回false
+    -- 第一个参数是是测试数字，第二个是测试位置。从右向左数0到7。是1返回true，否则返回false
     -- 0101
     for i = 0, 31 do
         if bit.isset(0xFFFFFFFF, i) == true then
             log.info("BitTest.isset", "SUCCESS")
         else
-            log.error("BitTest.isset", "fail")
+            log.error("BitTest.isset", "FAIL")
         end
         if bit.isset(0x00000000, i) == false then
             log.info("BitTest.isset", "SUCCESS")
         else
-            log.error("BitTest.isset", "fail")
+            log.error("BitTest.isset", "FAIL")
         end
     end
     
@@ -80,12 +85,12 @@ local function bitTest()
         if bit.isclear(0xFFFFFFFF, i) == false then
             log.info("BitTest.isclear", "SUCCESS")
         else
-            log.error("BitTest.isclear", "fail")
+            log.error("BitTest.isclear", "FAIL")
         end
         if bit.isclear(0x00000000, i) == true then
             log.info("BitTest.isclear", "SUCCESS")
         else
-            log.error("BitTest.isclear", "fail")
+            log.error("BitTest.isclear", "FAIL")
         end
     end
     
@@ -94,13 +99,13 @@ local function bitTest()
     if bit.set(0, 0, 1, 2, 3, 4, 5, 6, 7) == 255 then
         log.info("BitTest.set", "SUCCESS")
     else
-        log.error("BitTest.set", "fail")
+        log.error("BitTest.set", "FAIL")
     end
 
     if bit.set(0, 6, 3, 2, 1, 7, 5, 0, 4) == 255 then
         log.info("BitTest.set", "SUCCESS")
     else
-        log.error("BitTest.set", "fail")
+        log.error("BitTest.set", "FAIL")
     end
     
     --在相应的位置置0
@@ -108,13 +113,13 @@ local function bitTest()
     if bit.clear(0xFF, 0, 1, 2, 3, 4, 5, 6, 7) == 0 then
         log.info("BitTest.clear", "SUCCESS")
     else
-        log.error("BitTest.clear", "fail")
+        log.error("BitTest.clear", "FAIL")
     end
 
     if bit.clear(0xFF, 6, 3, 2, 1, 7, 5, 0, 4) == 0 then
         log.info("BitTest.clear", "SUCCESS")
     else
-        log.error("BitTest.clear", "fail")
+        log.error("BitTest.clear", "FAIL")
     end
     
     --按位取反
@@ -122,17 +127,17 @@ local function bitTest()
     if bit.bnot(0xFFFFFFFF) == 0 then
         log.info("BitTest.bnot", "SUCCESS")
     else
-        log.error("BitTest.bnot", "fail")
+        log.error("BitTest.bnot", "FAIL")
     end
     if bit.bnot(0x00000000) == 0xFFFFFFFF then
         log.info("BitTest.bnot", "SUCCESS")
     else
-        log.error("BitTest.bnot", "fail")
+        log.error("BitTest.bnot", "FAIL")
     end
     if bit.bnot(0xF0F0F0F0) == 0x0F0F0F0F then
         log.info("BitTest.bnot", "SUCCESS")
     else
-        log.error("BitTest.bnot", "fail")
+        log.error("BitTest.bnot", "FAIL")
     end
     
     --与
@@ -140,7 +145,7 @@ local function bitTest()
     if bit.band(0xAAA, 0xAA0, 0xA00) == 0xA00 then
         log.info("BitTest.band", "SUCCESS")
     else
-        log.error("BitTest.band", "fail")
+        log.error("BitTest.band", "FAIL")
     end
     
     --或
@@ -148,7 +153,7 @@ local function bitTest()
     if bit.bor(0xA00, 0x0A0, 0x00A) == 0xAAA then
         log.info("BitTest.bor", "SUCCESS")
     else
-        log.error("BitTest.bor", "fail")
+        log.error("BitTest.bor", "FAIL")
     end
     
     --异或,相同为0，不同为1
@@ -156,7 +161,7 @@ local function bitTest()
     if bit.bxor(0x01, 0x02, 0x04, 0x08) == 0x0F then
         log.info("BitTest.bxor", "SUCCESS")
     else
-        log.error("BitTest.bxor", "fail")
+        log.error("BitTest.bxor", "FAIL")
     end
     
     --逻辑左移
@@ -164,7 +169,7 @@ local function bitTest()
     if bit.lshift(0xFFFFFFFF, 1) == -2 then
         log.info("BitTest.lshift", "SUCCESS")
     else
-        log.error("BitTest.lshift", "fail")
+        log.error("BitTest.lshift", "FAIL")
     end
     
     --逻辑右移，“001”
@@ -172,7 +177,7 @@ local function bitTest()
     if bit.rshift(0xFFFFFFFF, 1) == 0x7FFFFFFF then
         log.info("BitTest.rshift", "SUCCESS")
     else
-        log.error("BitTest.rshift", "fail")
+        log.error("BitTest.rshift", "FAIL")
     end
     
     --算数右移，左边添加的数与符号有关
@@ -180,7 +185,7 @@ local function bitTest()
     if bit.arshift(0xFFFFFFFF, 1) == -1 then
         log.info("BitTest.arshift", "SUCCESS")
     else
-        log.error("BitTest.arshift", "fail")
+        log.error("BitTest.arshift", "FAIL")
     end
 end
 
@@ -489,13 +494,13 @@ if LuaTaskTestConfig.baseTest.tableTest then
 end
 
 local function pmTest()
-    log.info("PmTest.IsSleep", pm.isSleep())
+    log.info("PmTest.isSleep", pm.isSleep())
     pm.wake("PmTest")
-    log.info("PmTest.Wake", "SUCCESS")
-    log.info("PmTest.IsSleep", pm.isSleep())
+    log.info("PmTest.wake", "SUCCESS")
+    log.info("PmTest.isSleep", pm.isSleep())
     pm.sleep("PmTest")
-    log.info("PmTest.Sleep", "SUCCESS")
-    log.info("PmTest.IsSleep", pm.isSleep())
+    log.info("PmTest.sleep", "SUCCESS")
+    log.info("PmTest.isSleep", pm.isSleep())
 end
 
 if LuaTaskTestConfig.baseTest.pmTest then
@@ -538,12 +543,20 @@ if LuaTaskTestConfig.baseTest.rilTest then
 end
 
 local function simTest()
-    log.info("SimTest.GetIccid", sim.getIccid())
+    local iccid = sim.getIccid()
+    if iccid == nil then
+        log.error("SimTest.GetIccid", "FAIL", "查询失败")
+    else
+        log.info("SimTest.GetIccid", "SUCCESS", iccid)
+    end
     log.info("SimTest.GetImsi", sim.getImsi())
     log.info("SimTest.GetMcc", sim.getMcc())
     log.info("SimTest.GetMnc", sim.getMnc())
     log.info("SimTest.GetStatus", sim.getStatus())
+    -- 8910 lib 已经没有sim.getType() 这个方法了
     -- log.info("SimTest.GetType", sim.getType())
+
+    -- 物联网卡不支持查询号码
     -- sim.setQueryNumber(true)
     -- log.info("SimTest.SetQueryNumber", "SUCCESS")
     -- log.info("SimTest.GetNumber", sim.getNumber())
@@ -564,7 +577,7 @@ if LuaTaskTestConfig.baseTest.sysTest then
                 count = count + 1
             else
                 sys.timerStop(timerId)
-                log.info("SysTest.timerStop", "计时器停止")
+                log.info("SysTest.timerStop", "定时器停止")
                 log.info("SysTest.timerIsActive", sys.timerIsActive(timerId))
                 log.info("SysTest.Restart", "重启测试")
                 sys.restart("重启测试")
@@ -637,15 +650,15 @@ end
 
 local function mathTest()
     log.info("MathTest.Abs", math.abs(-10086))
-    log.info("MathTest.Ceil", math.ceil(101.456))
-    log.info("MathTest.Floor", math.floor(101.456))
+    -- log.info("MathTest.Ceil", math.ceil(101.456))
+    -- log.info("MathTest.Floor", math.floor(101.456))
     log.info("MathTest.Fmod", math.fmod(10, 3))
     log.info("MathTest.Huge", math.huge)
-    log.info("MathTest.Max", math.max(1, 2, 3, 4.15, 5.78))
-    log.info("MathTest.Min", math.min(1, 2, 3, 4.15, 5.78))
+    -- log.info("MathTest.Max", math.max(1, 2, 3, 4.15, 5.78))
+    -- log.info("MathTest.Min", math.min(1, 2, 3, 4.15, 5.78))
     -- log.info("MathTest.MaxInteger", math.maxinteger)
     -- log.info("MathTest.MinInteger", math.mininteger)
-    log.info("MathTest.Modf", math.modf(1.15))
+    -- log.info("MathTest.Modf", math.modf(1.15))
     log.info("MathTest.Pi", math.pi)
     log.info("MathTest.Sqrt", math.sqrt(9))
     -- log.info("MathTest.ToInteger", math.tointeger(1.123))

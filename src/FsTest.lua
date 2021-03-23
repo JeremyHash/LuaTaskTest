@@ -90,12 +90,13 @@ if LuaTaskTestConfig.fsTest.sdCardTest then
 	sys.taskInit(
 		function()
 			local sdcardPath = "/sdcard0"
-	        sys.wait(5000)
-	        --挂载SD卡
+	        sys.wait(10000)
+	        -- 挂载SD卡
+			log.info("FsTest.SdTest", "开始挂载SD卡")
 	        io.mount(io.SDCARD)
 		
-	        --第一个参数1表示sd卡
-	        --第二个参数1表示返回的总空间单位为KB
+	        -- 第一个参数1表示sd卡
+	        -- 第二个参数1表示返回的总空间单位为KB
 	        local sdCardTotalSize = rtos.get_fs_total_size(1, 1)
 	        log.info("FsTest.SdCard0.TotalSize", sdCardTotalSize .. " KB")
 		
@@ -112,6 +113,8 @@ if LuaTaskTestConfig.fsTest.sdCardTest then
 			if mkdirRes then
 				log.info("FsTest.SdCardTest.MkdirRes", "SUCCESS")
 				while true do
+					audio.play(5, "FILE", sdcardPath .. "/sms.mp3", 3)
+					sys.wait(3000)
 					writeFileA(testPath .. "/FsWriteTest1.txt", "This is a FsWriteATest\n")
 					readFile(testPath .. "/FsWriteTest1.txt")
 					writeFileW(testPath .. "/FsWriteTest2.txt", "This is a FsWriteWTest\n")

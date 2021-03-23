@@ -10,7 +10,7 @@ local waitTime2 = 5000
 
 -- 屏幕驱动文件管理
 -- require "color_lcd_spi_ILI9341"
--- require "color_lcd_spi_gc9106l"
+require "color_lcd_spi_gc9106l"
 -- require "color_lcd_spi_st7735"
 -- require "color_lcd_spi_st7735S"
 
