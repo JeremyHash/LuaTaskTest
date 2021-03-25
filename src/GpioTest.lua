@@ -1,7 +1,7 @@
 -- GpioTest
 -- Author:LuatTest
 -- CreateDate:20200724
--- UpdateDate:20201027
+-- UpdateDate:20210324
 
 module(..., package.seeall)
 
@@ -34,6 +34,8 @@ local gpio_8910_list = {0, 1, 2, 3, 4, 5, 7, 8, 9, 10, 11, 12, 13, 14, 15, 17, 1
 
 local gpio_led_list = {19, 18, 13, 9, 12, 10, 11, 23}
 
+local gpio_in_functions = {}
+
 local x = 2
 
 -- pmd.ldoset(x, pmd.VLDO6)
@@ -60,9 +62,9 @@ local UP_DOWN_STATUS = pio.PULLDOWN
 
 if LuaTaskTestConfig.gpioTest.gpioIntTest then
     if modType == "8910" then
-        log.info("GpioIntTest", "初始化GPIO中断开始")
+        log.info("GpioIntTest", "初始化GPIO中断模式开始")
         for k, v in pairs(gpio_8910_list) do
-            log.info("GpioIntTest", "初始化GPIO" .. v .. "中断")
+            log.info("GpioIntTest", "初始化GPIO" .. v .. "中断模式")
             pins.setup(v, gpioIntFnc, UP_DOWN_STATUS)
         end
     elseif modType == "1802" or modType == "1802S" then
@@ -104,7 +106,68 @@ if LuaTaskTestConfig.gpioTest.gpioIntTest then
         pins.setup(65, gpioIntFnc, UP_DOWN_STATUS)
         pins.setup(66, gpioIntFnc, UP_DOWN_STATUS)
     end
+end
 
+if LuaTaskTestConfig.gpioTest.gpioInTest then
+    local tag = "GpioInTest"
+    if modType == "8910" then
+        log.info(tag, "初始化GPIO输入模式开始")
+        local count = 1
+        for k, v in pairs(gpio_8910_list) do
+            log.info(tag, "初始化GPIO" .. v .. "输入模式")
+            gpio_in_functions[count] = pins.setup(v)
+            count = count + 1
+        end
+    elseif modType == "1802" or modType == "1802S" then
+        pins.setup(10, gpioIntFnc, UP_DOWN_STATUS)
+        pins.setup(11, gpioIntFnc, UP_DOWN_STATUS)
+        pins.setup(17, gpioIntFnc, UP_DOWN_STATUS)
+        pins.setup(18, gpioIntFnc, UP_DOWN_STATUS)
+        pins.setup(20, gpioIntFnc, UP_DOWN_STATUS)
+        pins.setup(21, gpioIntFnc, UP_DOWN_STATUS)
+        pins.setup(22, gpioIntFnc, UP_DOWN_STATUS)
+        pins.setup(23, gpioIntFnc, UP_DOWN_STATUS)
+        pins.setup(24, gpioIntFnc, UP_DOWN_STATUS)
+        pins.setup(25, gpioIntFnc, UP_DOWN_STATUS)
+        pins.setup(26, gpioIntFnc, UP_DOWN_STATUS)
+        pins.setup(27, gpioIntFnc, UP_DOWN_STATUS)
+        pins.setup(28, gpioIntFnc, UP_DOWN_STATUS)
+        pins.setup(29, gpioIntFnc, UP_DOWN_STATUS)
+        pins.setup(30, gpioIntFnc, UP_DOWN_STATUS)
+        pins.setup(31, gpioIntFnc, UP_DOWN_STATUS)
+        pins.setup(32, gpioIntFnc, UP_DOWN_STATUS)
+        pins.setup(33, gpioIntFnc, UP_DOWN_STATUS)
+        pins.setup(34, gpioIntFnc, UP_DOWN_STATUS)
+        pins.setup(35, gpioIntFnc, UP_DOWN_STATUS)
+        pins.setup(36, gpioIntFnc, UP_DOWN_STATUS)
+        pins.setup(37, gpioIntFnc, UP_DOWN_STATUS)
+        pins.setup(38, gpioIntFnc, UP_DOWN_STATUS)
+        pins.setup(39, gpioIntFnc, UP_DOWN_STATUS)
+        pins.setup(40, gpioIntFnc, UP_DOWN_STATUS)
+        pins.setup(41, gpioIntFnc, UP_DOWN_STATUS)
+        pins.setup(42, gpioIntFnc, UP_DOWN_STATUS)
+        pins.setup(49, gpioIntFnc, UP_DOWN_STATUS)
+        pins.setup(50, gpioIntFnc, UP_DOWN_STATUS)
+        pins.setup(51, gpioIntFnc, UP_DOWN_STATUS)
+        pins.setup(52, gpioIntFnc, UP_DOWN_STATUS)
+        pins.setup(61, gpioIntFnc, UP_DOWN_STATUS)
+        pins.setup(62, gpioIntFnc, UP_DOWN_STATUS)
+        pins.setup(63, gpioIntFnc, UP_DOWN_STATUS)
+        pins.setup(64, gpioIntFnc, UP_DOWN_STATUS)
+        pins.setup(65, gpioIntFnc, UP_DOWN_STATUS)
+        pins.setup(66, gpioIntFnc, UP_DOWN_STATUS)
+    end
+    sys.taskInit(
+        function()
+            while true do
+                for k, v in gpio_in_functions do
+                    local res = v()
+                    log.info(tag, "获取GPIO输入方法" .. k .. "读取的输入" .. res)
+                end
+                sys.wait(5000)
+            end
+        end
+    )
 end
 
 if LuaTaskTestConfig.gpioTest.gpioOutTest then

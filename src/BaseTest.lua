@@ -543,8 +543,7 @@ if LuaTaskTestConfig.baseTest.rilTest then
 end
 
 local function simTest()
-    local iccid = sim.getIccid()
-    if iccid == nil then
+    if sim.getIccid() == nil then
         log.error("SimTest.GetIccid", "FAIL", "查询失败")
     else
         log.info("SimTest.GetIccid", "SUCCESS", iccid)

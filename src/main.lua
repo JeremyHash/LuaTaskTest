@@ -12,8 +12,9 @@ LOG_LEVEL = log.LOGLEVEL_INFO
 
 -- 测试配置 设置为true代表开启此项测试
 LuaTaskTestConfig = {
-    modType = "8910",
-    netLed  = true,
+    modType     = "8910",
+    netLed      = true,
+    consoleTest = false,
     aliyunTest = {
         aliyunMqttTest = false,
         aliyunOtaTest  = false
@@ -74,6 +75,7 @@ LuaTaskTestConfig = {
     usbAudioTest = false,
     gpioTest = {
         gpioIntTest = false,
+        gpioInTest  = false,
         gpioOutTest = false,
         ledTest     = false
     },
@@ -120,9 +122,10 @@ LuaTaskTestConfig = {
         SPITest = false
     },
     bluetoothTest = {
-        masterTest    = true,
-        slaveTest     = false,
-        beaconTest    = false
+        masterTest = false,
+        slaveTest  = false,
+        beaconTest = false,
+        scanTest   = false
     }
 }
 
@@ -155,11 +158,13 @@ if LuaTaskTestConfig.modType == "8910" then
     require "record"
 end
 
--- require "console"
--- console.setup(1, 115200)
+if LuaTaskTestConfig.consoleTest == true then
+    -- 保持唤醒
+    pm.wake("LuaTaskTest")
 
--- 保持唤醒
--- pm.wake("LuaTaskTest")
+    require "console"
+    console.setup(1, 115200)
+end
 
 ril.regUrc("RING", function ()
     -- audio.play(1, "TTS", "电话", 3)
