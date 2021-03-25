@@ -4,8 +4,9 @@
 合宙LuaTask 自动化测试工具
 #### 软件架构
  + Lua V5.1
- + LuaTask V2.3.7
+ + LuaTask V2.3.8
 #### 功能模块
+ + consoleTest
  + aliyunTest       
  + httpTest         
  + socketTest       
@@ -19,6 +20,7 @@
  + dispTest         
  + lbsLocTest       
  + uartTransferTest 
+ + RS485Test
  + cryptoTest       
  + i2cAndSpiTest    
  + bluetoothTest
@@ -27,7 +29,9 @@
 ```
 -- 测试配置 设置为true代表开启此项测试
 LuaTaskTestConfig = {
-    modType = "8910",
+    modType     = "8910",
+    netLed      = true,
+    consoleTest = false,
     aliyunTest = {
         aliyunMqttTest = false,
         aliyunOtaTest  = false
@@ -54,10 +58,9 @@ LuaTaskTestConfig = {
     socketTest = {
         syncTcpTest  = false,
         syncUdpTest  = false,
-        asyncTest    = true,
-        errorIPTest  = false
+        asyncTest    = false,
     },
-    mqttTest = false,
+    mqttTest   = false,
     updateTest = false,
     baseTest = {
         -- netTest，sysTest 要单独测试
@@ -86,8 +89,10 @@ LuaTaskTestConfig = {
         audioStreamTest   = false,
         recordTest        = false
     },
+    usbAudioTest = false,
     gpioTest = {
         gpioIntTest = false,
+        gpioInTest  = false,
         gpioOutTest = false,
         ledTest     = false
     },
@@ -96,8 +101,9 @@ LuaTaskTestConfig = {
 	    insideFlashTest = false
     },
     keyPadCallSmsTest = {
-        callTest = false,
-        smsTest  = false
+        keypadTest = false,
+        callTest   = false,
+        smsTest    = false
     },
     dispTest = {
         logoTest        = false,
@@ -113,6 +119,7 @@ LuaTaskTestConfig = {
         gpsLocTest  = false
     },
     uartTransferTest  = false,
+    RS485Test         = false,
     cryptoTest = {
         base64Test     = false,
         hmacMd5Test    = false,
@@ -132,9 +139,10 @@ LuaTaskTestConfig = {
         SPITest = false
     },
     bluetoothTest = {
-        masterTest    = false,
-        slaveTest     = false,
-        btWifiTdmTest = false
+        masterTest = false,
+        slaveTest  = false,
+        beaconTest = false,
+        scanTest   = false
     }
 }
 ```
