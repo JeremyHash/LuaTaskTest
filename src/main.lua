@@ -1,7 +1,7 @@
 -- LuaTaskTest
 -- Author:LuatTest
 -- CreateDate:20200716
--- UpdateDate:20210319
+-- UpdateDate:20210327
 
 PROJECT = "LuaTaskTest"
 VERSION = "1.0.0"
@@ -82,7 +82,7 @@ LuaTaskTestConfig = {
     fsTest = {
         sdCardTest      = false,
 	    insideFlashTest = false,
-        openDirTest     = true
+        openDirTest     = false
     },
     keyPadCallSmsTest = {
         keypadTest = false,
