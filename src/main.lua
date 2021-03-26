@@ -81,7 +81,8 @@ LuaTaskTestConfig = {
     },
     fsTest = {
         sdCardTest      = false,
-	    insideFlashTest = false
+	    insideFlashTest = false,
+        openDirTest     = true
     },
     keyPadCallSmsTest = {
         keypadTest = false,

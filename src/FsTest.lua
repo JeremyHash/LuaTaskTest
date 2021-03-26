@@ -1,9 +1,13 @@
 -- FsTest
 -- Author:LuatTest
 -- CreateDate:20200927
--- UpdateDate:20201016
+-- UpdateDate:20210326
 
 module(..., package.seeall)
+
+local waitTime = 8000
+
+local tag = "FsTest"
 
 local function readFile(filename)
 	local filehandle = io.open(filename, "r")
@@ -51,8 +55,8 @@ getDirContent = function(dirPath, level)
     local dtb = {}
     level = level or "    "
     local tag = " "
-	if not io.opendir(dirPath) then
-		log.error("FsTest.getDirContent", "无法打开目标文件夹")
+	if io.opendir(dirPath) == 0 then
+		log.error("FsTest.getDirContent", "无法打开目标文件夹\"" .. dirPath .. "\"")
 		return
 	end
     while true do
@@ -80,8 +84,7 @@ getDirContent = function(dirPath, level)
         else
             log.info(tag, level.."├─", dtb[i].name)
             getDirContent(dtb[i].path, level .. "│ ")
-        end
-        
+        end    
     end
 end
 
@@ -90,7 +93,7 @@ if LuaTaskTestConfig.fsTest.sdCardTest then
 	sys.taskInit(
 		function()
 			local sdcardPath = "/sdcard0"
-	        sys.wait(10000)
+	        sys.wait(waitTime)
 	        -- 挂载SD卡
 			log.info("FsTest.SdTest", "开始挂载SD卡")
 	        io.mount(io.SDCARD)
@@ -136,52 +139,65 @@ end
 if LuaTaskTestConfig.fsTest.insideFlashTest then
 	sys.taskInit(
 		function ()
-			sys.wait(4000)
-
-			log.info("FsTest.getDirContent./")
-			
+			sys.wait(waitTime)
+			log.info(tag .. ".getDirContent./")
 	        getDirContent("/")
-
 			local testPath = "/FsTestPath"
-			local mkdirRes = rtos.make_dir(testPath)
+			if io.exists(testPath .. "/FsWriteTest1.txt") then
+				log.info(tag .. ".exists." .. testPath .. "/FsWriteTest1.txt", "文件存在,准备删除该文件")
+				deleteFile(testPath .. "/FsWriteTest1.txt")
+			else
+				log.info(tag .. ".exists." .. testPath .. "/FsWriteTest1.txt", "文件不存在")
+			end
 
-			-- deleteFile(testPath .. "/FsWriteTest1.txt")
-			log.info("FsTest.FileExists", io.exists(testPath .. "/FsWriteTest1.txt"))
-			if mkdirRes then
-				log.info("FsTest.FlashTest.MkdirRes", "SUCCESS")
+			if rtos.make_dir(testPath) then
+				log.info(tag .. ".FlashTest.make_dir", "SUCCESS")
 				while true do
 					writeFileA(testPath .. "/FsWriteTest1.txt", "This is a FsWriteATest\n")
-					log.info("FsTest.FileExists", io.exists(testPath .. "/FsWriteTest1.txt"))
-					log.info("FsTest.FileSize", io.fileSize(testPath .. "/FsWriteTest1.txt"))
+					log.info(tag .. "." .. testPath .. "/FsWriteTest1.txt.fileSize", io.fileSize(testPath .. "/FsWriteTest1.txt") .. "Bytes")
 					readFile(testPath .. "/FsWriteTest1.txt")
 					writeFileW(testPath .. "/FsWriteTest2.txt", "This is a FsWriteWTest\n")
 					readFile(testPath .. "/FsWriteTest2.txt")
-					log.info("FsTest.ReadFile", io.readFile(testPath .. "/FsWriteTest2.txt"))
-					io.writeFile("/ldata/writeFileTest.txt", "test")
-					log.info("FsTest.WriteFile", "SUCCESS")
-					readFile("/ldata/writeFileTest.txt")
+					log.info(tag .. ".readFile." .. testPath .. "/FsWriteTest2.txt", io.readFile(testPath .. "/FsWriteTest2.txt"))
+					io.writeFile(testPath .. "/FsWriteTest3.txt", "test")
+					readFile(testPath .. "/FsWriteTest3.txt")
 					local pathTable = io.pathInfo(testPath .. "/FsWriteTest1.txt")
 					for k, v in pairs(pathTable) do
-						log.info("FsTest.PathInfo." .. k, v)
+						log.info(tag .. ".pathInfo." .. k, v)
 					end
-					sys.wait(2000)
 					local file = io.open("/FileSeekTest.txt", "w")
 					file:write("FileSeekTest")
 					file:close()
 					local file = io.open("/FileSeekTest.txt", "r")
-					log.info("FsTest.FileSeek", file:seek("end"))
-					log.info("FsTest.FileSeek", file:seek("set"))
-					log.info("FsTest.FileSeek", file:seek())
-					log.info("FsTest.FileSeek", file:seek("cur", 10))
-					log.info("FsTest.FileSeek", file:seek("cur"))
-					log.info("FsTest.FileSeek", file:read(1))
-					log.info("FsTest.FileSeek", file:seek("cur"))
+					log.info(tag .. ".seek", file:seek("end"))
+					log.info(tag .. ".seek", file:seek("set"))
+					log.info(tag .. ".seek", file:seek())
+					log.info(tag .. ".seek", file:seek("cur", 10))
+					log.info(tag .. ".seek", file:seek("cur"))
+					log.info(tag .. ".seek", file:read(1))
+					log.info(tag .. ".seek", file:seek("cur"))
 					file:close()
-					log.info("FsTest.ReadStream", io.readStream("/FileSeekTest.txt", 3, 5))
-					sys.wait(60000)
+					log.info(tag .. "./FileSeekTest.txt.readStream", io.readStream("/FileSeekTest.txt", 3, 5))
+					sys.wait(waitTime)
 				end
 			else
-				log.error("FsTest.FlashTest.MkdirRes", "FAIL")
+				log.error(tag .. ".FlashTest.make_dir", "FAIL")
+			end
+		end
+	)
+end
+
+if LuaTaskTestConfig.fsTest.openDirTest then
+	sys.taskInit(
+		function ()
+			local dirTable = {"/", "/nvm", "/openDirTest"}
+			sys.wait(waitTime)
+			while true do
+				for k, v in pairs(dirTable) do
+					log.info(tag .. ".openDirTest", v)
+					getDirContent(v)
+				end
+				sys.wait(waitTime)
 			end
 		end
 	)
