@@ -58,7 +58,7 @@ function gpioIntFnc(msg)
     end
 end
 
-local UP_DOWN_STATUS = pio.PULLDOWN
+local UP_DOWN_STATUS = pio.PULLUP
 
 if LuaTaskTestConfig.gpioTest.gpioIntTest then
     if modType == "8910" then
@@ -112,11 +112,9 @@ if LuaTaskTestConfig.gpioTest.gpioInTest then
     local tag = "GpioInTest"
     if modType == "8910" then
         log.info(tag, "初始化GPIO输入模式开始")
-        local count = 1
         for k, v in pairs(gpio_8910_list) do
             log.info(tag, "初始化GPIO" .. v .. "输入模式")
-            gpio_in_functions[count] = pins.setup(v)
-            count = count + 1
+            gpio_in_functions[string.format("%d", v)] = pins.setup(v, nil, UP_DOWN_STATUS)
         end
     elseif modType == "1802" or modType == "1802S" then
         pins.setup(10, gpioIntFnc, UP_DOWN_STATUS)
@@ -160,11 +158,11 @@ if LuaTaskTestConfig.gpioTest.gpioInTest then
     sys.taskInit(
         function()
             while true do
-                for k, v in gpio_in_functions do
-                    local res = v()
-                    log.info(tag, "获取GPIO输入方法" .. k .. "读取的输入" .. res)
-                end
                 sys.wait(5000)
+                for k, v in pairs(gpio_in_functions) do
+                    local res = v()
+                    log.info(tag, "获取GPIO" .. k .. "的输入" .. res)
+                end
             end
         end
     )

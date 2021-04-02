@@ -102,22 +102,9 @@ LuaTaskTestConfig = {
         wifiLocTest = false,
         gpsLocTest  = false
     },
-    uartTransferTest  = false,
-    RS485Test         = false,
-    cryptoTest = {
-        base64Test     = false,
-        hmacMd5Test    = false,
-        xxteaTest      = false,
-        flowMd5Test    = false,
-        md5Test        = false,
-        hmacSha1Test   = false,
-        sha1Test       = false,
-        sha256Test     = false,
-        hmacSha256Test = false,
-        crcTest        = false,
-        aesTest        = false,
-        rsaTest        = false
-    },
+    uartTransferTest = false,
+    RS485Test        = false,
+    cryptoTest       = false,
     i2cAndSpiTest = {
         I2CTest = false,
         SPITest = false
@@ -284,11 +271,8 @@ if LuaTaskTestConfig.RS485Test then
     require "RS485Test"
 end
 
-for k, v in pairs(LuaTaskTestConfig.cryptoTest) do
-    if v then
-        require "CryptoTest"
-        break
-    end
+if LuaTaskTestConfig.cryptoTest then
+    require "CryptoTest"
 end
 
 for k, v in pairs(LuaTaskTestConfig.i2cAndSpiTest) do

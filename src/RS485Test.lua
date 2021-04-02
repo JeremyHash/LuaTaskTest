@@ -1,25 +1,25 @@
 -- RS485Test
 -- Author:LuatTest
 -- CreateDate:20210315
--- UpdateDate:20210315
+-- UpdateDate:20210329
 
 module(..., package.seeall)
 
 local function read()
-
-    sys.taskInit(function ( ... )
-        while true do
-            local data = uart.read(1, "*l")
-           
-            if not data or string.len(data) == 0 then break end
-    
-            log.info("RS485Test.readData", data)
-    
-            log.info("RS485Test.readDataHex", data:toHex())
-            sys.wait(100)
-            uart.write(1, data)
+    sys.taskInit(
+        function ()
+            while true do
+                local data = uart.read(1, "*l")
+            
+                if not data or string.len(data) == 0 then break end
+            
+                log.info("RS485Test.readData", data)
+            
+                log.info("RS485Test.readDataHex", data:toHex())
+                uart.write(1, data)
+            end
         end
-    end)
+    )
 end
 
 -- UART相关的测试必须要防止模块休眠，不然会有串口收发数据的问题
