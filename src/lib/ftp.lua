@@ -57,8 +57,8 @@ end
 -- @string username,string类型,用户名
 -- @string password,string类型,密码
 -- @number timeout,number类型,可选参数，接收超时时间，单位毫秒,默认为0
--- @number bool,bool,可选参数，默认为nil，ssl，是否为ssl连接，true表示是，其余表示否
--- @number table,table,可选参数，默认为nil，cert，ssl连接需要的证书配置，只有ssl参数为true时，才参数才有意义，cert格式如下：
+-- @bool ssl,可选参数，默认为nil，ssl，是否为ssl连接，true表示是，其余表示否
+-- @table,cert,可选参数，默认为nil，cert，ssl连接需要的证书配置，只有ssl参数为true时，才参数才有意义，cert格式如下：
 --     {
 --     caCert = "ca.crt", --CA证书文件(Base64编码 X.509格式)，如果存在此参数，则表示客户端会对服务器的证书进行校验；不存在则不校验
 --     clientCert = "client.crt", --客户端证书文件(Base64编码 X.509格式)，服务器对客户端的证书进行校验时会用到此参数

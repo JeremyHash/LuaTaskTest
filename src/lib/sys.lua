@@ -10,7 +10,7 @@ require "patch"
 module(..., package.seeall)
 
 -- lib脚本版本号，只要lib中的任何一个脚本做了修改，都需要更新此版本号
-SCRIPT_LIB_VER = "2.3.8"
+SCRIPT_LIB_VER = "2.3.9"
 
 -- TaskID最大值
 local TASK_TIMER_ID_MAX = 0x1FFFFFFF
@@ -89,7 +89,7 @@ end
 
 --- task任务条件等待函数（支持事件消息和定时器消息）
 -- 只能直接或者间接的被task任务主函数调用，调用本接口的task会挂起
--- @string messageId，消息ID，建议使用string类型
+-- @string id，消息ID，建议使用string类型
 -- @number[opt=nil] ms，延时时间，单位毫秒，最小1，最大0x7FFFFFFF
 --             实际上支持的最小超时时间是5毫秒，小于5毫秒的时间都会被转化为5毫秒
 -- @return result,data，分为如下三种情况：

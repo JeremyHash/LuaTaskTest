@@ -162,7 +162,7 @@ end)
 if LuaTaskTestConfig.modType == "8910" and LuaTaskTestConfig.netLed then
     require "netLed"
     -- 8910
-    pmd.ldoset(2, pmd.LDO_VLCD)
+    pmd.ldoset(15, pmd.LDO_VLCD)
     netLed.setup(true, 1, 4)
 elseif LuaTaskTestConfig.modType == "1802S" and LuaTaskTestConfig.netLed then
     require "netLed"
