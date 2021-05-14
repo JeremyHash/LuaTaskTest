@@ -7,10 +7,32 @@ module(..., package.seeall)
 
 local waitTime = 5000
 
+-- 蓝牙消息码
+-- [MSG_BLE_DATA_IND] 100
+-- [MSG_BT_AVRCP_DISCONNECT_IND] 27
+-- [MSG_BLE_FIND_SERVICE_IND] 71
+-- [MSG_BLE_SCAN_CNF] 64
+-- [MSG_BLE_FIND_CHARACTERISTIC_IND] 70
+-- [MSG_BLE_CONNECT_IND] 68
+-- [MSG_BLE_SCAN_IND] 66
+-- [MSG_BT_HFP_CALLSETUP_OUTGOING] 22
+-- [MSG_BLE_FIND_CHARACTERISTIC_UUID_IND] 72
+-- [MSG_BLE_DISCONNECT_IND] 69
+-- [MSG_BLE_DISCONNECT_CNF] 57
+-- [MSG_BLE_CONNECT_CNF] 56
+-- [MSG_BT_AVRCP_CONNECT_IND] 26
+-- [MSG_BT_HFP_RING_INDICATION] 25
+-- [MSG_BT_HFP_CALLSETUP_INCOMING] 23
+-- [MSG_BT_HFP_CONNECT_IND] 18
+
 rtos.on(
     rtos.MSG_BLUETOOTH,
     function(msg)
         local tag = "BluetoothTest"
+        log.info(tag .. ".rtosMsg", "table_info")
+        for k, v in pairs(msg) do
+            log.info(k, v)
+        end
         if msg.event == btcore.MSG_OPEN_CNF then
             sys.publish("BT_OPEN", msg.result)
         elseif msg.event == btcore.MSG_BLE_CONNECT_CNF then
@@ -41,6 +63,19 @@ rtos.on(
     end
 )
 
+-- 自定义服务
+local function service(uuid, struct)
+    btcore.addservice(uuid)
+    for i = 1, #struct do
+		btcore.addcharacteristic(struct[i][1], struct[i][2], struct[i][3])
+		if(type(struct[i][4]) == "table") then
+			for j = 1, #struct[i][4] do
+                btcore.adddescriptor(struct[i][4][j][1], struct[i][4][j][2])
+			end
+		end
+	end
+end
+
 if LuaTaskTestConfig.bluetoothTest.masterTest then
     sys.taskInit(
         function()
@@ -68,7 +103,7 @@ if LuaTaskTestConfig.bluetoothTest.masterTest then
                                     else
                                         local deviceJsonInfo = json.encode(msgData)
                                         log.info(tag .. ".deviceJsonInfo", deviceJsonInfo)
-                                        if (msgData.name == "LuatBleSlaveTest") then
+                                        if (msgData.name == "LuaTaskTestBleTest") then
                                             local slaveName = msgData.name
                                             local slaveAddrType = msgData.addr_type
                                             local slaveAddr = msgData.addr
@@ -89,16 +124,19 @@ if LuaTaskTestConfig.bluetoothTest.masterTest then
                                                     if not result then
                                                         log.error(tag .. ".findServiceInd", "没有发现服务")
                                                     else
-                                                        btcore.findcharacteristic(0xfee0)
+                                                        -- btcore.findcharacteristic(0xfee0)
+                                                        -- local _, result = sys.waitUntil("BT_FIND_CHARACTERISTIC_IND")
+                                                        btcore.findcharacteristic("9ecadc240ee5a9e093f3a3b50100406e")
                                                         local _, result = sys.waitUntil("BT_FIND_CHARACTERISTIC_IND")
                                                         if not result then
                                                             log.error(tag .. ".findServiceInd", "没有发现服务")
                                                         else
-                                                            btcore.opennotification(0xfee2)
-
+                                                            -- btcore.opennotification(0xfee2)
+                                                            btcore.opennotification("9ecadc240ee5a9e093f3a3b50200406e")
                                                             while true do
                                                                 local data = "LuaTaskTest.BluetoothTest.masterTest.data"
-                                                                local sendRes = btcore.send(data, 0xfee1, bt_connect.handle)
+                                                                -- local sendRes = btcore.send(data, 0xfee1, bt_connect.handle)
+                                                                local sendRes = btcore.send(data, "9ecadc240ee5a9e093f3a3b50300406e", bt_connect.handle)
                                                                 if sendRes == 0 then
                                                                     log.info(tag .. ".send", "蓝牙数据发送SUCCESS")
                                                                     sys.waitUntil("BT_DATA_IND", 5000)
@@ -170,9 +208,26 @@ if LuaTaskTestConfig.bluetoothTest.slaveTest then
                 if btcore.open(0) == 0 then
                     msgRes, msgData = sys.waitUntil("BT_OPEN", 5000)
                     if msgRes == true and msgData == 0 then
-                        log.info(tag .. ".open", "打开蓝牙SUCCESS")
-                        if btcore.setname("LuatBleSlaveTest") == 0 then
+                        log.info(tag .. ".open", "打开蓝牙从模式SUCCESS")
+                        if btcore.setname("LuaTaskTestBleTest") == 0 then
                             log.info(tag .. ".setName", "设置名称SUCCESS")
+                            local struct1 = {
+                                {0xfee1, 0x08, 0x0002},
+                                {0xfee2, 0x10, 0x0001, {
+                                                        {0x2902, 0x0001},
+                                                        {0x2901, "123456"}
+                                                       }
+                                }
+                            }
+                            local struct2 = {
+                                {"9ecadc240ee5a9e093f3a3b50200406e", 0x10, 0x0001, {{0x2902, 0x0001}}},
+                                {"9ecadc240ee5a9e093f3a3b50300406e", 0x0c, 0x0002}
+                            }
+                            btcore.setadvdata(string.fromHex("02010604ff000203"))
+                            btcore.setscanrspdata(string.fromHex("04ff000203"))
+                            --service(0xfee0, struct1)
+                            service("9ecadc240ee5a9e093f3a3b50100406e", struct2)
+	                        btcore.setadvparam(0x80, 0xa0, 0, 0, 0x07, 0, 0, "11:22:33:44:55:66")
                             if btcore.advertising(1) == 0 then
                                 log.info(tag .. ".advertising", "打开广播SUCCESS")
                                 msgRes, msgData = sys.waitUntil("BT_CONNECT_IND")
@@ -201,7 +256,8 @@ if LuaTaskTestConfig.bluetoothTest.slaveTest then
                                                 if data == "close" then
                                                     btcore.disconnect()
                                                 end
-                                                btcore.send("LuaTaskTest.BluetoothTest.slaveTest.data", 0xfee2, msgData.handle)
+                                                -- btcore.send("LuaTaskTest.BluetoothTest.slaveTest.data", 0xfee2, msgData.handle)
+                                                btcore.send("LuaTaskTest.BluetoothTest.slaveTest.data", "9ecadc240ee5a9e093f3a3b50200406e", msgData.handle)
                                             end
                                         else
                                             log.info(tag .. ".recv", "没有接收到数据")
@@ -217,10 +273,10 @@ if LuaTaskTestConfig.bluetoothTest.slaveTest then
                             log.error(tag .. ".setName", "设置名称FAIL")
                         end
                     else
-                        log.error(tag .. ".open", "打开蓝牙FAIL")
+                        log.error(tag .. ".open", "打开蓝牙从模式FAIL")
                     end
                 else
-                    log.error(tag .. ".open", "打开蓝牙FAIL")
+                    log.error(tag .. ".open", "打开蓝牙从模式FAIL")
                 end
                 sys.wait(5000)
             end

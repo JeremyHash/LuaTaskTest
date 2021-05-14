@@ -215,6 +215,10 @@ local function read()
 	end
 end
 
+local function nmeaCb(nmeaData)
+    log.info("GPSTest.nmeaCb", nmeaData)
+end
+
 if LuaTaskTestConfig.lbsLocTest.gpsLocTest then
     sys.taskInit(
         function ()
@@ -224,18 +228,19 @@ if LuaTaskTestConfig.lbsLocTest.gpsLocTest then
             -- uart.write(2, "$PCAS01,1*1D")
             -- uart.close(2)
 
-            uart.setup(2, 9600, 8, uart.PAR_NONE, uart.STOP_1)
-            uart.on(2, "receive", read)
+            -- uart.setup(2, 9600, 8, uart.PAR_NONE, uart.STOP_1)
+            -- uart.on(2, "receive", read)
+
+            require "gpsZkw"
+            require "agpsZkw"
+
+            log.info("GPSTest", "打开GPS")
+            gpsZkw.setUart(3, 9600, 8, uart.PAR_NONE, uart.STOP_1)
+            gpsZkw.open(gpsZkw.DEFAULT, {tag = "GPSLocTest"})
+            gpsZkw.setParseItem(true, nil, nil)
+            gpsZkw.setNmeaMode(2, nmeaCb)
+
+            sys.timerLoopStart(printGpsInfo, 5000)
         end
     )
-    
-    -- require "gpsZkw"
-    -- require "agpsZkw"
-    
-    -- log.info("GPSTest", "打开GPS")
-    -- -- gpsZkw.setUart(2, 115200, 8, uart.PAR_NONE, uart.STOP_1)
-    -- gpsZkw.open(gpsZkw.DEFAULT, {tag = "GPSLocTest"})
-    -- gpsZkw.setParseItem(true, nil, nil)
-
-    -- sys.timerLoopStart(printGpsInfo, 5000)
 end

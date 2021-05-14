@@ -44,6 +44,7 @@ LuaTaskTestConfig = {
         asyncTest    = false,
     },
     mqttTest   = false,
+    ftpTest    = false,
     updateTest = false,
     baseTest = {
         -- netTest，sysTest 要单独测试
@@ -128,6 +129,7 @@ require "ntp"
 require "http"
 require "socket"
 require "mqtt"
+require "ftp"
 require "pins"
 require "cc"
 require "sms"
@@ -208,6 +210,10 @@ end
 
 if LuaTaskTestConfig.mqttTest then
     require "MqttTest"
+end
+
+if LuaTaskTestConfig.ftpTest then
+    require "FtpTest"
 end
 
 for k, v in pairs(LuaTaskTestConfig.baseTest) do
@@ -317,6 +323,9 @@ ril.request("AT*EXASSERT=1")
 
 -- 开启APTRACE
 ril.request("AT^TRACECTRL=0,1,1")
+
+-- 默认关闭RNDIS网卡
+ril.request("AT+RNDISCALL=0,1")
 
 --启动系统框架
 sys.init(0, 0)
