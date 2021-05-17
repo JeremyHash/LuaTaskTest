@@ -5,6 +5,12 @@
 
 module(..., package.seeall)
 
+local ftp_server_addr = "36.7.87.100"
+local ftp_port = 21
+local ftp_user_name = "User"
+local ftp_password = "123456"
+local ftp_mode = "PASV"
+
 local waitTime = 3000
 local tag = "FtpTest"
 local testPath = "/Luat_Lua_FTP_Test"
@@ -13,7 +19,7 @@ sys.taskInit(
     function ()
         local upload_file_md5 = crypto.md5("/lua/logo_color.png", "file")
         while true do
-            local res_code, res_msg = ftp.login("PASV", "36.7.87.100", 21, "user", "123456")
+            local res_code, res_msg = ftp.login(ftp_mode, ftp_server_addr, ftp_port, ftp_user_name, ftp_password)
             -- log.info(tag .. ".login", res_code, res_msg)
             if res_code ~= "200" then
                 log.error(tag .. ".login", "FAIL")
