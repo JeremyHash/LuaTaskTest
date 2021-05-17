@@ -43,6 +43,7 @@ LuaTaskTestConfig = {
         syncUdpTest  = false,
         asyncTest    = false,
     },
+    asyncSocketTest =true,
     mqttTest   = false,
     ftpTest    = false,
     updateTest = false,
@@ -206,6 +207,10 @@ for k, v in pairs(LuaTaskTestConfig.socketTest) do
         require "SocketTest"
         break
     end
+end
+
+if LuaTaskTestConfig.asyncSocketTest then
+    require "AsyncSocketTest"
 end
 
 if LuaTaskTestConfig.mqttTest then
