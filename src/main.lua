@@ -43,6 +43,7 @@ LuaTaskTestConfig = {
         syncUdpTest  = false,
         asyncTest    = false,
     },
+    websocketTest=true,
     asyncSocketTest =true,
     mqttTest   = false,
     ftpTest    = false,
@@ -129,6 +130,7 @@ require "misc"
 require "ntp"
 require "http"
 require "socket"
+require "websocket"
 require "mqtt"
 require "ftp"
 require "pins"
@@ -207,6 +209,10 @@ for k, v in pairs(LuaTaskTestConfig.socketTest) do
         require "SocketTest"
         break
     end
+end
+
+if LuaTaskTestConfig.websocketTest then
+    require "WebSocketTest"
 end
 
 if LuaTaskTestConfig.asyncSocketTest then
