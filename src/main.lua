@@ -39,14 +39,14 @@ LuaTaskTestConfig = {
         deleteTest                     = false
     },
     socketTest = {
-        syncTcpTest  = false,
-        syncUdpTest  = false,
-        asyncTest    = false,
+        syncTcpTest = false,
+        syncUdpTest = false,
+        asyncTest   = false,
     },
-    asyncSocketTest =true,
-    mqttTest   = false,
-    ftpTest    = false,
-    updateTest = false,
+    asyncSocketTest = false,
+    mqttTest        = false,
+    ftpTest         = false,
+    updateTest      = false,
     baseTest = {
         -- netTest，sysTest 要单独测试
         netTest      = false,

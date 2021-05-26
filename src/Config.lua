@@ -1,3 +1,8 @@
+-- NVM功能模块使用的Config文件
+-- Author:LuatTest
+-- CreateDate:20201016
+-- UpdateDate:20210520
+
 module(..., package.seeall)
 
 strPara = "LuatTest1"

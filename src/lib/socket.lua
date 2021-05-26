@@ -387,6 +387,7 @@ function mt:close()
             if reason == "RESPONSE" then break end
         end
     end
+    self.id = nil
     if self.connected then
         self.connected = false
         if socketsConnected>0 then

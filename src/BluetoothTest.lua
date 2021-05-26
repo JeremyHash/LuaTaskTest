@@ -225,7 +225,7 @@ if LuaTaskTestConfig.bluetoothTest.slaveTest then
                             }
                             btcore.setadvdata(string.fromHex("02010604ff000203"))
                             btcore.setscanrspdata(string.fromHex("04ff000203"))
-                            --service(0xfee0, struct1)
+                            -- service(0xfee0, struct1)
                             service("9ecadc240ee5a9e093f3a3b50100406e", struct2)
 	                        btcore.setadvparam(0x80, 0xa0, 0, 0, 0x07, 0, 0, "11:22:33:44:55:66")
                             if btcore.advertising(1) == 0 then

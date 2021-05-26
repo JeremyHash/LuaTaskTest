@@ -1,7 +1,7 @@
 -- FtpTest
 -- Author:LuatTest
 -- CreateDate:20210510
--- UpdateDate:20210510
+-- UpdateDate:20210518
 
 module(..., package.seeall)
 
@@ -11,13 +11,15 @@ local ftp_user_name = "User"
 local ftp_password = "123456"
 local ftp_mode = "PASV"
 
-local waitTime = 3000
+local waitTime = 300000
 local tag = "FtpTest"
 local testPath = "/Luat_Lua_FTP_Test"
+local test_upload_local_file = "/lua/logo_color.png"
+local test_download_local_file = "/ftp_download_file"
 
 sys.taskInit(
     function ()
-        local upload_file_md5 = crypto.md5("/lua/logo_color.png", "file")
+        local upload_file_md5 = crypto.md5(test_upload_local_file, "file")
         while true do
             local res_code, res_msg = ftp.login(ftp_mode, ftp_server_addr, ftp_port, ftp_user_name, ftp_password)
             -- log.info(tag .. ".login", res_code, res_msg)
@@ -41,8 +43,8 @@ sys.taskInit(
             log.info(tag .. ".list." .. testPath .. "/ftp_get_test.txt", res_code, res_msg)
             res_code, res_msg = ftp.pwd()
             log.info(tag .. ".pwd ", res_code, res_msg)
-            res_code, res_msg = ftp.deletefolder(testPath .. "/DIRTest/")
-            log.info(tag .. ".deletefolder ", res_code, res_msg)
+            res_code, res_msg = ftp.rmd(testPath .. "/DIRTest/")
+            log.info(tag .. ".rmd ", res_code, res_msg)
             res_code, res_msg = ftp.mkd(testPath .. "/DIRTest/")
             log.info(tag .. ".mkd ", res_code, res_msg)
             res_code, res_msg = ftp.cwd(testPath .. "/DIRTest/")
@@ -55,17 +57,21 @@ sys.taskInit(
             log.info(tag .. ".ftp_pwd ", res_code, res_msg)
             res_code, res_msg = ftp.deletefile(testPath .. "/logo_color.png")
             log.info(tag .. ".deletefile ", res_code, res_msg)
-            res_code, res_msg = ftp.upload(testPath .. "/logo_color.png", "/lua/logo_color.png")
-            log.info(tag .. ".upload ", res_code, res_msg)
-            if io.exists("/ftp_download_file.png") then
-                log.info(tag .. ".remove", os.remove("/ftp_download_file.png"))
+            res_code, res_msg = ftp.upload(testPath .. "/logo_color.png", test_upload_local_file)
+            if res_code ~= "200" then
+                log.error(tag .. ".upload", "FAIL")
+                continue
             end
-            res_code, res_msg = ftp.download(testPath .. "/logo_color.png", "/ftp_download_file.png")
+            res_code, res_msg = ftp.download(testPath .. "/logo_color.png", test_download_local_file)
             log.info(tag .. ".download ", res_code, res_msg)
-            local download_file_md5 = crypto.md5("/ftp_download_file.png", "file")
+            if res_code ~= "200" then
+                log.error(tag .. ".download", "FAIL")
+                continue
+            end
+            local download_file_md5 = crypto.md5(test_download_local_file, "file")
             print(upload_file_md5)
             print(download_file_md5)
-            print(io.fileSize("/ftp_download_file.png"))
+            print(io.fileSize(test_download_local_file))
             if download_file_md5 == upload_file_md5 then
                 log.info(tag .. ".MD5Check", "SUCCESS")
             else
