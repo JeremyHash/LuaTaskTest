@@ -4,25 +4,27 @@
 合宙LuaTask 自动化测试工具
 #### 软件架构
  + Lua V5.1
- + LuaTask V2.3.8
+ + LuaTask V2.3.9
 #### 功能模块
  + consoleTest
- + aliyunTest       
- + httpTest         
- + socketTest       
- + mqttTest   
- + updateTest      
- + baseTest         
- + audioTest        
- + gpioTest         
- + fsTest           
+ + aliyunTest
+ + httpTest
+ + socketTest
+ + webSocketTest
+ + mqttTest
+ + ftpTest
+ + updateTest
+ + baseTest
+ + audioTest
+ + gpioTest
+ + fsTest
  + keyPadCallSmsTest
- + dispTest         
- + lbsLocTest       
- + uartTransferTest 
+ + dispTest
+ + lbsLocTest
+ + uartTransferTest
  + RS485Test
- + cryptoTest       
- + i2cAndSpiTest    
+ + cryptoTest
+ + i2cAndSpiTest
  + bluetoothTest
 #### 使用说明
  + 测试单元的开关控制查看src/main.lua
@@ -56,12 +58,15 @@ LuaTaskTestConfig = {
         deleteTest                     = false
     },
     socketTest = {
-        syncTcpTest  = false,
-        syncUdpTest  = false,
-        asyncTest    = false,
+        syncTcpTest = false,
+        syncUdpTest = false,
+        asyncTest   = false,
     },
-    mqttTest   = false,
-    updateTest = false,
+    webSocketTest   = false,
+    asyncSocketTest = false,
+    mqttTest        = false,
+    ftpTest         = false,
+    updateTest      = false,
     baseTest = {
         -- netTest，sysTest 要单独测试
         netTest      = false,
@@ -98,7 +103,8 @@ LuaTaskTestConfig = {
     },
     fsTest = {
         sdCardTest      = false,
-	    insideFlashTest = false
+	    insideFlashTest = false,
+        openDirTest     = false
     },
     keyPadCallSmsTest = {
         keypadTest = false,
@@ -118,22 +124,9 @@ LuaTaskTestConfig = {
         wifiLocTest = false,
         gpsLocTest  = false
     },
-    uartTransferTest  = false,
-    RS485Test         = false,
-    cryptoTest = {
-        base64Test     = false,
-        hmacMd5Test    = false,
-        xxteaTest      = false,
-        flowMd5Test    = false,
-        md5Test        = false,
-        hmacSha1Test   = false,
-        sha1Test       = false,
-        sha256Test     = false,
-        hmacSha256Test = false,
-        crcTest        = false,
-        aesTest        = false,
-        rsaTest        = false
-    },
+    uartTransferTest = false,
+    RS485Test        = false,
+    cryptoTest       = false,
     i2cAndSpiTest = {
         I2CTest = false,
         SPITest = false

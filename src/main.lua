@@ -43,7 +43,7 @@ LuaTaskTestConfig = {
         syncUdpTest = false,
         asyncTest   = false,
     },
-    websocketTest   = false,
+    webSocketTest   = false,
     asyncSocketTest = false,
     mqttTest        = false,
     ftpTest         = false,
@@ -211,7 +211,7 @@ for k, v in pairs(LuaTaskTestConfig.socketTest) do
     end
 end
 
-if LuaTaskTestConfig.websocketTest then
+if LuaTaskTestConfig.webSocketTest then
     require "WebSocketTest"
 end
 
