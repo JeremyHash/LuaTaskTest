@@ -227,7 +227,7 @@ function ws:recvFrame()
     -- 获取有效载荷数据
     if length > 0 then
         -- r, s = self.io:recv()
-        s=s:sub(5,5+length-1)
+        s=s:sub(3,3+length-1)
         -- if not r then return false, nil, "读取帧有效载荷数据失败!" end
     end
     -- 处理切片帧
