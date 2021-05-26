@@ -325,6 +325,95 @@ local function rsaTest()
     log.info("rsaTest.verifyResult customer",verifyResult)
 end
 
+--- des算法（参考http://tool.chacuo.net/cryptdes）
+local function desTest()
+    local originStr = "DES ECB ZeroPadding test"
+    --加密模式：ECB；填充方式：ZeroPadding；密钥：12345678；密钥长度：64 bit
+    local encodeStr = crypto.des_encrypt("ECB", "ZERO", originStr, "12345678")
+    print(originStr, "encrypt", string.toHex(encodeStr))
+    --解密模式
+    log.info(tag .. ".decrypt", crypto.des_decrypt("ECB", "ZERO", encodeStr, "12345678"))
+
+    originStr = "DES ECB PKcs5Padding test"
+    --加密模式：ECB；填充方式：Pkcs5Padding；密钥：12345678；密钥长度：64 bit
+    encodeStr = crypto.des_encrypt("ECB","PKCS5",originStr,"12345678")
+    print(originStr,"encrypt",string.toHex(encodeStr))
+    log.info(tag .. ".decrypt",crypto.des_decrypt("ECB","PKCS5",encodeStr,"12345678"))
+
+    originStr = "DES ECB PKcs7Padding test"
+    --加密模式：ECB；填充方式：Pkcs7Padding；密钥：12345678；密钥长度：64 bit
+    encodeStr = crypto.des_encrypt("ECB","PKCS7",originStr,"12345678")
+    print(originStr,"encrypt",string.toHex(encodeStr))
+    --解密模式
+    log.info(tag .. ".decrypt",crypto.des_decrypt("ECB","PKCS7",encodeStr,"12345678"))
+
+    originStr = "DES ECB NonePadding test"
+    --加密模式：ECB；填充方式：NonePadding；密钥：12345678；密钥长度：64 bit
+    encodeStr = crypto.des_encrypt("ECB","NONE",originStr,"12345678")
+    print(originStr,"encrypt",string.toHex(encodeStr))
+    --解密模式
+    log.info(tag .. ".decrypt",crypto.des_decrypt("ECB","NONE",encodeStr,"12345678"))
+
+    originStr = "DES CBC ZeroPadding test"
+    --加密模式：CBC；填充方式：ZeroPadding；密钥：12345678；密钥长度：64 bit；偏移量：12345678
+    local encodeStr = crypto.des_encrypt("CBC","ZERO",originStr,"12345678","12345678")
+    print(originStr,"encrypt",string.toHex(encodeStr))
+    --解密模式
+    log.info(tag .. ".decrypt",crypto.des_decrypt("CBC","ZERO",encodeStr,"12345678","12345678"))
+
+    originStr = "DES CBC Pkcs5Padding test"
+    --加密模式：CBC；填充方式：Pkcs5Padding；密钥：12345678；密钥长度：64 bit；偏移量：12345678
+    encodeStr = crypto.des_encrypt("CBC","PKCS5",originStr,"12345678","12345678")
+    print(originStr,"encrypt",string.toHex(encodeStr))
+    log.info(tag .. ".decrypt",crypto.des_decrypt("CBC","PKCS5",encodeStr,"12345678","12345678"))
+
+    originStr = "DES CBC Pkcs7Padding test"
+    --加密模式：CBC；填充方式：Pkcs7Padding；密钥：12345678；密钥长度：64 bit；偏移量：12345678
+    encodeStr = crypto.des_encrypt("CBC","PKCS7",originStr,"12345678","12345678")
+    print(originStr,"encrypt",string.toHex(encodeStr))
+    log.info(tag .. ".decrypt",crypto.des_decrypt("CBC","PKCS7",encodeStr,"12345678","12345678"))
+
+    originStr = "DES CBC NonePadding test"
+    --加密模式：CBC；填充方式：NonePadding；密钥：12345678；密钥长度：64 bit: 偏移量：12345678
+    encodeStr = crypto.des_encrypt("CBC","NONE",originStr,"12345678","12345678")
+    print(originStr,"encrypt",string.toHex(encodeStr))
+    --解密模式
+    log.info(tag .. ".decrypt",crypto.des_decrypt("CBC","NONE",encodeStr,"12345678","12345678"))
+
+end
+
+--DES3算法测试
+local function des3Test()
+    local originStr = "DES3 ECB ZeroPadding test"
+    --加密模式：DES3 EBC；填充方式：ZEROPadding；密钥：123456781234567812345678; 偏移：12345678
+    encodeStr = crypto.des3_encrypt("ECB","ZERO",originStr,"123456781234567812345678","12345678")
+    print(originStr,"encrypt",string.toHex(encodeStr))
+    --解密模式
+    log.info(tag..".decrypt",crypto.des3_decrypt("ECB","ZERO",encodeStr,"123456781234567812345678","12345678"))
+
+    originStr = "DES3 ECB PKcs5Padding test"
+    --加密模式：DES3 EBC；填充方式：Pkcs5Padding；密钥：123456781234567812345678; 偏移：12345678
+    encodeStr = crypto.des3_encrypt("ECB","PKCS5",originStr,"123456781234567812345678","12345678")
+    print(originStr,"encrypt",string.toHex(encodeStr))
+    --解密模式
+    log.info(tag..".decrypt",crypto.des3_decrypt("ECB","PKCS5",encodeStr,"123456781234567812345678","12345678"))
+
+    originStr = "DES3 ECB PKcs7Padding test"
+    --加密模式：DES3 ECB；填充方式：Pkcs7Padding；密钥：123456781234567812345678;偏移：123456781234567812345678
+    encodeStr = crypto.des3_encrypt("ECB","PKCS7",originStr,"123456781234567812345678","123456781234567812345678")
+    print(originStr,"encrypt",string.toHex(encodeStr))
+    --解密模式
+    log.info(tag..".decrypt",crypto.des3_decrypt("ECB","PKCS7",encodeStr,"123456781234567812345678"))
+
+    originStr = "DES3 ECB NonePadding test succes"
+    --加密模式：DES3 ECB；填充方式：NonePadding；密钥：123456781234567812345678；密钥长度：64 bit: 偏移量：123456781234567812345678
+    encodeStr = crypto.des3_encrypt("ECB","NONE",originStr,"123456781234567812345678","123456781234567812345678")
+    print(originStr,"encrypt",string.toHex(encodeStr))
+    --解密模式
+    log.info(tag .. ".decrypt",crypto.des3_decrypt("ECB","NONE",encodeStr,"123456781234567812345678"))
+
+end
+
 sys.taskInit(
     function ()
         while true do
@@ -341,6 +430,8 @@ sys.taskInit(
             crcTest()
             aesTest()
             rsaTest()
+            desTest()
+            des3Test()
         end
     end
 )

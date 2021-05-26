@@ -1,6 +1,10 @@
+-- AsyncSocketTest
+-- Author:LuatTest
+-- CreateDate:20210526
+-- UpdateDate:20210526
+
 module(..., package.seeall)
-require "misc"
-require "socket"
+local tag = "AsyncSocketTest"
 -- 此处的IP和端口请填上你自己的socket服务器和端口
 --local ip, port, c = "180.97.80.55", "12415"
 local ip, port, c = "iot.kang-cloud.com", "8090" --
@@ -74,26 +78,26 @@ sys.taskInit(function()
     while true do
         while not socket.isReady() do 
 			sys.wait(1000) 
-			log.info("AsyncSocketTest", "socket准备中，请等待" )
+			log.info(tag,"socket准备中，请等待" )
 		end
-		log.info("AsyncSocketTest", "socket 准备成功" )
+		log.info(tag,"socket 准备成功" )
         asyncClient = socket.tcp()
         while not asyncClient:connect(ip, port) do 
 			sys.wait(2000) 
-			log.info("AsyncSocketTest", "asyncClient连接中，请等待" )	
+			log.info(tag,"asyncClient连接中，请等待" )	
 		end
-		log.info("AsyncSocketTest", "asyncClient连接成功" )
+		log.info(tag,"asyncClient连接成功" )
 	
 		if asyncClient:asyncSend( get_protocol_str(DEV_LOGIN_CMD) ) then
-			log.info("AsyncSocketTest", "asyncClient 发送成功" )
+			log.info(tag, "asyncClient 发送成功" )
 		else 
-			log.info("AsyncSocketTest", "asyncClient 发送失败" )
+			log.info(tag, "asyncClient 发送失败" )
 		end
         clientConnected = true
         while asyncClient:asyncSelect(60, "ping") do end
         clientConnected = false
         asyncClient:close()
-		log.info("AsyncSocketTest", "asyncClient 关闭" )
+		log.info(tag, "asyncClient 关闭" )
     end
 end)
 
