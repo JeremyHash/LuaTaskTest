@@ -45,6 +45,7 @@ LuaTaskTestConfig = {
     },
     webSocketTest   = false,
     asyncSocketTest = false,
+    rtmpTest        = false,
     mqttTest        = false,
     ftpTest         = false,
     updateTest      = false,
@@ -141,6 +142,8 @@ require "pm"
 require "nvm"
 require "aLiYun"
 require "pb"
+require "ril"
+require "audio"
 -- require "wdt"
 
 if LuaTaskTestConfig.modType == "8910" then
@@ -217,6 +220,10 @@ end
 
 if LuaTaskTestConfig.asyncSocketTest then
     require "AsyncSocketTest"
+end
+
+if LuaTaskTestConfig.rtmpTest then
+    require "RtmpTest"
 end
 
 if LuaTaskTestConfig.mqttTest then
