@@ -76,6 +76,7 @@ LuaTaskTestConfig = {
         audioStreamTest   = false,
         recordTest        = false
     },
+    audioParamTest= true,
     usbAudioTest = false,
     gpioTest = {
         gpioIntTest = false,
@@ -246,6 +247,10 @@ for k, v in pairs(LuaTaskTestConfig.audioTest) do
         require "AudioTest"
         break
     end
+end
+
+if LuaTaskTestConfig.audioParamTest then
+    require "AudioparamTest"
 end
 
 if LuaTaskTestConfig.usbAudioTest then
