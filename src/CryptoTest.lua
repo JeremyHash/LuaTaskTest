@@ -249,7 +249,7 @@ local function aesTest()
     print(originStr,"encrypt",string.toHex(encodeStr))
     log.info(tag .. ".decrypt",crypto.aes_decrypt("CTR","PKCS7",encodeStr,"1234567890123456","1234567890666666"))
 
-    originStr = "AES128 CTR NonePadding test"
+    originStr = "AES128 CTR NonePadding test tttt"
     --加密模式：CTR；填充方式：NonePadding；密钥：1234567890123456；密钥长度：128 bit；偏移量：1234567890666666
     encodeStr = crypto.aes_encrypt("CTR","NONE",originStr,"1234567890123456","1234567890666666")
     print(originStr,"encrypt",string.toHex(encodeStr))
@@ -273,7 +273,7 @@ local function aesTest()
     print(originStr,"encrypt",string.toHex(encodeStr))
     log.info(tag .. ".decrypt",crypto.aes_decrypt("CTR","PKCS7",encodeStr,"123456789012345678901234","1234567890666666"))
 
-    originStr = "AES192 CTR NonePadding test"
+    originStr = "AES192 CTR NonePadding test tttt"
     --加密模式：CTR；填充方式：NonePadding；密钥：123456789012345678901234；密钥长度：192 bit；偏移量：1234567890666666
     encodeStr = crypto.aes_encrypt("CTR","NONE",originStr,"123456789012345678901234","1234567890666666")
     print(originStr,"encrypt",string.toHex(encodeStr))
@@ -297,7 +297,7 @@ local function aesTest()
     print(originStr,"encrypt",string.toHex(encodeStr))
     log.info(tag .. ".decrypt",crypto.aes_decrypt("CTR","PKCS7",encodeStr,"12345678901234567890123456789012","1234567890666666"))
 
-    originStr = "AES256 CTR NonePadding test"
+    originStr = "AES256 CTR NonePadding test tttt"
     --加密模式：CTR；填充方式：NonePadding；密钥：12345678901234567890123456789012；密钥长度：256 bit；偏移量：1234567890666666
     encodeStr = crypto.aes_encrypt("CTR","NONE",originStr,"12345678901234567890123456789012","1234567890666666")
     print(originStr,"encrypt",string.toHex(encodeStr))
