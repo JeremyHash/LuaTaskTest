@@ -43,6 +43,7 @@ LuaTaskTestConfig = {
         syncUdpTest = false,
         asyncTest   = false,
     },
+    txiotTest       = false,
     webSocketTest   = false,
     asyncSocketTest = false,
     rtmpTest        = false,
@@ -76,8 +77,8 @@ LuaTaskTestConfig = {
         audioStreamTest   = false,
         recordTest        = false
     },
-    audioParamTest= true,
-    usbAudioTest = false,
+    audioParamTest = false,
+    usbAudioTest   = false,
     gpioTest = {
         gpioIntTest = false,
         gpioInTest  = false,
@@ -213,6 +214,10 @@ for k, v in pairs(LuaTaskTestConfig.socketTest) do
         require "SocketTest"
         break
     end
+end
+
+if LuaTaskTestConfig.txiotTest then
+    require "TxiotTest"
 end
 
 if LuaTaskTestConfig.webSocketTest then
