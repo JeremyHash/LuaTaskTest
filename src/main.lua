@@ -76,8 +76,8 @@ LuaTaskTestConfig = {
         audioStreamTest   = false,
         recordTest        = false
     },
-    audioParamTest= false,
-    usbAudioTest = false,
+    audioParamTest = false,
+    usbAudioTest   = false,
     gpioTest = {
         gpioIntTest = false,
         gpioInTest  = false,
