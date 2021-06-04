@@ -212,7 +212,7 @@ if LuaTaskTestConfig.bluetoothTest.slaveTest then
                         if btcore.setname("LuaTaskTestBleTest") == 0 then
                             log.info(tag .. ".setName", "设置名称SUCCESS")
                             local struct1 = {
-                                {0xfee1, 0x08, 0x0002},
+                                {0xfee1, 0x0c, 0x0002},
                                 {0xfee2, 0x10, 0x0001, {
                                                         {0x2902, 0x0001},
                                                         {0x2901, "123456"}
