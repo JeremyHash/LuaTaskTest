@@ -299,24 +299,20 @@ sys.taskInit(
 
             local getPlayVol = audio.getVolume()
 
-            print(playVol, getPlayVol)
-
             if getPlayVol == playVol then
                 log.info("AudioTest.PlayVolCheck", "SUCCESS")
             else
                 log.error("AudioTest.PlayVolCheck", "FAIL")
             end
 
-            local getMicVol = audio.getMicVolume()
+            -- 由于设置MIC音量使用的是MIC增益接口，所以此处无法进行MIC音量校验
+            -- local getMicVol = audio.getMicVolume()
 
-            print(micVol, getMicVol)
-
-            if getMicVol == micVol then
-                log.info("AudioTest.MicVolCheck", "SUCCESS")
-            else
-                log.error("AudioTest.MicVolCheck", "FAIL")
-            end
-
+            -- if getMicVol == micVol then
+            --     log.info("AudioTest.MicVolCheck", "SUCCESS")
+            -- else
+            --     log.error("AudioTest.MicVolCheck", "FAIL")
+            -- end
 
             count = count + 1
             playVol = (playVol == 7) and 0 or (playVol + 1)

@@ -327,23 +327,27 @@ local function miscTest()
     log.info("MiscTest.GetCalib", misc.getCalib())
 
     local setSn = string.rep("12345678", 8)
-    misc.setSn(setSn, function() log.info("MiscTest.SetSnCb", "SUCCESS") end)
-
-    local getSn = misc.getSn()
-    log.info("MiscTest.GetSn", getSn)
-    if getSn == setSn then
-        log.info("MiscTest.GetSn", "SUCCESS")
-    else
-        log.error("MiscTest.GetSn", "FAIL")
-    end
-
-    local getSnLen = string.len(getSn)
-    log.info("MiscTest.GetSn.len", getSnLen)
-    if getSnLen == 64 then
-        log.info("MiscTest.GetSn.len", "SUCCESS")
-    else
-        log.error("MiscTest.GetSn.len", "FAIL")
-    end
+    misc.setSn(
+        setSn,
+        function()
+            log.info("MiscTest.SetSnCb", "SUCCESS")
+            local getSn = misc.getSn()
+            log.info("MiscTest.GetSn", getSn)
+            if getSn == setSn then
+                log.info("MiscTest.GetSn", "SUCCESS")
+            else
+                log.error("MiscTest.GetSn", "FAIL")
+            end
+        
+            local getSnLen = string.len(getSn)
+            log.info("MiscTest.GetSn.len", getSnLen)
+            if getSnLen == 64 then
+                log.info("MiscTest.GetSn.len", "SUCCESS")
+            else
+                log.error("MiscTest.GetSn.len", "FAIL")
+            end
+        end
+    )
 
     log.info("MiscTest.GetImei", misc.getImei())
     log.info("MiscTest.GetVbatt", misc.getVbatt())
