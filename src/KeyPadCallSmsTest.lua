@@ -188,6 +188,7 @@ local function smsTest()
 end
 
 if LuaTaskTestConfig.keyPadCallSmsTest.smsTest then
+    require "sms"
     sms.setNewSmsCb(procnewsms)
     sys.timerLoopStart(smsTest, 30000)
 end

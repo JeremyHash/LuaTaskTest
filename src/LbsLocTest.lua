@@ -202,19 +202,6 @@ if LuaTaskTestConfig.lbsLocTest.wifiLocTest then
     sys.timerLoopStart(wifiLocTest, loopTime)
 end
 
-local function read()
-    local uartData = ""
-    while true do        
-        uartData = uart.read(2, "*l")
-	
-        if not uartData or string.len(uartData) == 0 then 
-			break 
-        end
-        
-        log.info("GPSNMEADATA", uartData)
-	end
-end
-
 local function nmeaCb(nmeaData)
     log.info("GPSTest.nmeaCb", nmeaData)
 end
@@ -237,8 +224,6 @@ if LuaTaskTestConfig.lbsLocTest.gpsLocTest then
             log.info("GPSTest", "打开GPS")
             gpsZkw.setUart(3, 9600, 8, uart.PAR_NONE, uart.STOP_1)
             gpsZkw.open(gpsZkw.DEFAULT, {tag = "GPSLocTest"})
-            gpsZkw.setParseItem(true, nil, nil)
-            gpsZkw.setNmeaMode(2, nmeaCb)
 
             sys.timerLoopStart(printGpsInfo, 5000)
         end

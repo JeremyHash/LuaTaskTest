@@ -1,12 +1,12 @@
---音频参数写入测试
--- AudioparamSTest
+-- 音频参数写入测试
+-- AudioParamTest
 -- Author:LuatTest
 -- CreateDate:20210528
 -- UpdateDate:20210528
 
-module(...,package.seeall)
+module(..., package.seeall)
 
-local tag="AudioparamTest"
+local tag = "AudioParamTest"
 
 sys.taskInit(function()
 while true do

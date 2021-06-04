@@ -5,10 +5,8 @@
 
 module(..., package.seeall)
 
-local waitTime1 = 8000
+local waitTime1 = 10000
 local waitTime2 = 300000
-
-local tag = "FsTest"
 
 local function readFile(filename)
 	local filehandle = io.open(filename, "r")
@@ -93,21 +91,22 @@ end
 if LuaTaskTestConfig.fsTest.sdCardTest then
 	sys.taskInit(
 		function()
+			local tag = "FsTest.sdCardTest"
 			local sdcardPath = "/sdcard0"
 	        sys.wait(waitTime1)
 	        -- 挂载SD卡
-			log.info(tag .. ".SdTest", "开始挂载SD卡")
+			log.info(tag, "开始挂载SD卡")
 	        io.mount(io.SDCARD)
 		
 	        -- 第一个参数1表示sd卡
 	        -- 第二个参数1表示返回的总空间单位为KB
 	        local sdCardTotalSize = rtos.get_fs_total_size(1, 1)
-	        log.info("FsTest.SdCard0.TotalSize", sdCardTotalSize .. " KB")
+	        log.info(tag .. ".TotalSize", sdCardTotalSize .. " KB")
 		
 	        local sdCardFreeSize = rtos.get_fs_free_size(1, 1)
-	        log.info("FsTest.SdCard0.FreeSize", sdCardFreeSize .. " KB")
+	        log.info(tag .. ".FreeSize", sdCardFreeSize .. " KB")
 		
-			log.info("FsTest.getDirContent." .. sdcardPath)
+			log.info(tag .. ".getDirContent." .. sdcardPath)
 	        getDirContent(sdcardPath)
 
 			local testPath = sdcardPath .. "/FsTestPath"
@@ -115,7 +114,7 @@ if LuaTaskTestConfig.fsTest.sdCardTest then
 
 			deleteFile(testPath .. "/FsWriteTest1.txt")
 			if mkdirRes then
-				log.info("FsTest.SdCardTest.MkdirRes", "SUCCESS")
+				log.info(tag .. ".MkdirRes", "SUCCESS")
 				while true do
 					audio.play(5, "FILE", sdcardPath .. "/sms.mp3", 3)
 					sys.wait(3000)
@@ -126,7 +125,7 @@ if LuaTaskTestConfig.fsTest.sdCardTest then
 					sys.wait(waitTime2)
 				end
 			else
-				log.error("FsTest.SdCardTest.MkdirRes", "FAIL")
+				log.error(tag .. ".MkdirRes", "FAIL")
 			end
 
 
@@ -140,6 +139,7 @@ end
 if LuaTaskTestConfig.fsTest.insideFlashTest then
 	sys.taskInit(
 		function ()
+			local tag = "FsTest.insideFlashTest"
 			sys.wait(waitTime1)
 			log.info(tag .. ".getDirContent./")
 	        getDirContent("/")
@@ -152,7 +152,7 @@ if LuaTaskTestConfig.fsTest.insideFlashTest then
 			end
 
 			if rtos.make_dir(testPath) then
-				log.info(tag .. ".FlashTest.make_dir", "SUCCESS")
+				log.info(tag .. ".make_dir", "SUCCESS")
 				while true do
 					writeFileA(testPath .. "/FsWriteTest1.txt", "This is a FsWriteATest")
 					log.info(tag .. "." .. testPath .. "/FsWriteTest1.txt.fileSize", io.fileSize(testPath .. "/FsWriteTest1.txt") .. "Bytes")
@@ -191,14 +191,14 @@ end
 if LuaTaskTestConfig.fsTest.openDirTest then
 	sys.taskInit(
 		function ()
+			local tag = "FsTest.openDirTest"
 			local dirTable = {"/", "/nvm", "/openDirTest"}
-			sys.wait(waitTime1)
 			while true do
+				sys.wait(waitTime1)
 				for k, v in pairs(dirTable) do
-					log.info(tag .. ".openDirTest", v)
+					log.info(tag, v)
 					getDirContent(v)
 				end
-				sys.wait(waitTime1)
 			end
 		end
 	)
