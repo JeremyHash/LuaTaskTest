@@ -43,6 +43,7 @@ LuaTaskTestConfig = {
         syncUdpTest = false,
         asyncTest   = false,
     },
+    lvglTest        = false,
     txiotTest       = false,
     webSocketTest   = false,
     asyncSocketTest = false,
@@ -213,6 +214,10 @@ for k, v in pairs(LuaTaskTestConfig.socketTest) do
         require "SocketTest"
         break
     end
+end
+
+if LuaTaskTestConfig.lvglTest then
+    require "LvglTest"
 end
 
 if LuaTaskTestConfig.txiotTest then
