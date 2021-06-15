@@ -530,7 +530,7 @@ function page9create()
 end
 
 scrs = {page1create, page2create, page3create, page4create, page5create, page6create, page7create, page8create, page9create}
-
+obj={}
 local function empty()
 	c = lvgl.cont_create(nil, nil)
 	img = lvgl.img_create(c, nil)
@@ -542,15 +542,18 @@ end
 sys.taskInit(function ()
     local count = 1
     lvgl.init(empty, nil)
-    while true do 
-       sys.wait(2000)
-       log.info(tag , "第" .. count .. "次")
-       sys.wait(1000)
+    sys.wait(1000)
        for k, v in ipairs(scrs) do
-    	   c = v()
-    	   lvgl.disp_load_scr(c)
-    	   sys.wait(5000)
+         obj[#obj + 1] = v()
+         sys.wait(1000)
        end
-       count = count + 1
-    end
+
+    while true do
+        log.info(tag , "第" .. count .. "次")
+        for i = 1, #obj do
+            lvgl.disp_load_scr(obj[i])
+            sys.wait(5000)
+        end
+        count = count + 1
+    end      
 end)
