@@ -534,7 +534,7 @@ obj={}
 local function empty()
 	c = lvgl.cont_create(nil, nil)
 	img = lvgl.img_create(c, nil)
-	lvgl.img_set_src(img, "/lua/logo.png")
+	lvgl.img_set_src(img, "/lua/logo_color.png")
 	lvgl.obj_align(img, nil, lvgl.ALIGN_CENTER, 0, 0)
 	lvgl.disp_load_scr(c)
 end
