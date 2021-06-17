@@ -44,6 +44,7 @@ LuaTaskTestConfig = {
         asyncTest   = false,
     },
     lvglTest        = false,
+    ctwingTest      = false,
     txiotTest       = false,
     webSocketTest   = false,
     asyncSocketTest = false,
@@ -146,6 +147,7 @@ require "aLiYun"
 require "pb"
 require "ril"
 require "audio"
+require "patch"
 -- require "wdt"
 
 if LuaTaskTestConfig.modType == "8910" then
@@ -218,6 +220,10 @@ end
 
 if LuaTaskTestConfig.lvglTest then
     require "LvglTest"
+end
+
+if LuaTaskTestConfig.ctwingTest then
+    require "CtwingTest"
 end
 
 if LuaTaskTestConfig.txiotTest then
