@@ -45,6 +45,7 @@ LuaTaskTestConfig = {
     },
     lvglTest        = false,
     ctwingTest      = false,
+    protobufferTest = false,
     txiotTest       = false,
     webSocketTest   = false,
     asyncSocketTest = false,
@@ -224,6 +225,10 @@ end
 
 if LuaTaskTestConfig.ctwingTest then
     require "CtwingTest"
+end
+
+if LuaTaskTestConfig.protobufferTest then
+    require "ProtobufferTest"
 end
 
 if LuaTaskTestConfig.txiotTest then
