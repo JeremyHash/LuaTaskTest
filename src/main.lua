@@ -43,7 +43,6 @@ LuaTaskTestConfig = {
         syncUdpTest = false,
         asyncTest   = false,
     },
-    lvglTest        = false,
     ctwingTest      = false,
     protobufferTest = false,
     txiotTest       = false,
@@ -104,7 +103,8 @@ LuaTaskTestConfig = {
         photoTest       = false,
         photoSendTest   = false,
         qrcodeTest      = false,
-        uiWinTest       = false
+        uiWinTest       = false,
+        lvglTest        = true
     },
     lbsLocTest = {
         cellLocTest = false,
@@ -217,10 +217,6 @@ for k, v in pairs(LuaTaskTestConfig.socketTest) do
         require "SocketTest"
         break
     end
-end
-
-if LuaTaskTestConfig.lvglTest then
-    require "LvglTest"
 end
 
 if LuaTaskTestConfig.ctwingTest then
