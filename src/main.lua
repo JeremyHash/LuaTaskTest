@@ -39,15 +39,15 @@ LuaTaskTestConfig = {
         deleteTest                     = false
     },
     socketTest = {
-        syncTcpTest = false,
-        syncUdpTest = false,
-        asyncTest   = false,
+        syncTcpTest     = false,
+        syncUdpTest     = false,
+        asyncTest       = false,
+        asyncSocketTest = false,
     },
     ctwingTest      = false,
     protobufferTest = false,
     txiotTest       = false,
     webSocketTest   = false,
-    asyncSocketTest = false,
     rtmpTest        = false,
     mqttTest        = false,
     ftpTest         = false,
@@ -104,7 +104,7 @@ LuaTaskTestConfig = {
         photoSendTest   = false,
         qrcodeTest      = false,
         uiWinTest       = false,
-        lvglTest        = true
+        lvglTest        = false
     },
     lbsLocTest = {
         cellLocTest = false,
