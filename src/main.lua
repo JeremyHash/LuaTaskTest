@@ -42,7 +42,7 @@ LuaTaskTestConfig = {
         syncTcpTest     = false,
         syncUdpTest     = false,
         asyncTest       = false,
-        asyncSocketTest = true,
+        asyncSocketTest = false,
     },
     ctwingTest      = false,
     protobufferTest = false,
