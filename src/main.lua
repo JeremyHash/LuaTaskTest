@@ -43,11 +43,11 @@ LuaTaskTestConfig = {
         syncUdpTest     = false,
         asyncTest       = false,
         asyncSocketTest = false,
+        webSocketTest   = false,
     },
     ctwingTest      = false,
     protobufferTest = false,
     txiotTest       = false,
-    webSocketTest   = false,
     rtmpTest        = false,
     mqttTest        = false,
     ftpTest         = false,
@@ -229,10 +229,6 @@ end
 
 if LuaTaskTestConfig.txiotTest then
     require "TxiotTest"
-end
-
-if LuaTaskTestConfig.webSocketTest then
-    require "WebSocketTest"
 end
 
 if LuaTaskTestConfig.rtmpTest then
