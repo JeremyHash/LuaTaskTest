@@ -52,6 +52,7 @@ LuaTaskTestConfig = {
     mqttTest        = false,
     ftpTest         = false,
     updateTest      = false,
+    modbusTest      = false,
     baseTest = {
         -- netTest，sysTest 要单独测试
         netTest      = false,
@@ -241,6 +242,10 @@ end
 
 if LuaTaskTestConfig.ftpTest then
     require "FtpTest"
+end
+
+if LuaTaskTestConfig.modbusTest then
+    require "ModbusTest"
 end
 
 for k, v in pairs(LuaTaskTestConfig.baseTest) do
