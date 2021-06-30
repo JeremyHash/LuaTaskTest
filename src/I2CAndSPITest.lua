@@ -6,7 +6,7 @@
 module(..., package.seeall)
 
 -- I2C外设 使用 AHT10 温湿度传感器
-if LuaTaskTestConfig.i2cAndSpiTest.I2CTest then
+if LuaTaskTestConfig.i2cAndSpiTest.I2CTest_AHT10 then
     -- 使用I2C通道2
     local i2cId = 2
 
@@ -122,4 +122,91 @@ if LuaTaskTestConfig.i2cAndSpiTest.SPITest then
             end
         end
     )
+end
+
+-- I2C外设 使用 24C02
+if LuaTaskTestConfig.i2cAndSpiTest.I2CTest_24C02 then
+
+    if not math then
+        _G.math = {}
+        math.floor = function (n)
+            return n
+        end
+    end
+
+    local function write_24C02_bytes(data)
+    
+        local pages = math.floor(#data / 16)
+        log.info("需要写入页数", pages)
+    
+        local single = #data % 16
+        log.info("单独写入个数", single)
+    
+        for i = 1, pages do
+            local insertTable = {16 * (i - 1)}
+            for j = 1, 16 do
+                table.insert(insertTable, data[16 * (i - 1) + j])
+            end
+    
+            local sent = i2c.send(2, 0x50, insertTable)
+            log.info("I2CTest", "写入页", i, "写入字节数", sent)
+    
+            sys.wait(5)
+        end
+    
+        local insertTable = {16 * pages}
+    
+        for i = 1, single do
+            table.insert(insertTable, data[pages * 16 + i])
+        end
+    
+        local sent = i2c.send(2, 0x50, insertTable)
+    
+        sys.wait(5)
+    
+    end
+    
+    local function read_24C02_bytes(length)
+    
+        local read_res = ""
+    
+        for i = 0, length - 1 do
+            local sent = i2c.send(2, 0x50, i)
+    
+            sys.wait(5)
+    
+            local recv = i2c.recv(2, 0x50, 1)
+            read_res = read_res .. recv
+        end
+    
+        return read_res:toHex()
+    
+    end
+
+    sys.taskInit(function()
+    
+        sys.wait(3000)
+    
+        local i2c_speed = 100000
+    
+        local result = i2c.setup(2, i2c_speed)
+    
+        if result == i2c_speed then
+            log.info("I2CTest.setup", "SUCCESS")
+        else
+            log.info("I2CTest.setup", "FAIL")
+        end
+        
+        local t = {}
+        for i=1, 200 do
+            table.insert(t, i)
+        end
+        write_24C02_bytes(t)
+    
+        local read_res = read_24C02_bytes(200)
+
+        log.info("I2CTest.receive", read_res)
+    
+    end)
+
 end

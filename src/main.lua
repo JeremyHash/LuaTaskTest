@@ -115,8 +115,9 @@ LuaTaskTestConfig = {
     RS485Test        = false,
     cryptoTest       = false,
     i2cAndSpiTest = {
-        I2CTest = false,
-        SPITest = false
+        I2CTest_AHT10 = false,
+        I2CTest_24C02 = false,
+        SPITest       = false
     },
     bluetoothTest = {
         masterTest = false,
