@@ -117,7 +117,7 @@ if LuaTaskTestConfig.bluetoothTest.masterTest then
                                         else
                                             local deviceJsonInfo = json.encode(msgData)
                                             log.info(tag .. ".deviceJsonInfo", deviceJsonInfo)
-                                            if (msgData.name == "LuaBleTest111") then
+                                            if msgData.name == "LuaBleTest" then
                                                 local slaveName = msgData.name
                                                 local slaveAddrType = msgData.addr_type
                                                 local slaveAddr = msgData.addr
@@ -240,6 +240,8 @@ if LuaTaskTestConfig.bluetoothTest.slaveTest then
                             -- service(0xfee0, struct1)
                             service("9ecadc240ee5a9e093f3a3b50100406e", struct2)
 	                        btcore.setadvparam(0x80, 0xa0, 0, 0, 0x07, 0, 0, "11:22:33:44:55:66")
+                            -- btcore.setadvparam(0x80, 0xa0, 0, 0, 0x07, 2)
+                            -- btcore.addwhitelist("77:00:88:99:00:11",0)
                             if btcore.advertising(1) == 0 then
                                 log.info(tag .. ".advertising", "打开广播SUCCESS")
                                 while true do
