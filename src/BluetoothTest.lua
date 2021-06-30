@@ -25,6 +25,10 @@ local waitTime = 5000
 -- [MSG_BT_HFP_CALLSETUP_INCOMING] 23
 -- [MSG_BT_HFP_CONNECT_IND] 18
 
+local slaveStatus = false
+local masterStatus = false
+local reConnectSlave = false
+
 rtos.on(
     rtos.MSG_BLUETOOTH,
     function(msg)
@@ -36,14 +40,19 @@ rtos.on(
         if msg.event == btcore.MSG_OPEN_CNF then
             sys.publish("BT_OPEN", msg.result)
         elseif msg.event == btcore.MSG_BLE_CONNECT_CNF then
+            log.info(tag .. ".msg", "连接到从设备成功")
             sys.publish("BT_CONNECT_IND", {["handle"] = msg.handle, ["result"] = msg.result})
+            slaveStatus = true
         elseif msg.event == btcore.MSG_BLE_CONNECT_IND then
-            log.info(tag .. ".msg", "蓝牙连接SUCCESS")
+            log.info(tag .. ".msg", "有主设备连接成功")
             sys.publish("BT_CONNECT_IND", {["handle"] = msg.handle, ["result"] = msg.result})
+            masterStatus = true
         elseif msg.event == btcore.MSG_BLE_DISCONNECT_CNF then
-            log.info(tag, "设备断开连接")
+            log.info(tag .. ".msg", "从设备掉线")
+            slaveStatus = false
         elseif msg.event == btcore.MSG_BLE_DISCONNECT_IND then
-            log.info(tag .. ".msg", "蓝牙断开连接")
+            log.info(tag .. ".msg", "主设备掉线")
+            masterStatus = false
         elseif msg.event == btcore.MSG_BLE_DATA_IND then
             sys.publish("BT_DATA_IND", {["data"] = msg.data, ["uuid"] = msg.uuid, ["len"] = msg.len})
         elseif msg.event == btcore.MSG_BLE_SCAN_CNF then
@@ -83,116 +92,118 @@ if LuaTaskTestConfig.bluetoothTest.masterTest then
             local msgRes, msgData
             sys.wait(5000)
             log.info(tag, "start")
-            while true do
-                if btcore.open(1) == 0 then
+            if btcore.open(1) == 0 then
                     msgRes, msgData = sys.waitUntil("BT_OPEN", 5000)
                     if msgRes == true and msgData == 0 then
                         log.info(tag .. ".open", "打开蓝牙SUCCESS")
-                        log.info(tag .. ".scan", "开始扫描")
-                        if btcore.scan(1) == 0 then
+                        log.info("master addr", btcore.getaddr())
+                        while true do
+                            log.info(tag .. ".scan", "开始扫描")
+                            if btcore.scan(1) == 0 then
                             msgRes, msgData = sys.waitUntil("BT_SCAN_CNF", 50000)
                             if msgRes == false and msgData ~= 0 then
                                 log.error(tag .. ".scan", "打开扫描FAIL")
                             else
                                 log.info(tag .. ".scan", "打开扫描SUCCESS")
                                 while true do
-                                    msgRes, msgData = sys.waitUntil("BT_SCAN_IND", 5000)
-                                    if not msgData and msgRes == false then
-                                        log.info(tag .. ".scan", "没有扫描到蓝牙设备")
+                                    if reConnectSlave == true then
+                                        reConnectSlave = false
                                         break
                                     else
-                                        local deviceJsonInfo = json.encode(msgData)
-                                        log.info(tag .. ".deviceJsonInfo", deviceJsonInfo)
-                                        if (msgData.name == "LuaTaskTestBleTest") then
-                                            local slaveName = msgData.name
-                                            local slaveAddrType = msgData.addr_type
-                                            local slaveAddr = msgData.addr
-                                            local slaveManuData = msgData.manu_data
-                                            local slaveRawData = msgData.raw_data
-                                            btcore.scan(0)
-                                            local connectRes = btcore.connect(msgData.addr)
-                                            if connectRes == 0 then
-                                                log.info(tag .. "connect", "连接从设备SUCCESS")
-                                                local _, bt_connect = sys.waitUntil("BT_CONNECT_IND")
-                                                if bt_connect.result ~= 0 then
-                                                    log.error(tag .. ".connectInd", "连接FAIL")
-                                                else
-                                                    log.info(tag .. ".connectInd", "连接SUCCESS")
-                                                    log.info(tag, "开启蓝牙发现服务")
-                                                    btcore.findservice()
-                                                    local _, result = sys.waitUntil("BT_FIND_SERVICE_IND")
-                                                    if not result then
-                                                        log.error(tag .. ".findServiceInd", "没有发现服务")
+                                        msgRes, msgData = sys.waitUntil("BT_SCAN_IND", 5000)
+                                        if not msgData and msgRes == false then
+                                            log.info(tag .. ".scan", "没有扫描到蓝牙设备")
+                                            break
+                                        else
+                                            local deviceJsonInfo = json.encode(msgData)
+                                            log.info(tag .. ".deviceJsonInfo", deviceJsonInfo)
+                                            if (msgData.name == "LuaBleTest111") then
+                                                local slaveName = msgData.name
+                                                local slaveAddrType = msgData.addr_type
+                                                local slaveAddr = msgData.addr
+                                                local slaveManuData = msgData.manu_data
+                                                local slaveRawData = msgData.raw_data
+                                                btcore.scan(0)
+                                                log.info("connect slave addr", msgData.addr)
+                                                local connectRes = btcore.connect(msgData.addr)
+                                                if connectRes == 0 then
+                                                    log.info(tag .. ".connect", "连接从设备SUCCESS")
+                                                    local _, bt_connect = sys.waitUntil("BT_CONNECT_IND")
+                                                    if bt_connect.result ~= 0 then
+                                                        log.error(tag .. ".connectInd", "连接FAIL")
                                                     else
-                                                        -- btcore.findcharacteristic(0xfee0)
-                                                        -- local _, result = sys.waitUntil("BT_FIND_CHARACTERISTIC_IND")
-                                                        btcore.findcharacteristic("9ecadc240ee5a9e093f3a3b50100406e")
-                                                        local _, result = sys.waitUntil("BT_FIND_CHARACTERISTIC_IND")
+                                                        log.info(tag .. ".connectInd", "连接SUCCESS")
+                                                        log.info(tag, "开启蓝牙发现服务")
+                                                        btcore.findservice()
+                                                        local _, result = sys.waitUntil("BT_FIND_SERVICE_IND")
                                                         if not result then
                                                             log.error(tag .. ".findServiceInd", "没有发现服务")
                                                         else
-                                                            -- btcore.opennotification(0xfee2)
-                                                            btcore.opennotification("9ecadc240ee5a9e093f3a3b50200406e")
-                                                            while true do
+                                                            -- btcore.findcharacteristic(0xfee0)
+                                                            -- local _, result = sys.waitUntil("BT_FIND_CHARACTERISTIC_IND")
+                                                            btcore.findcharacteristic("9ecadc240ee5a9e093f3a3b50100406e")
+                                                            local _, result = sys.waitUntil("BT_FIND_CHARACTERISTIC_IND")
+                                                            if not result then
+                                                                log.error(tag .. ".findServiceInd", "没有发现服务")
+                                                            else
+                                                                -- btcore.opennotification(0xfee2)
+                                                                btcore.opennotification("9ecadc240ee5a9e093f3a3b50200406e")
                                                                 local data = "LuaTaskTest.BluetoothTest.masterTest.data"
-                                                                -- local sendRes = btcore.send(data, 0xfee1, bt_connect.handle)
-                                                                local sendRes = btcore.send(data, "9ecadc240ee5a9e093f3a3b50300406e", bt_connect.handle)
-                                                                if sendRes == 0 then
-                                                                    log.info(tag .. ".send", "蓝牙数据发送SUCCESS")
-                                                                    sys.waitUntil("BT_DATA_IND", 5000)
-                                                                    local data = ""
-                                                                    local len = 0
-                                                                    local uuid = ""
-                                                                    while true do
-                                                                        local recvuuid, recvdata, recvlen = btcore.recv(3)
-                                                                        if recvlen == 0 then
-                                                                            break
-                                                                        end
-                                                                        uuid = recvuuid
-                                                                        len = len + recvlen
-                                                                        data = data .. recvdata
-                                                                    end
-                                                                    if len ~= 0 then
-                                                                        log.info(tag .. ".recvData", data)
-                                                                        log.info(tag .. ".recvDataLen", len)
-                                                                        log.info(tag .. ".recvUUIDHex", string.toHex(uuid))
-                                                                    end
-                                                                    sys.wait(10000)
-                                                                else
-                                                                    log.error(tag .. ".send", "蓝牙数据发送FAIL")
-                                                                    log.info(tag .. ".reConnect", "发起重连")
-                                                                    local connectRes = btcore.connect(bt_device.addr)
-                                                                    if connectRes == 0 then
-                                                                        log.info(tag .. ".reConnect", "重连SUCCESS")
+                                                                while true do
+                                                                    if slaveStatus == false then
+                                                                        log.info(tag .. ".reConnect", "发起重连")
+                                                                        reConnectSlave = true
+                                                                        break
                                                                     else
-                                                                        log.error(tag .. ".reConnect", "重连FAIL，可能是设备已无法连接")
+                                                                        -- local sendRes = btcore.send(data, 0xfee1, bt_connect.handle)
+                                                                        local sendRes = btcore.send(data, "9ecadc240ee5a9e093f3a3b50300406e", bt_connect.handle)
+                                                                        if sendRes == 0 then
+                                                                            log.info(tag .. ".send", "蓝牙数据发送SUCCESS")
+                                                                            sys.waitUntil("BT_DATA_IND", 5000)
+                                                                            local data = ""
+                                                                            local len = 0
+                                                                            local uuid = ""
+                                                                            while true do
+                                                                                local recvuuid, recvdata, recvlen = btcore.recv(3)
+                                                                                if recvlen == 0 then
+                                                                                    break
+                                                                                end
+                                                                                uuid = recvuuid
+                                                                                len = len + recvlen
+                                                                                data = data .. recvdata
+                                                                            end
+                                                                            if len ~= 0 then
+                                                                                log.info(tag .. ".recvData", data)
+                                                                                log.info(tag .. ".recvDataLen", len)
+                                                                                log.info(tag .. ".recvUUIDHex", string.toHex(uuid))
+                                                                            end
+                                                                            sys.wait(10000)
+                                                                        else
+                                                                            log.error(tag .. ".send", "蓝牙数据发送FAIL")
+                                                                        end
                                                                     end
                                                                 end
-                                                            
                                                             end
-                                                        end
 
+                                                        end
                                                     end
+                                                else
+                                                    log.error(tag .. "connect", "连接从设备FAIL")
                                                 end
-                                            else
-                                                log.error(tag .. "connect", "连接从设备FAIL")
                                             end
                                         end
                                     end
                                 end
                             end
-                        else
-                            log.error("BluetoothTest.scan", "打开扫描FAIL")
+                            else
+                                log.error("BluetoothTest.scan", "打开扫描FAIL")
+                            end
                         end
                     else
                         log.error("BluetoothTest.open", "打开蓝牙FAIL")
                     end
-                else
-                    log.error("BluetoothTest.open", "打开蓝牙FAIL")
-                end
-                btcore.scan(0)
-                btcore.close()
-                sys.wait(waitTime)
+            else
+                log.error("BluetoothTest.open", "打开蓝牙FAIL")
             end
         end
     )
@@ -209,7 +220,8 @@ if LuaTaskTestConfig.bluetoothTest.slaveTest then
                     msgRes, msgData = sys.waitUntil("BT_OPEN", 5000)
                     if msgRes == true and msgData == 0 then
                         log.info(tag .. ".open", "打开蓝牙从模式SUCCESS")
-                        if btcore.setname("LuaTaskTestBleTest") == 0 then
+                        log.info("slave addr", btcore.getaddr())
+                        if btcore.setname("LuaBleTest111") == 0 then
                             log.info(tag .. ".setName", "设置名称SUCCESS")
                             local struct1 = {
                                 {0xfee1, 0x0c, 0x0002},
@@ -230,41 +242,48 @@ if LuaTaskTestConfig.bluetoothTest.slaveTest then
 	                        btcore.setadvparam(0x80, 0xa0, 0, 0, 0x07, 0, 0, "11:22:33:44:55:66")
                             if btcore.advertising(1) == 0 then
                                 log.info(tag .. ".advertising", "打开广播SUCCESS")
-                                msgRes, msgData = sys.waitUntil("BT_CONNECT_IND")
-                                if msgRes == true and msgData.result == 0 then
-                                    log.info(tag .. ".connect", "蓝牙连接SUCCESS")
-                                    while true do
-                                        msgRes, msgData = sys.waitUntil("BT_DATA_IND")
-                                        if msgRes == true then
-                                            local data = ""
-                                            local len = 0
-                                            local uuid = ""
-                                            local recvuuid, recvdata, recvlen
-                                            while true do
-                                                recvuuid, recvdata, recvlen = btcore.recv(3)
-                                                if recvlen == 0 then
-                                                    break
+                                while true do
+                                    msgRes, msgData = sys.waitUntil("BT_CONNECT_IND")
+                                    if msgRes == true and msgData.result == 0 then
+                                        log.info(tag .. ".connect", "蓝牙连接SUCCESS")
+                                        while true do
+                                            if masterStatus == false then
+                                                log.info(tag .. ".reConnect", "等待重连")
+                                                break
+                                            else
+                                                msgRes, msgData = sys.waitUntil("BT_DATA_IND")
+                                                if msgRes == true then
+                                                    local data = ""
+                                                    local len = 0
+                                                    local uuid = ""
+                                                    local recvuuid, recvdata, recvlen
+                                                    while true do
+                                                        recvuuid, recvdata, recvlen = btcore.recv(3)
+                                                        if recvlen == 0 then
+                                                            break
+                                                        end
+                                                        uuid = recvuuid
+                                                        len = len + recvlen
+                                                        data = data .. recvdata
+                                                    end
+                                                    if len ~= 0 then
+                                                        log.info(tag .. ".recvData", data)
+                                                        log.info(tag .. ".recvDataLen", len)
+                                                        log.info(tag .. ".recvUUIDHex", string.toHex(uuid))
+                                                        if data == "close" then
+                                                            btcore.disconnect()
+                                                        end
+                                                        -- btcore.send("LuaTaskTest.BluetoothTest.slaveTest.data", 0xfee2, msgData.handle)
+                                                        btcore.send("LuaTaskTest.BluetoothTest.slaveTest.data", "9ecadc240ee5a9e093f3a3b50200406e", msgData.handle)
+                                                    end
+                                                else
+                                                    log.info(tag .. ".recv", "没有接收到数据")
                                                 end
-                                                uuid = recvuuid
-                                                len = len + recvlen
-                                                data = data .. recvdata
                                             end
-                                            if len ~= 0 then
-                                                log.info(tag .. ".recvData", data)
-                                                log.info(tag .. ".recvDataLen", len)
-                                                log.info(tag .. ".recvUUIDHex", string.toHex(uuid))
-                                                if data == "close" then
-                                                    btcore.disconnect()
-                                                end
-                                                -- btcore.send("LuaTaskTest.BluetoothTest.slaveTest.data", 0xfee2, msgData.handle)
-                                                btcore.send("LuaTaskTest.BluetoothTest.slaveTest.data", "9ecadc240ee5a9e093f3a3b50200406e", msgData.handle)
-                                            end
-                                        else
-                                            log.info(tag .. ".recv", "没有接收到数据")
                                         end
+                                    else
+                                        log.error(tag .. ".connect", "连接FAIL")
                                     end
-                                else
-                                    log.error(tag .. ".connect", "连接FAIL")
                                 end
                             else
                                 log.error(tag .. ".advertising", "打开广播FAIL")
