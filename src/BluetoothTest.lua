@@ -43,6 +43,8 @@ rtos.on(
             log.info(tag .. ".msg", "连接到从设备成功")
             sys.publish("BT_CONNECT_IND", {["handle"] = msg.handle, ["result"] = msg.result})
             slaveStatus = true
+        elseif msg.event == btcore.MSG_BT_AVRCP_CONNECT_IND then
+            sys.publish("BT_AVRCP_CONNECT_IND", {["handle"] = msg.handle, ["result"] = msg.result}) --avrcp连接成功
         elseif msg.event == btcore.MSG_BLE_CONNECT_IND then
             log.info(tag .. ".msg", "有主设备连接成功")
             sys.publish("BT_CONNECT_IND", {["handle"] = msg.handle, ["result"] = msg.result})
@@ -380,6 +382,66 @@ if LuaTaskTestConfig.bluetoothTest.scanTest then
                 log.info(tag .. ".close", "关闭蓝牙")
                 sys.wait(waitTime)
             end
+        end
+    )
+end
+
+
+if LuaTaskTestConfig.bluetoothTest.btTest then
+    sys.taskInit(
+        function ()
+            local tag = "BluetoothTest.btTest"
+            local msgRes, msgData
+            sys.wait(waitTime)
+            while true do
+                if btcore.open(2) == 0 then
+                    msgRes, msgData = sys.waitUntil("BT_OPEN", 5000)
+                    if msgRes == true and msgData == 0 then
+                        log.info(tag .. ".open", "打开蓝牙从模式SUCCESS")
+                        if btcore.setname("LuaTaskTestBleTest") == 0 then
+                            log.info(tag .. ".setName", "设置名称SUCCESS")
+                            if btcore.advertising(1) == 0 then
+                                btcore.setvisibility(0x11)-- 设置蓝牙可见性
+                                log.info(tag .. ".advertising", "打开广播SUCCESS")
+                                msgRes, msgData = sys.waitUntil("BT_AVRCP_CONNECT_IND")
+                                if msgRes == true and msgData.result == 0 then
+                                    log.info(tag .. ".connect", "蓝牙连接SUCCESS")
+                                    while true do
+                                        btcore.setavrcpvol(100)
+                                        sys.wait(1500)
+                                        log.info(tag, "bt avrcp vol",btcore.getavrcpvol())
+                                        sys.wait(1500)
+                                        log.info(tag,"播放SUCCESS")
+                                        btcore.setavrcpsongs(1)--播放
+                                        sys.wait(15000)
+                                        log.info(tag,"暂停SUCCESS")
+                                        btcore.setavrcpsongs(0)--暂停   
+                                        sys.wait(15000)
+                                        log.info(tag,"上一曲SUCCESS")
+                                        btcore.setavrcpsongs(2)--上一曲
+                                        sys.wait(15000)
+                                        log.info(tag,"下一曲SUCCESS")
+                                        btcore.setavrcpsongs(3)--下一曲
+                                        sys.wait(15000)
+                                    end
+                                else
+                                    log.error(tag .. ".connect", "连接FAIL")
+                                end
+                            else
+                                log.error(tag .. ".advertising", "打开广播FAIL")
+                            end
+                        else
+                            log.error(tag .. ".setName", "设置名称FAIL")
+                        end
+                    else
+                        log.error(tag .. ".open", "打开经典蓝牙模式FAIL")
+                    end
+                else
+                    log.error(tag .. ".open", "打开经典蓝牙模式FAIL")
+                end
+                sys.wait(5000)
+            end
+            btcore.close()
         end
     )
 end

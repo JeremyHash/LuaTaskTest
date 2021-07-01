@@ -124,7 +124,8 @@ LuaTaskTestConfig = {
         masterTest = false,
         slaveTest  = false,
         beaconTest = false,
-        scanTest   = false
+        scanTest   = false,
+        btTest     = false
     }
 }
 
