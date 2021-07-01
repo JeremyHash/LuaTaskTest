@@ -119,7 +119,7 @@ if LuaTaskTestConfig.bluetoothTest.masterTest then
                                         else
                                             local deviceJsonInfo = json.encode(msgData)
                                             log.info(tag .. ".deviceJsonInfo", deviceJsonInfo)
-                                            if msgData.name == "LuaBleTest" then
+                                            if msgData.name == "LuatBleSlaveTest" then
                                                 local slaveName = msgData.name
                                                 local slaveAddrType = msgData.addr_type
                                                 local slaveAddr = msgData.addr
@@ -223,7 +223,7 @@ if LuaTaskTestConfig.bluetoothTest.slaveTest then
                     if msgRes == true and msgData == 0 then
                         log.info(tag .. ".open", "打开蓝牙从模式SUCCESS")
                         log.info("slave addr", btcore.getaddr())
-                        if btcore.setname("LuaBleTest111") == 0 then
+                        if btcore.setname("LuatBleSlaveTest") == 0 then
                             log.info(tag .. ".setName", "设置名称SUCCESS")
                             local struct1 = {
                                 {0xfee1, 0x0c, 0x0002},
@@ -397,8 +397,8 @@ if LuaTaskTestConfig.bluetoothTest.btTest then
                 if btcore.open(2) == 0 then
                     msgRes, msgData = sys.waitUntil("BT_OPEN", 5000)
                     if msgRes == true and msgData == 0 then
-                        log.info(tag .. ".open", "打开蓝牙从模式SUCCESS")
-                        if btcore.setname("LuaTaskTestBleTest") == 0 then
+                        log.info(tag .. ".open", "打开经典蓝牙模式SUCCESS")
+                        if btcore.setname("LuaTaskTestBtTest") == 0 then
                             log.info(tag .. ".setName", "设置名称SUCCESS")
                             if btcore.advertising(1) == 0 then
                                 btcore.setvisibility(0x11)-- 设置蓝牙可见性
