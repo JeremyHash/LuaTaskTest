@@ -45,9 +45,11 @@ LuaTaskTestConfig = {
         asyncSocketTest = false,
         webSocketTest   = false,
     },
-    ctwingTest      = false,
+    iotplatformTest = {
+        ctwingTest  = false, 
+        txiotTest   = false,
+    },
     protobufferTest = false,
-    txiotTest       = false,
     rtmpTest        = false,
     mqttTest        = false,
     ftpTest         = false,
@@ -222,16 +224,15 @@ for k, v in pairs(LuaTaskTestConfig.socketTest) do
     end
 end
 
-if LuaTaskTestConfig.ctwingTest then
-    require "CtwingTest"
+for k, v in pairs(LuaTaskTestConfig.iotplatformTest) do
+    if v then
+        require "IotPlatformTest"
+        break
+    end
 end
 
 if LuaTaskTestConfig.protobufferTest then
     require "ProtobufferTest"
-end
-
-if LuaTaskTestConfig.txiotTest then
-    require "TxiotTest"
 end
 
 if LuaTaskTestConfig.rtmpTest then
