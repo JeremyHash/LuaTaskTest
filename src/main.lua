@@ -48,6 +48,7 @@ LuaTaskTestConfig = {
     iotplatformTest = {
         ctwingTest  = false, 
         txiotTest   = false,
+        onenetTest  = false,
     },
     protobufferTest = false,
     rtmpTest        = false,
