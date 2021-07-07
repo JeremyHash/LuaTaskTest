@@ -1,7 +1,7 @@
 -- LuaTaskTest
 -- Author:LuatTest
 -- CreateDate:20200716
--- UpdateDate:20210327
+-- UpdateDate:20210707
 
 PROJECT = "LuaTaskTest"
 VERSION = "1.0.0"
@@ -339,6 +339,7 @@ sys.taskInit(
                     log.info("LIB_VERSION", sys.SCRIPT_LIB_VER)
                     log.info("FSFREESIZE", rtos.get_fs_free_size() .. " Bytes")
                     log.info("RAMUSEAGE", collectgarbage("count") .. " KB")
+                    log.info("SOCKET_STATUS", socket.isReady())
                     local timeTable = misc.getClock()
                     log.info("TIME", string.format("%d-%d-%d %d:%d:%d", timeTable.year, timeTable.month, timeTable.day, timeTable.hour, timeTable.min, timeTable.sec))
                     sys.wait(30000)

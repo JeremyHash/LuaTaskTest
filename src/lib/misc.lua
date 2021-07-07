@@ -97,7 +97,9 @@ end
 --- 设置系统时间
 -- @table t,系统时间，格式参考：{year=2017,month=2,day=14,hour=14,min=2,sec=58}
 -- @function[opt=nil] cbFnc，设置结果回调函数，回调函数的调用形式为：
--- cnFnc(time，result)，result为true表示成功，false或者nil为失败；time表示设置之后的系统时间，table类型，例如{year=2017,month=2,day=14,hour=14,min=19,sec=23}
+--                           cbFnc(time，result)
+--                           result为true表示成功，false或者nil为失败
+--                           time表示设置之后的系统时间，table类型，例如{year=2017,month=2,day=14,hour=14,min=19,sec=23}
 -- @return nil
 -- @usage misc.setClock({year=2017,month=2,day=14,hour=14,min=2,sec=58})
 function setClock(t,cbFnc)

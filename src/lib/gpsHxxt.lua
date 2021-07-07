@@ -5,12 +5,12 @@
 -- 3、GPS定位数据读取
 -- 4、GPS参数和功能设置
 -- 1、2、3是通用功能，除了支持合宙的Air530模块，理论上也支持其他厂家的串口GPS模块
--- 4是专用功能，仅支持合宙的Air530模块
+-- 4是专用功能，仅支持合宙的Air530H、530Z和Air82x系列模块
 -- @module gpsHxxt
 -- @author openLuat
 -- @license MIT
 -- @copyright openLuat
--- @release 2021.4.14
+-- @release 2021.6.19
 require"pm"
 require"utils"
 module(..., package.seeall)
@@ -45,14 +45,14 @@ local psUtcTime,psGsv,psSn
 --GPS供电设置函数
 local powerCbFnc
 --串口配置
-uartBaudrate = 9600
-local uartID,uartBaudrate,uartParity,uartStopbits = 2,8,uart.PAR_NONE,uart.STOP_1
+uartBaudrate = 115200
+local uartID,uartDatabits,uartParity,uartStopbits = 3,8,uart.PAR_NONE,uart.STOP_1
 --搜星模式命令字符串，"$PGKC115," .. gps .. "," .. glonass .. "," .. beidou .. "," .. galieo .. "*"
 local aerialModeStr,aerialModeSetted = ""
 --启动模式命令字符串
-local startModeStr,startModeSetted = ""
+local startModeStr,startModeSetted = "",""
 --运行模式命令字符串，"$PGKC105," .. mode .. "," .. rt .. "," .. st .. "*"
-local runModeStr,runModeSetted = ""
+local runModeStr,runModeSetted = "",""
 --正常运行模式下NMEA数据上报间隔命令字符串，"$PGKC101," .. interval .. "*"
 local nmeaReportStr,nmeaReportSetted = ""
 --每种NEMA数据的输出频率命令字符串
@@ -168,8 +168,7 @@ local function parseNmea(s)
             fixed = false
         end
     elseif smatch(s,"RMC") then
-        --gpsTime,gpsFind,lat,latTyp,lng,lngTyp,spd,cog,gpsDate = smatch(s,"RMC,(%d%d%d%d%d%d)%.%d+,(%w),(%d*%.*%d*),([NS]*),(%d*%.*%d*),([EW]*),(.-),(.-),(%d%d%d%d%d%d),")
-        gpsTime,gpsFind,lat,latTyp,lng,lngTyp,spd,cog = smatch(s,"RMC,(%d%d%d%d%d%d)%.%d+,(%w),(%d*%.*%d*),([NS]*),(%d*%.*%d*),([EW]*),(.-),(.-),")
+        gpsTime,gpsFind,lat,latTyp,lng,lngTyp,spd,cog,gpsDate = smatch(s,"RMC,(%d%d%d%d%d%d)%.%d+,(%w),(%d*%.*%d*),([NS]*),(%d*%.*%d*),([EW]*),(.-),(.-),(%d%d%d%d%d%d),")
         if gpsFind=="A" and cog then
             fixed = true
             latitudeType,longitudeType,latitude,longitude = latTyp,lngTyp,lat,lng
@@ -177,11 +176,10 @@ local function parseNmea(s)
             course = cog
         else
             fixed = false
-        end
-        
+        end  
         if psUtcTime and gpsFind == "A" and gpsTime and gpsDate and gpsTime ~= "" and gpsDate ~= "" then
-            local yy,mm,dd,hh,mm,ss = tonumber(ssub(gpsDate,5,6)),tonumber(ssub(gpsDate,3,4)),tonumber(ssub(gpsDate,1,2)),tonumber(ssub(gpsTime,1,2)),tonumber(ssub(gpsTime,3,4)),tonumber(ssub(gpsTime,5,6))
-            UtcTime = {year=2000+yy,month=mm,day=dd,hour=hh,min=mm,sec=ss}
+            local yy,mm,dd,h,m,s = tonumber(ssub(gpsDate,5,6)),tonumber(ssub(gpsDate,3,4)),tonumber(ssub(gpsDate,1,2)),tonumber(ssub(gpsTime,1,2)),tonumber(ssub(gpsTime,3,4)),tonumber(ssub(gpsTime,5,6))
+            UtcTime = {year=2000+yy,month=mm,day=dd,hour=h,min=m,sec=s}
         end
     elseif smatch(s,"GPGSV") then
         viewedGpsSateCnt = tonumber(smatch(s,"%d+,%d+,(%d+)") or "0")
@@ -287,7 +285,6 @@ function writeCasic(class,id,payload)
     log.info("gpsHxxt.writeCasic",tmp:toHex())
 end
 
-
 -- GPS串口写命令操作
 -- @string cmd，GPS指令(cmd格式："$PGKC149,1,115200*"或者"$PGKC149,1,115200*XX\r\n")
 -- @bool isFull，cmd是否为完整的指令格式，包括校验和以及\r\n；true表示完整，false或者nil为不完整
@@ -343,7 +340,7 @@ local function _close()
         powerCbFnc(false)
     else
         pmd.ldoset(0,pmd.LDO_VIBR)
-        rtos.sys32k_clk_out(0)
+        --rtos.sys32k_clk_out(0)
     end
     uart.close(uartID)
     pm.sleep("gps.lua")
