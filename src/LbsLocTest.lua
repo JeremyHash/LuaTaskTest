@@ -135,8 +135,6 @@ local function wifiLocTest()
 end
 
 local function sendGPSInfoToServer(lat, lng)
-    gpsLattmp = lat
-    gpsLngtmp = lng
     local gpsLocInfo = {
         lat = lat,
         lng = lng,
@@ -178,11 +176,14 @@ local function printGpsInfo()
         local lat = tLocation.lat
         local lng = tLocation.lng
         log.info("GPSLocTest.LocInfo", lat, lng)
-        local UTCTime = gpsZkw.getUtcTime()
-        log.info("GPSLocTest.UTCTime", string.format("%d-%d-%d %d:%d:%d", UTCTime.year, UTCTime.month, UTCTime.day, UTCTime.hour, UTCTime.min, UTCTime.sec))
+        -- local UTCTime = gpsZkw.getUtcTime()
+        -- log.info("GPSLocTest.UTCTime", string.format("%d-%d-%d %d:%d:%d", UTCTime.year, UTCTime.month, UTCTime.day, UTCTime.hour, UTCTime.min, UTCTime.sec))
+        
         if lat == gpsLattmp and lng == gpsLngtmp then
             log.info("GPSLocTest", "GPS定位信息未发生改变，本次定位结果不上传服务器")
         else
+            gpsLattmp = lat
+            gpsLngtmp = lng
             sendGPSInfoToServer(lat, lng)
         end
     end
@@ -211,21 +212,44 @@ if LuaTaskTestConfig.lbsLocTest.gpsLocTest then
         function ()
             sys.wait(5000)
             pmd.ldoset(15, pmd.LDO_VMMC)
-            -- uart.setup(2, 115200, 8, uart.PAR_NONE, uart.STOP_1)
-            -- uart.write(2, "$PCAS01,1*1D")
-            -- uart.close(2)
-
-            -- uart.setup(2, 9600, 8, uart.PAR_NONE, uart.STOP_1)
-            -- uart.on(2, "receive", read)
 
             require "gpsZkw"
             require "agpsZkw"
+            require "color_lcd_spi_gc9106l"
 
             log.info("GPSTest", "打开GPS")
             gpsZkw.setUart(3, 9600, 8, uart.PAR_NONE, uart.STOP_1)
             gpsZkw.open(gpsZkw.DEFAULT, {tag = "GPSLocTest"})
 
-            sys.timerLoopStart(printGpsInfo, 5000)
+            sys.timerLoopStart(printGpsInfo, 50000)
         end
     )
+
+    -- sys.taskInit(
+    --     function ()
+    --         sys.wait(10000)
+    --         while true do
+    --             if gpsZkw.isOpen() and gpsZkw.isFix() then
+    --                 local tLocation = gpsZkw.getLocation()
+    --                 local lat = tLocation.lat
+    --                 local lng = tLocation.lng
+    --                 log.info("GPSLocTest.LocInfo", lat, lng)
+                    
+    --                 if lat == gpsLattmp and lng == gpsLngtmp then
+    --                     log.info("GPSLocTest", "GPS定位信息未发生改变，本次定位结果不上传服务器")
+    --                 else
+    --                     disp.clear()
+    --                     disp.puttext(common.utf8ToGb2312(lat), 0, 0)
+    --                     disp.puttext(common.utf8ToGb2312(lng), 0, 50)
+    --                     disp.update()
+    --                 end
+    --             else
+    --                 disp.clear()
+    --                 disp.puttext(common.utf8ToGb2312("还没有定位成功"), 0, 0)
+    --                 disp.update()
+    --             end
+    --             sys.wait(1000)
+    --         end
+    --     end
+    -- )
 end
