@@ -211,13 +211,14 @@ if LuaTaskTestConfig.lbsLocTest.gpsLocTest then
     sys.taskInit(
         function ()
             sys.wait(5000)
-            pmd.ldoset(15, pmd.LDO_VMMC)
 
             require "gpsZkw"
             require "agpsZkw"
-            require "color_lcd_spi_gc9106l"
+            -- require "color_lcd_spi_gc9106l"
 
             log.info("GPSTest", "打开GPS")
+            -- gpsZkw.setNmeaMode(2, nmeaCb)
+
             gpsZkw.setUart(3, 9600, 8, uart.PAR_NONE, uart.STOP_1)
             gpsZkw.open(gpsZkw.DEFAULT, {tag = "GPSLocTest"})
 
