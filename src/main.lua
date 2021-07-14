@@ -1,7 +1,7 @@
 -- LuaTaskTest
 -- Author:LuatTest
 -- CreateDate:20200716
--- UpdateDate:20210707
+-- UpdateDate:202100714
 
 PROJECT = "LuaTaskTest"
 VERSION = "1.0.0"
@@ -56,7 +56,6 @@ LuaTaskTestConfig = {
     ftpTest         = false,
     updateTest      = false,
     modbusTest      = false,
-    pwmTest         = false,
     baseTest = {
         -- netTest，sysTest 要单独测试
         netTest      = false,
@@ -90,7 +89,8 @@ LuaTaskTestConfig = {
         gpioIntTest = false,
         gpioInTest  = false,
         gpioOutTest = false,
-        ledTest     = false
+        ledTest     = false,
+        pwmTest     = false,
     },
     fsTest = {
         sdCardTest      = false,
@@ -154,7 +154,6 @@ require "nvm"
 require "aLiYun"
 require "pb"
 require "ril"
-require "audio"
 require "patch"
 -- require "wdt"
 
@@ -251,10 +250,6 @@ end
 
 if LuaTaskTestConfig.modbusTest then
     require "ModbusTest"
-end
-
-if LuaTaskTestConfig.pwmTest then
-    require "PwmTest"
 end
 
 for k, v in pairs(LuaTaskTestConfig.baseTest) do

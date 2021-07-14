@@ -1,7 +1,7 @@
 -- GpioTest
 -- Author:LuatTest
 -- CreateDate:20200724
--- UpdateDate:20210324
+-- UpdateDate:20210714
 
 module(..., package.seeall)
 
@@ -325,4 +325,24 @@ if LuaTaskTestConfig.gpioTest.ledTest then
         end
     )
 
+end
+
+if LuaTaskTestConfig.gpioTest.ledTest then
+    local tag = "PwmTest"
+    sys.taskInit(
+        function ()
+            while true do
+                log.info(tag, "open 50ms")
+                -- pio.pin.pwm参数（管脚号，高电平时长，低电平时长，-1代表一直发）
+                pio.pin.pwm(11, 50, 50, -1)
+                sys.wait(10000)
+                log.info(tag, "close")
+                pio.pin.pwm(11, 0, 0, -1)
+                sys.wait(10000)
+                log.info(tag, "open 200ms")
+                pio.pin.pwm(11, 200, 200, -1)
+                sys.wait(10000)
+            end
+        end
+    )
 end
