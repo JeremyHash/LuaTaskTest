@@ -1,7 +1,7 @@
 -- SocketTest
 -- Author:LuatTest
 -- CreateDate:20200723
--- UpdateDate:20201230
+-- UpdateDate:20210716
 
 module(..., package.seeall)
 
@@ -28,6 +28,7 @@ local connectResult, socketId, result, data, para
 -- tcpClient2 -> 同步 无SSL TCP客户端
 -- tcpClient3 -> 异步 无SSL TCP客户端
 -- tcpClient4 -> 错误IP TCP客户端
+
 -- udpClient1 -> 同步 UDP客户端
 -- udpClient2 -> 异步 UDP客户端
 local tcpClient1, tcpClient2, tcpClient3, tcpClient4, udpClient1, udpClient2
@@ -389,34 +390,40 @@ if LuaTaskTestConfig.socketTest.webSocketTest then
 
     local tag6 = "WebSocketTest"
     local ws = websocket.new("ws://airtest.openluat.com:2900/websocket")
+
     ws:on("open", function()
+        log.info(tag6 .. ".open",  "连接建立SUCCESS")
         ws:send("websocket server start")
     end)
+
     ws:on("message", function(msg)
         log.info(tag6 .. ".receive", msg)
-        if msg=="www.openluat.com" then 
-            log.info(tag6 .. ".receive","接收SUCCESS" )
+        if msg == "www.openluat.com" then 
+            log.info(tag6 .. ".receive", "接收SUCCESS")
         else 
-            log.info(tag6..".receive","接收FAIL" )
+            log.info(tag6 .. ".receive", "接收FAIL")
         end
     end)
     
     ws:on("sent", function()
-        log.info(tag6..".sent", "发送SUCCESS")
+        log.info(tag6 .. ".sent", "发送SUCCESS")
     end)
+
     ws:on("error", function(msg)
-        log.error(tag6..".error:", msg)
+        log.error(tag6 .. ".error", msg)
     end)
+
     ws:on("close", function(code)
-        log.info(tag6..".closed,关闭码:", code)
+        log.info(tag6 .. ".close", code)
     end)
+
     -- 启动任务进程
     sys.taskInit(ws.start, ws, 180)
     
     sys.taskInit(function ()
         while true do
-            sys.wait(2000)
             ws:send("www.openluat.com", true)
+            sys.wait(waitTime)
         end
     end)
 
